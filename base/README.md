@@ -81,5 +81,5 @@ Dockerfile.profile:
 
 ## Running the images 
 
-* Using the install image 
-* Using the profile image 
+* [Using the install image](Run-install-image.md) 
+* [Using the profile image](Run-profile-image.md)

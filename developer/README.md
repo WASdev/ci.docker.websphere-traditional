@@ -79,7 +79,8 @@ Dockerfile.profile:
     docker build --build-arg CELL_NAME=<cell-name> --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> --build-arg HOST_NAME=<host-name>  -t <profile-image-name> -f Dockerfile.profile .                              
     ``` 
 
-## Running the images
-                                                            
-* Using the install image                                   
-* Using the profile image
+## Running the images                                                                                                                           
+                                                                                                                                                
+* [Using the install image](Run-install-image.md)                                                                                               
+* [Using the profile image](Run-profile-image.md)       
+
