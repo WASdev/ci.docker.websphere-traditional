@@ -19,9 +19,9 @@ An IBM WebSphere Application Server Classic Base image can be built by obtaining
   
 IBM WebSphere Application Server Classic Base image is created using the following Dockerfiles(multiple Dockerfiles are used to reduce the final image size):
 
-1. Dockerfile.prereq
-2. Dockerfile.install
-3. Dockerfile.profile ( Optionally used to create an image with profile ) 
+1. [Dockerfile.prereq](Dockerfile.prereq)
+2. [Dockerfile.install](Dockerfile.install)
+3. [Dockerfile.profile](Dockerfile.profile)(Optionally used to create an image with profile ) 
 
 The Dockerfiles take the values for the following variables during build time: 
 
