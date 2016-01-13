@@ -22,7 +22,7 @@ ARG PROFILE_NAME=AppSrv01
 
 ARG CELL_NAME=ServerCell01
 
-ARG NODE_NAME=ServerNode01
+ARG NODE_NAME=ServerNode
 
 ARG HOST_NAME=localhost
 
