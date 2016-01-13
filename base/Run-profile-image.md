@@ -26,7 +26,7 @@ docker run --name <container-name> -h <container-name> -e UPDATE_HOSTNAME=true -
 Example:
 
 ```bash                                                                                                                                        
-docker run --name test -h test -e UPDATE_HOSTNAME=true -e PROFILE_NAME=AppSrv02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d baseprofile `
+docker run --name test -h test -e UPDATE_HOSTNAME=true -e PROFILE_NAME=AppSrv02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d baseprofile 
 ``` 
 
 # Checking the logs

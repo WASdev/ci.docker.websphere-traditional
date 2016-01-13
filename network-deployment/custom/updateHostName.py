@@ -2,10 +2,7 @@
 #                                                                                   #
 #  Script to update Hostname                                                        #
 #                                                                                   #
-#                                                                                   #
 #  Usage : wsadmin -lang jython -f updateHostName.py <node name >  < host name >    # 
-#                                                                                   #
-#  Author : Kavitha                                                                 #
 #                                                                                   #
 #####################################################################################
 

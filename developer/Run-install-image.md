@@ -29,7 +29,7 @@ docker run --name <container-name> -h <container-name> -e HOST_NAME=<container-n
 Example:
 
 ```bash                                                                                                                                        
-docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d devinstall`
+docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d devinstall
 ``` 
 
 # Checking the logs
@@ -38,7 +38,7 @@ docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CEL
 docker logs -f --tail=all <container-name>
 ```
 
-e.g
+Example:
 
 ```bash                                                                                                                                         
 docker logs -f --tail=all test                                                                                                      

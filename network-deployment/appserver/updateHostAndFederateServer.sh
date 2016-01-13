@@ -3,33 +3,35 @@
 #                                                                                   #
 #  Script to update HostName  and Federate AppServer profile                        #
 #                                                                                   #
-#                                                                                   #
 #  Usage : updateHostAndFederateServer.sh                                           # 
-#                                                                                   #
-#  Author : Kavitha                                                                 #
 #                                                                                   #
 #####################################################################################
 
+#Check whether profile name is provided or use default
 if [ "$PROFILE_NAME" = "" ] 
 then
      PROFILE_NAME="AppSrv01"
 fi
 
+#Check whether node name is provided or use default
 if [ "$NODE_NAME" = "" ] 
 then
      NODE_NAME="ServerNode"
 fi
 
+#Check whether dmgr host is provided or use default
 if [ "$DMGR_HOST" = "" ]
 then
      DMGR_HOST="dmgr"
 fi
 
+#Check whether dmgr port is provided or use default
 if [ "$DMGR_PORT" = "" ]
 then
      DMGR_PORT="8879"
 fi
 
+#Get the container hostname
 host=`hostname`
 
 # check if nodeagent already created
@@ -39,7 +41,7 @@ then
 	/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startNode.sh
 else
 	# Update the hostname
-	/opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /opt/IBM/WebSphere/AppServer/bin/updateHostName.py \
+	/opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
         ServerNode $host
      
 	# Add the node
@@ -55,7 +57,6 @@ else
 	        /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startNode.sh
         fi
 fi
-
 
 #if nodeagent started successfully , start the server
 if [ $? = 0 ]
@@ -80,7 +81,3 @@ while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/nodeagent/n
 do
     sleep 5
 done
-
-
-
-
