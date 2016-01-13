@@ -1,16 +1,29 @@
-# Building an IBM WebSphere Application Server Classic Base image from binaries
+# Building an IBM WebSphere Application Server Classic Base v8.5.5 image from binaries
 
 An IBM WebSphere Application Server Classic Base image can be built by obtaining the following binaries:
 * IBM Installation Manager binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html)
+
+  IBM Installation Manager binaries:
+  * Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip(CIK2GML)
+
 * IBM WebSphere Application Server Classic Base binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html) / [Fix Central](http://www-933.ibm.com/support/fixcentral/)
 
-IBM WebSphere Application Server Classic Base image is created using the following Dockerfiles
+  IBM WebSphere Application Server Classic v8.5.5 Base binaries:
+  * WAS_V8.5.5_1_OF_3.zip(CIK1QML)
+  * WAS_V8.5.5_2_OF_3.zip(CIK1RML)
+  * WAS_V8.5.5_3_OF_3.zip(CIK1SML)
+
+  Fixpack 8.5.5.8 binaries:
+  * 8.5.5-WS-WAS-FP0000008-part1.zip
+  * 8.5.5-WS-WAS-FP0000008-part2.zip
+  
+IBM WebSphere Application Server Classic Base image is created using the following Dockerfiles(multiple Dockerfiles are used to reduce the final image size):
 
 1. Dockerfile.prereq
 2. Dockerfile.install
 3. Dockerfile.profile ( Optionally used to create an image with profile ) 
 
-Dockerfiles takes the values for the following variables during build time 
+The Dockerfiles take the values for the following variables during build time: 
 
 Dockerfile.prereq
 * user(optional)[default 'was'] - user used for installation                                                                     
@@ -28,7 +41,7 @@ Dockerfile.profile
 * HOST_NAME(optional)[default 'localhost'] - host name    
 
 
-Dockerfiles do the following:
+Dockerfiles perform the following actions:
 
 Dockerfile.prereq:
 
@@ -41,7 +54,7 @@ Dockerfile.install:
                                                                                                            
 1. Extracts the tar file created by Dockerfile.prereq
 2. Copies the profile creation and startup script to the image
-3. When the container is started , profile is created and the server is started
+3. When the container is started, profile is created and the server is started
 
 Dockerfile.profile:                                                                                  
                                                                                                                         
@@ -53,14 +66,14 @@ Dockerfile.profile:
 
 1. Place the downloaded IBM Installation Manager and IBM WebSphere Application Server Classic binaries on the FTP or HTTP server.
 2. Clone this repository.
-3. Move to the directory `websphere-classic/base/`.
+3. Move to the directory `base/`.
 4. Build the prereq image using:
 
     ```bash
-    docker build --build-arg user=<user> --build-arg group=<group>  --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
+    docker build --build-arg user=<user> --build-arg group=<group> --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
     ```
 
-6. Run a container using the prereq image to get the tar file to the current folder using:
+6. Run a container using the prereq image to create the tar file in the current folder using:
 
     ```bash
     docker run --rm -v $(pwd):/tmp <prereq-image-name>
@@ -71,15 +84,15 @@ Dockerfile.profile:
     ```bash
     docker build --build-arg user=<user> --build-arg group=<group> -t <install-image-name> -f Dockerfile.install .
     ```
-    Use the install image name as `baseinstall` if you are creating base profile image 
+    Set the install image name as `baseinstall` if you are creating the base profile image. 
 
 7. Build the base profile image using:                                                                                                 
                                                                                                                                        
     ```bash                                                                                                                            
-    docker build --build-arg CELL_NAME=<cell-name> --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> --build-arg HOST_NAME=<host-name>  -t <profile-image-name> -f Dockerfile.profile .                              
+    docker build --build-arg CELL_NAME=<cell-name> --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> --build-arg HOST_NAME=<host-name> -t <profile-image-name> -f Dockerfile.profile .                              
     ``` 
 
 ## Running the images 
 
-* [Using the install image](Run-install-image.md) 
-* [Using the profile image](Run-profile-image.md)
+* [Using IBM WebSphere Application Server Classic Base install image](Run-install-image.md) 
+* [Using IBM WebSphere Application Server Classic Base profile image](Run-profile-image.md)

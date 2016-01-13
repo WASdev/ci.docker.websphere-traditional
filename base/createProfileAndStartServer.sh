@@ -3,35 +3,35 @@
 #                                                                                   #
 #  Script to create AppServer profile and start the server                          #
 #                                                                                   #
-#                                                                                   #
 #  Usage : createProfileAndStartServer.sh                                           # 
-#                                                                                   #
-#  Author : Kavitha                                                                 #
 #                                                                                   #
 #####################################################################################
 
+#Check whether profile name is provided or use default
 if [ "$PROFILE_NAME" = "" ] 
 then
      PROFILE_NAME="AppSrv01"
 fi
 
+#Check whether cell name is provided or use default
 if [ "$CELL_NAME" = "" ] 
 then
      CELL_NAME="DefaultCell01"
 fi
 
+#Check whether node name is provided or use default
 if [ "$NODE_NAME" = "" ] 
 then
      NODE_NAME="DefaultNode01"
 fi
 
+#Check whether host name is provided or use default
 if [ "$HOST_NAME" = "" ] 
 then
      HOST_NAME="localhost"
 fi
 
-
-#if profile already created just start the server
+#if profile is already created just start the server
 if [ -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1 ]
 then
      echo "Starting server ....................."
@@ -66,7 +66,3 @@ while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1/ser
 do
     sleep 5
 done
-
-
-
-

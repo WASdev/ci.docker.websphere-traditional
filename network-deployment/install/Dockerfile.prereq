@@ -31,7 +31,7 @@ USER $user
 
 ARG URL
 
-################## Installation Manager #######################
+######################### IBM Installation Manager ########################
 
 # Install Installation Manager
 RUN wget -q $URL/Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip -O /tmp/IM.zip \
@@ -41,10 +41,9 @@ RUN wget -q $URL/Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip -O /tmp/IM.zip \
       -dataLocation "/var/ibm/InstallationManager" -showProgress \
     && rm -fr /tmp/IM.zip /tmp/im
 
-########### WebSphere Application Server Network Deployment #######
+############# IBM WebSphere Application Server Network Deployment #########
 
-
-# Install IBM WebSphere Application Server v855
+# Install IBM WebSphere Application Server ND v855
 RUN wget -q $URL/WASND_v8.5.5_1of3.zip  -O /tmp/was1.zip \
     && wget -q $URL/WASND_v8.5.5_2of3.zip  -O /tmp/was2.zip \
     && wget -q $URL/WASND_v8.5.5_3of3.zip  -O /tmp/was3.zip \ 
@@ -57,7 +56,9 @@ RUN wget -q $URL/WASND_v8.5.5_1of3.zip  -O /tmp/was1.zip \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
     && rm -fr /tmp/was /tmp/was1.zip  /tmp/was2.zip   /tmp/was3.zip
 
-# Install fixpack v8558
+###### IBM WebSphere Application Server Network Deployment Fixpack #######
+
+# Install IBM WebSphere Application Server ND Fixpack v8558
 RUN wget -q $URL/8.5.5-WS-WAS-FP0000008-part1.zip -O /tmp/wasfp1.zip \
     && wget -q $URL/8.5.5-WS-WAS-FP0000008-part2.zip -O /tmp/wasfp2.zip \
     && mkdir /tmp/wasfp \
@@ -69,7 +70,4 @@ RUN wget -q $URL/8.5.5-WS-WAS-FP0000008-part1.zip -O /tmp/wasfp1.zip \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
     && rm -fr /tmp/wasfp /tmp/wasfp1.zip /tmp/wasfp2.zip
 
-
-CMD tar cvf /tmp/was.tar /opt/IBM/WebSphere/AppServer
-
-
+CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]

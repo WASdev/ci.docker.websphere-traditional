@@ -3,17 +3,16 @@
 #                                                                                   #
 #  Script to start the server                                                       #
 #                                                                                   #
-#                                                                                   #
 #  Usage : start.sh                                                                 # 
-#                                                                                   #
-#  Author : Kavitha                                                                 #
 #                                                                                   #
 #####################################################################################
 
 if [ "$UPDATE_HOSTNAME" = "true" ]
 then
+    #Get the container hostname
     host=`hostname`
     
+    #Check whether node name is provided or use default
     if [ "$NODE_NAME" = "" ]
     then
        NODE_NAME="DefaultNode01" 
@@ -25,6 +24,7 @@ then
 
 fi
 
+#Check whether profile name is provided or use default
 if [ "$PROFILE_NAME" = "" ]
 then
     PROFILE_NAME="AppSrv01"
@@ -41,12 +41,8 @@ fi
 
 sleep 10
 
-#Check the existence of server proces
+#Check the existence of server process
 while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1/server1.pid" ]
 do
     sleep 5
 done
-
-
-
-

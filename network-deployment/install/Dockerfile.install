@@ -31,4 +31,3 @@ USER $user
 ADD was.tar /
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
-
