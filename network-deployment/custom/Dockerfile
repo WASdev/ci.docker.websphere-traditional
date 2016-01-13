@@ -22,7 +22,7 @@ ARG PROFILE_NAME=Custom01
 
 ARG CELL_NAME=CustomCell01
 
-ARG NODE_NAME=CustomNode01
+ARG NODE_NAME=CustomNode
 
 ARG HOST_NAME=localhost
 
