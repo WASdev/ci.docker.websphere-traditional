@@ -27,9 +27,9 @@ Dockerfile perform the following actions:
     docker build -t <customnode-image-name> .
     ```
 
-# Running the IBM WebSphere Application Server Classic Network Deployment Custom Node image
+## Running the IBM WebSphere Application Server Classic Network Deployment Custom Node image
 
-## Running the Custom Node image using the default values
+Running the Custom Node image using the default values
 
 ```bash
 docker run --name <container-name> -h <container-name> --net=<network-name> -d <customnode-image-name>
@@ -41,7 +41,7 @@ Example:
 docker run --name custom1 -h custom1 --net=cell-network -d custom                                                
 ```
 
-## Running the Custom Node image by passing values for the environment variables                                                                                      
+Running the Custom Node image by passing values for the environment variables                                                                                      
                                                                                                                                                 
 ```bash                                                                                                                                         
 docker run --name <container-name> -h <container-name> --net=<network-name> -e PROFILE_NAME=<profile-name> -e NODE_NAME=<node-name> -e DMGR_HOST=<dmgr-host> -e DMGR_PORT=<dmgr-port> -d <customnode-image-name>                                             

@@ -27,9 +27,9 @@ Dockerfile perform the following actions:
     docker build -t <appserver-image-name> .
     ```
 
-# Running the IBM WebSphere Application Server Classic Network Deployment Application Server image
+## Running the IBM WebSphere Application Server Classic Network Deployment Application Server image
 
-## Running the Application Server image using the default values
+Running the Application Server image using the default values
 
 ```bash
 docker run --name <container-name> -h <container-name> --net=<network-name> -p 9080:9080 -d <appserver-image-name>
@@ -41,7 +41,7 @@ Example:
 docker run --name server1 -h server1 --net=cell-network -p 9080:9080 -d appserver                                                
 ```
 
-## Running the Application Server image by passing values for the environment variables                                                                                      
+Running the Application Server image by passing values for the environment variables                                                                                      
                                                                                                                                                 
 ```bash                                                                                                                                         
 docker run --name <container-name> -h <container-name> --net=<network-name> -e PROFILE_NAME=<profile-name> -e NODE_NAME=<node-name> -e DMGR_HOST=<dmgr-host> -e DMGR_PORT=<dmgr-port> -d <appserver-image-name>                                             
