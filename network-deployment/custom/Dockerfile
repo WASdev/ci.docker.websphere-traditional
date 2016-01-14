@@ -20,13 +20,13 @@ MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
 ARG PROFILE_NAME=Custom01
 
-ARG CELL_NAME=CustomCell01
+ARG CELL_NAME=CustomCell
 
 ARG NODE_NAME=CustomNode
 
 ARG HOST_NAME=localhost
 
-# Create default AppServer profile
+# Create default Custom Node profile
 RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
     /opt/IBM/WebSphere/AppServer/profileTemplates/managed -profileName $PROFILE_NAME \
     -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME -cellName $CELL_NAME \

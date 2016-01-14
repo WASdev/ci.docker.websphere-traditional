@@ -2,14 +2,14 @@
 
 IBM WebSphere Application Server Classic images can be built and verified using the test scripts provided.
 
-## Build and Test image
+## Build and Test IBM WebSphere Application Server Classic for Developers and Base images
 
 1. Clone this repository.
 2. Move to the directory `test`.
 3. Build and Test image using:
 
     ```bash
-    sh buildAndverify.sh <image-name> <dockerfile-location> <URL>`
+    sh buildAndVerify.sh <image-name> <dockerfile-location> <URL>`
     ```
 
 Parameter values for building Classic Base images:
@@ -20,7 +20,24 @@ Parameter values for building Classic Base images:
 
 Parameter values for building Classic Developer images:
                                                   
-* image-name - developer:install for building install images or developer:profile for building profile images
+* image-name - dev:install for building install images or dev:profile for building profile images
 * dockerfile-location - ../developer                   
 * URL - URL where the binaries are placed
+
+## Build and Test IBM WebSphere Application Server Classic Network Deployment images
+
+1. Clone this repository.
+2. Move to the directory `test`.
+3. Build and Test image using:
+
+    ```bash
+    sh buildAndVerifyND.sh <image-name> <dockerfile-location> <URL>`
+    ```
+
+Parameter values for building Classic Base images:
+
+* image-name - nd
+* dockerfile-location - ../network-deployment
+* URL - URL where the binaries are placed
+
 
