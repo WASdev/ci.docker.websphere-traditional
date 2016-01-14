@@ -10,7 +10,7 @@ The Dockerfile take the values for the following variables during build time:
 
 Dockerfile perform the following actions:
  
-1. Uses the nd image created during nd install as base image
+1. Uses the nd install image as base image
 2. Creates deployment manager profile
 3. Exposes the required ports
 4. Copies the startup script to the image 
@@ -19,7 +19,7 @@ Dockerfile perform the following actions:
 ## Building the IBM WebSphere Application Server Classic Network Deployment, Deployment Manager image
 
 1. Clone this repository.
-3. Build the nd install image following the [install build instructions](../install/README.md)
+3. Build the nd install image following the [install build instructions](../install/README.md), if not built already.
 3. Move to the directory `network-deployment/dmgr`.
 4. Build the dmgr image using:
 
@@ -35,6 +35,12 @@ Dockerfile perform the following actions:
    docker network create <network-name>
    ```
    The command provided above creates an user defined bridge network, for creating overlay network refer [Get started with multi-host networking docker documentation](https://docs.docker.com/engine/userguide/networking/get-started-overlay/)
+
+   Example:
+  
+   ```bash                                                                                          
+   docker network create cell-network                                                             
+   ```
 
 2. Running the Deployment Manager image using:
 

@@ -239,7 +239,6 @@ test3()
    fi                                                                                                     
 }                                                                                                         
 
-
 prereq_build
 if [ $? = 0 ]
 then
