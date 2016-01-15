@@ -20,7 +20,7 @@ MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
 ARG PROFILE_NAME=AppSrv01
 
-ARG CELL_NAME=ServerCell01
+ARG CELL_NAME=ServerCell
 
 ARG NODE_NAME=ServerNode
 

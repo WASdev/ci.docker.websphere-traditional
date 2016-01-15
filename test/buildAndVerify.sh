@@ -3,21 +3,15 @@
 #                                                                                   #
 #  Script to build docker image and verify the image                                #
 #                                                                                   #
-#                                                                                   #
 #  Usage : buildAndVerify.sh <Image name> <Dockerfile location> <URL>               #
-#                                                                                   #
-#  Author : Kavitha                                                                 #
 #                                                                                   #
 #####################################################################################
 
 image1=$1                                                                  
-
 image=`echo $image1 | cut -d ":" -f1`
 tag=`echo $image1 | cut -d ":" -f2`
-
 dloc=$2                                                                   
 url=$3
-                                                                          
 cname=$image'test'                                                                                     
 
 if [ $# != 3 ]                                                                       
@@ -25,59 +19,35 @@ then
     echo "Usage : buildAndVerify.sh <Image name> <Dockerfile location> <URL> "           
     exit 1                                                                         
 fi                                                                                      
-                                                                                        
-echo "******************************************************************************"   
-echo "           Starting docker prereq build for $image                            "   
-echo "******************************************************************************"   
 
+prereq_build()
+{                                                                                        
+   echo "******************************************************************************"   
+   echo "           Starting docker prereq build for $image                            "   
+   echo "******************************************************************************"   
 
-imagename=$image'tar'
-docker build --build-arg user=was1 --build-arg group=was1 --build-arg URL=$url -t $imagename -f $dloc/Dockerfile.prereq $dloc
+   imagename=$image'tar'
+   docker build --build-arg user=was1 --build-arg group=was1 --build-arg URL=$url -t $imagename -f $dloc/Dockerfile.prereq $dloc
+}
 
-if [ $? = 0 ]
-then
-   docker run --rm -v $(pwd):/tmp $imagename
-   mv was.tar $dloc
-else
-   echo "Build failed , exiting......."
-fi
-
-if [ $? = 0 ]
-then
-   echo "******************************************************************************"                                                           
-   echo "           Prereq build completed successfully                                "
+install_build()
+{
+   echo "******************************************************************************"
    echo "           Starting docker install build for $image                           "                                                           
    echo "******************************************************************************"    
    imagename=$image'install'
    docker build --build-arg user=was1 --build-arg group=was1 -t $imagename -f $dloc/Dockerfile.install $dloc
-fi
+}
 
-if [ $? = 0 ]
-then
-   if [ "$tag" = "profile" ] 
-   then
-      echo "******************************************************************************"                                                        
-      echo "           Install build completed successfully                                "                                                        
-      rm -f $dloc/was.tar
-      echo "           Starting docker $tag build for $image                           "                                                        
-      echo "******************************************************************************"  
-      imagename=$image'profile'
-      docker build -t $imagename -f $dloc/Dockerfile.profile $dloc
-      if [ $? = 0 ]
-      then                                                                                    
-        echo "******************************************************************************" 
-        echo "                  Profile Build completed successfully                        "
-        echo "******************************************************************************"
-      fi  
-   else
-      echo "******************************************************************************"                                                        
-      rm -f $dloc/was.tar
-      echo "           Install build completed successfully                                "                                                        
-      echo "******************************************************************************"  
-   fi
-else
-   echo "Build failed , exiting....."
-fi
+profile_build()
+{
+   echo "******************************************************************************"                                                        
+   echo "           Starting docker profile build for $image                           "                                                        
+   echo "******************************************************************************"  
+
+   imagename=$image'profile'
+   docker build -t $imagename -f $dloc/Dockerfile.profile $dloc
+}
 
 cleanup()                                                                                                          
 {                                                                                                                  
@@ -268,42 +238,73 @@ test4()
    fi                                                                                        
 }         
 
-
+prereq_build
+if [ $? = 0 ]                                                                                                                                   
+then                                                                                                                                            
+   docker run --rm -v $(pwd):/tmp $imagename                                                                                                    
+   mv was.tar $dloc                                                                                                                             
+   echo "******************************************************************************"                                                        
+   echo "           Prereq build completed successfully                                "                                                        
+   echo "******************************************************************************"                                                        
+else                                                                                                                                            
+   echo "Build failed , exiting......."                                                                                                         
+   exit 1
+fi  
+install_build
+if [ $? = 0 ]                                                                                                                                   
+then                                                                                                                                            
+   echo "******************************************************************************"                                                        
+   echo "           Install build completed successfully                               "                                                        
+   rm -f $dloc/was.tar                                                                                                                          
+   echo "******************************************************************************"                                                        
+else
+   echo "Install build failed , exiting....."
+   exit 1
+fi  
+if [ "$tag" = "profile" ]
+then
+   profile_build
+   if [ $? = 0 ]                                                                                                             
+   then                                                                                                                                         
+      echo "******************************************************************************"                                      
+      echo "           Profile build completed successfully                               "                                            
+      echo "******************************************************************************"                                                     
+   else
+      echo "Profile build failed , exiting....."
+      exit 1  
+   fi
+fi
 if [ $? = 0 ]                                                                                                      
 then                                                                                                               
     echo "******************************************************************************"                          
     echo "                     $image built successfully                                "                          
     echo "******************************************************************************"                          
-    test1                                                                                                          
-    if [ $? = 0 ]                                                                                                  
-    then                                                                                                           
-        echo "******************************************************************************"                      
-        echo "                       Test1 Completed Successfully                           "                      
-        echo "******************************************************************************"                      
-    fi                                                                                                             
-    test2                                                                                                                                       
-    if [ $? = 0 ]                                                                                                                               
-    then                                                                                                                                        
-        echo "******************************************************************************"                                                   
-        echo "                       Test2 Completed Successfully                           "                                                   
-        echo "******************************************************************************"                                                   
-    fi  
-    test3                                                                                                                                       
-    if [ $? = 0 ]                                                                                                                               
-    then                                                                                                                                        
-        echo "******************************************************************************"                                                   
-        echo "                       Test3 Completed Successfully                           "                                                   
-        echo "******************************************************************************"                                                   
-    fi  
-    test4                                                                                                                                       
-    if [ $? = 0 ]                                                                                                                               
-    then                                                                                                                                        
-        echo "******************************************************************************"                                                   
-        echo "                       Test4 Completed Successfully                           "                                                   
-        echo "******************************************************************************"                                                   
-    fi  
-                                                                                                                
-else                                                                                                               
-    echo " Build failed , exiting.........."                                                                       
-    exit 1                                                                                                         
-fi               
+fi
+test1                                                                                                          
+if [ $? = 0 ]                                                                                                  
+then                                                                                                           
+    echo "******************************************************************************"                      
+    echo "                       Test1 Completed Successfully                           "                      
+    echo "******************************************************************************"                      
+fi                                                                                                             
+test2                                                                                                                                       
+if [ $? = 0 ]                                                                                                                               
+then                                                                                                                                        
+    echo "******************************************************************************"                                                   
+    echo "                       Test2 Completed Successfully                           "                                                   
+    echo "******************************************************************************"                                                   
+fi  
+test3                                                                                                                                       
+if [ $? = 0 ]                                                                                                                               
+then                                                                                                                                        
+    echo "******************************************************************************"                                                   
+    echo "                       Test3 Completed Successfully                           "                                                   
+    echo "******************************************************************************"                                                   
+fi  
+test4                                                                                                                                       
+if [ $? = 0 ]                                                                                                                               
+then                                                                                                                                        
+    echo "******************************************************************************"                                                   
+    echo "                       Test4 Completed Successfully                           "                                                   
+    echo "******************************************************************************"                                                   
+fi  

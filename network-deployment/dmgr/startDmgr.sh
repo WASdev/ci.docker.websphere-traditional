@@ -3,10 +3,7 @@
 #                                                                                   #
 #  Script to start the Deployment Manager                                           #
 #                                                                                   #
-#                                                                                   #
 #  Usage : startDmgr.sh                                                             #
-#                                                                                   #
-#  Author : Kavitha                                                                 #
 #                                                                                   #
 #####################################################################################
 
@@ -30,7 +27,3 @@ while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/dmgr/dmgr.p
 do
     sleep 5
 done
-
-
-
-
