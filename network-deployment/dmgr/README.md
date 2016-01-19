@@ -14,7 +14,7 @@ The Dockerfile perform the following actions:
 2. Creates a deployment manager profile
 3. Exposes the required ports
 4. Copies the startup script to the image
-5. When the container is started the deployment manager is created
+5. When the container is started the deployment manager is started
 
 ## Building the IBM WebSphere Application Server Classic Network Deployment deployment manager image
 
