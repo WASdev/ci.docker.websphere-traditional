@@ -6,7 +6,7 @@ An IBM WebSphere Application Server Classic for Developers image can be built by
   IBM Installation Manager binaries:
   * agent.installer.linux.gtk.x86_64_1.6.2000.20130301_2248.zip
 
-* IBM WebSphere Application Server Classic for Developers binaries from [developerWorks](http://www.ibm.com/developerworks/downloads/ws/wasdevelopers
+* IBM WebSphere Application Server Classic for Developers binaries from [developerWorks](http://www.ibm.com/developerworks/downloads/ws/wasdevelopers)
 
   IBM WebSphere Application Server Classic v8.5.5 for Developers binaries
   * was.repo.8550.developers.ilan_part1.zip
@@ -17,11 +17,11 @@ An IBM WebSphere Application Server Classic for Developers image can be built by
   * 8.5.5-WS-WAS-FP0000008-part1.zip
   * 8.5.5-WS-WAS-FP0000008-part2.zip
 
-IBM WebSphere Application Server Classic for Developers image is created using the following Dockerfiles(multiple Dockerfiles are used to reduce the final image size):
+IBM WebSphere Application Server Classic for Developers image is created using the following Dockerfiles (multiple Dockerfiles are used to reduce the final image size):
 
 1. [Dockerfile.prereq](Dockerfile.prereq)
 2. [Dockerfile.install](Dockerfile.install)
-3. [Dockerfile.profile](Dockerfile.profile)(Optionally used to create an image with profile )
+3. [Dockerfile.profile](Dockerfile.profile) (Optionally used to create an image with profile)
 
 The Dockerfiles take the values for the following variables during build time:
 
