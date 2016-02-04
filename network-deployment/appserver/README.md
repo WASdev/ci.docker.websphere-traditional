@@ -1,14 +1,14 @@
-# Building an IBM WebSphere Application Server Classic Network Deployment application server image
+# Building an IBM WebSphere Application Server Network Deployment traditional application server image
 
-An IBM WebSphere Application Server Network Deployment application server image can be built extending the Network Deployment install image.
+An IBM WebSphere Application Server Network Deployment traditional application server image can be built by extending the Network Deployment install image.
 
-The Dockerfile take the values for the following variables during build time:
-* CELL_NAME(optional)[default 'ServerCell'] - cell name
-* NODE_NAME(optional)[default 'ServerNode'] - node name
-* PROFILE_NAME(optional)[default 'AppSrv01'] - profile name
-* HOST_NAME(optional)[default 'localhost'] - host name
+The Dockerfile takes the values for the following variables at build time:
+* CELL_NAME (optional, default is 'ServerCell') - cell name
+* NODE_NAME (optional, default is 'ServerNode') - node name
+* PROFILE_NAME (optional, default is 'AppSrv01') - profile name
+* HOST_NAME (optional, default is 'localhost') - host name
 
-The Dockerfile perform the following actions:
+The Dockerfile takes the following actions:
 
 1. Uses the `nd` install image as a base image
 2. Creates the application server profile
@@ -16,20 +16,20 @@ The Dockerfile perform the following actions:
 4. Copies the update scripts to the image
 5. When the container is started, the node is federated to the deployment manager and the nodeagent and server are started
 
-## Building the IBM WebSphere Application Server Classic Network Deployment application server image
+## Building the IBM WebSphere Application Server Network Deployment traditional application server image
 
-1. Clone this repository.
-2. Build the `nd` install image following the [install build instructions](../install/README.md), if not built already.
-3. Move to the directory `network-deployment/appserver`.
-4. Build the application server image using:
+1. Clone this repository
+2. Build the `nd` install image following the [install build instructions](../install/README.md), if not built already
+3. Move to the directory `network-deployment/appserver`
+4. Build the application server image by using:
 
     ```bash
     docker build -t <appserver-image-name> .
     ```
 
-## Running the IBM WebSphere Application Server Classic Network Deployment application server image
+## Running the IBM WebSphere Application Server Network Deployment traditional application server image
 
-Run the Application Server image using the default values:
+Run the Application Server image by using the default values:
 
 ```bash
 docker run --name <container-name> -h <container-name> --net=<network-name> -p 9080:9080 -d <appserver-image-name>
