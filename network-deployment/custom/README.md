@@ -1,14 +1,14 @@
-# Building an IBM WebSphere Application Server Classic Network Deployment custom node image
+# Building an IBM WebSphere Application Server Network Deployment traditional custom node image
 
 An IBM WebSphere Application Server Network Deployment custom node image can be built extending the Network Deployment install image.
 
-The Dockerfile take the values for the following variables during build time:
-* CELL_NAME(optional)[default 'CustomCell'] - cell name
-* NODE_NAME(optional)[default 'CustomNode'] - node name
-* PROFILE_NAME(optional)[default 'Custom01'] - profile name
-* HOST_NAME(optional)[default 'localhost'] - host name
+The Dockerfile takes the values for the following variables at build time:
+* CELL_NAME (optional, default is 'CustomCell') - cell name
+* NODE_NAME (optional, default is 'CustomNode') - node name
+* PROFILE_NAME (optional, default is 'Custom01') - profile name
+* HOST_NAME (optional, default is 'localhost') - host name
 
-The Dockerfile perform the following actions:
+The Dockerfile takes the following actions:
 
 1. Uses the `nd` install image as a base image
 2. Creates a custom node profile
@@ -16,20 +16,20 @@ The Dockerfile perform the following actions:
 4. Copies the update scripts to the image
 5. When the container is started, the node is federated to the deployment manager and the nodeagent is started
 
-## Building the IBM WebSphere Application Server Classic Network Deployment custom node image
+## Building the IBM WebSphere Application Server Network Deployment traditional custom node image
 
-1. Clone this repository.
-2. Build the `nd` install image following the [install build instructions](../install/README.md), if not built already.
-3. Move to the directory `network-deployment/custom`.
-4. Build the custom node image using:
+1. Clone this repository
+2. Build the `nd` install image following the [install build instructions](../install/README.md), if not built already
+3. Move to the directory `network-deployment/custom`
+4. Build the custom node image by using:
 
     ```bash
     docker build -t <customnode-image-name> .
     ```
 
-## Running the IBM WebSphere Application Server Classic Network Deployment custom node image
+## Running the IBM WebSphere Application Server Network Deployment traditional custom node image
 
-Running the custom node image using the default values:
+Running the custom node image by using the default values:
 
 ```bash
 docker run --name <container-name> -h <container-name> --net=<network-name> -d <customnode-image-name>
