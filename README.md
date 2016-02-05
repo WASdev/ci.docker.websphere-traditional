@@ -1,8 +1,8 @@
-# WebSphere Application Server Classic and Docker
+# WebSphere Application Server traditional and Docker
 
-Under this directory you can find build scripts for Docker images (Dockerfiles) and Docker related utilities for WebSphere Application Server Classic and related documentation. 
+Under this directory you can find build scripts for Docker images (Dockerfiles) and related documentation for WebSphere Application Server traditional. 
 
-* [WebSphere Application Server Classic for Developers](developer)
-* WebSphere Application Server Classic
+* [WebSphere Application Server for Developers traditional](developer)
+* WebSphere Application Server traditional
   * [Base](base)
   * [Network Deployment](network-deployment)
