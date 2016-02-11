@@ -1,14 +1,13 @@
-## Running the IBM WebSphere Application Server Classic for Developers Install image
+## Running the IBM WebSphere Application Server traditional for Developers install image
 
-When the container is started using the IBM WebSphere Application Server Classic for Developers Install image, it executes the createProfileAndStartServer script
-which takes the following environment variables:
+When the container is started by using the IBM WebSphere Application Server traditional for Developers install image, the createProfileAndStartServer script is executed and takes the following environment variables:
 
-* PROFILE_NAME(optional) [default 'AppSrv01']
-* CELL_NAME(optional)[default 'DefaultCell01']
-* NODE_NAME(optional)[default 'DefaultNode01']
-* HOST_NAME(optional)[default 'localhost']  
+* PROFILE_NAME (optional, default is 'AppSrv01')
+* CELL_NAME (optional, default is 'DefaultCell01')
+* NODE_NAME (optional, default is 'DefaultNode01')
+* HOST_NAME (optional, default is 'localhost')  
 
-# Running the image using the default values
+# Running the image by using the default values
 
 ```bash
 docker run --name <container-name> -h <container-name> -p 9060:9060 -p 9080:9080 -d <install-image-name>
