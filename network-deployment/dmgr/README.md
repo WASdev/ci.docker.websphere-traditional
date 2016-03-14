@@ -45,11 +45,11 @@ The Dockerfile takes the following actions:
 2. Run the deployment manager image by using:
 
    ```bash
-   docker run --name <container-name> -h <container-name> --net=<network-name> -p 9060:9060 -d <dmgr-image-name>
+   docker run --name <container-name> -h <container-name> --net=<network-name> -e UPDATE_HOSTNAME=true -p 9060:9060 -d <dmgr-image-name>
    ```
 
    Example:
 
    ```bash
-   docker run --name dmgr -h dmgr --net=cell-network -p 9060:9060 -d dmgr
+   docker run --name dmgr -h dmgr --net=cell-network -e UPDATE_HOSTNAME=true -p 9060:9060 -d dmgr
    ```
