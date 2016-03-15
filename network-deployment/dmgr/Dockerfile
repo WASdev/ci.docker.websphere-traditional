@@ -24,7 +24,7 @@ ARG CELL_NAME=DefaultCell01
 
 ARG NODE_NAME=DefaultNode01
 
-ARG HOST_NAME=dmgr
+ARG HOST_NAME=localhost
 
 # Create Deployment Manager profile
 RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
@@ -36,6 +36,8 @@ EXPOSE 9060 9043 9809 8879 9632 9401 9403 9402 9100 7277 9352 5555 7060 11005 11
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
-COPY startDmgr.sh /work/
+RUN /opt/IBM/WebSphere/AppServer/bin/startManager.sh
+
+COPY startDmgr.sh updateHostName.py /work/
 
 CMD ["/work/startDmgr.sh"]

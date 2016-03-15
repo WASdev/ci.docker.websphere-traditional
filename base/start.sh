@@ -7,7 +7,7 @@
 #                                                                                   #
 #####################################################################################
 
-if [ "$UPDATE_HOSTNAME" = "true" ]
+if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]
 then
     #Get the container hostname
     host=`hostname`
@@ -21,6 +21,8 @@ then
     # Update the hostname
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
     $NODE_NAME $host
+
+    touch /work/hostnameupdated
 
 fi
 
