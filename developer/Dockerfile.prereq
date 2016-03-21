@@ -58,9 +58,9 @@ RUN wget -q $URL/was.repo.8550.developers.ilan_part1.zip  -O /tmp/was1.zip \
 
 ############## IBM WebSphere Application Server Fixpack ##################
 
-#Install IBM WebSphere Application Server Fixpack v8558
-RUN wget -q $URL/8.5.5-WS-WAS-FP0000008-part1.zip -O /tmp/wasfp1.zip \
-    && wget -q $URL/8.5.5-WS-WAS-FP0000008-part2.zip -O /tmp/wasfp2.zip \
+#Install IBM WebSphere Application Server Fixpack v8559
+RUN wget -q $URL/8.5.5-WS-WAS-FP0000009-part1.zip -O /tmp/wasfp1.zip \
+    && wget -q $URL/8.5.5-WS-WAS-FP0000009-part2.zip -O /tmp/wasfp2.zip \
     && mkdir /tmp/wasfp \
     && unzip  -qd /tmp/wasfp /tmp/wasfp1.zip  \
     && unzip -qd /tmp/wasfp /tmp/wasfp2.zip \

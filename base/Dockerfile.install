@@ -35,4 +35,7 @@ ADD was.tar /
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
+RUN managesdk.sh -setCommandDefault -sdkname 1.7.1_64 \
+    && managesdk.sh -setNewProfileDefault -sdkname 1.7.1_64
+
 CMD ["/work/createProfileAndStartServer.sh"]
