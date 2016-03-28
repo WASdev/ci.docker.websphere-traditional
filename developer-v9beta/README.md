@@ -1,21 +1,10 @@
-# Building an IBM WebSphere Application Server traditional V8.5.5 for Developers image from binaries
+# Building an IBM WebSphere Application Server traditional V9.0 Beta for Developers image from binaries
 
 An IBM WebSphere Application Server traditional for Developers image can be built by obtaining the following binaries:
 * IBM Installation Manager binaries from [developerWorks](http://www.ibm.com/developerworks/downloads/ws/wasdevelopers/)
 
   IBM Installation Manager binaries:
-  * agent.installer.linux.gtk.x86_64_1.6.2000.20130301_2248.zip
-
-* IBM WebSphere Application Server traditional for Developers binaries from [developerWorks](http://www.ibm.com/developerworks/downloads/ws/wasdevelopers)
-
-  IBM WebSphere Application Server traditional V8.5.5 for Developers binaries
-  * was.repo.8550.developers.ilan_part1.zip
-  * was.repo.8550.developers.ilan_part2.zip
-  * was.repo.8550.developers.ilan_part3.zip
-
-  Fixpack V8.5.5.8 binaries:
-  * 8.5.5-WS-WAS-FP0000008-part1.zip
-  * 8.5.5-WS-WAS-FP0000008-part2.zip
+  * agent.installer.linux.gtk.x86_64_1.8.4001.20160217_1716.zip
 
 IBM WebSphere Application Server traditional for Developers image is created by using the following Dockerfiles, multiple Dockerfiles are used to reduce the final image size:
 
@@ -26,12 +15,13 @@ IBM WebSphere Application Server traditional for Developers image is created by 
 The Dockerfiles take values for the following variables at build time:
 
 Dockerfile.prereq
-* user (optional, default is 'was') - user used for the installation                                                                   
+* user (optional, default is 'was') - user used for the installation
 * group (optional, default is 'was') - group the user belongs to
-* URL (required) - URL from where the binaries are downloaded
+* IBMIDUSER (required) - IBM ID User name for access to beta binaries
+* IBMIDPWD (required) - IBM ID Password for access to beta binaries
 
 Dockerfile.install
-* user (optional, default is 'was') - user used for the installation                                                                     
+* user (optional, default is 'was') - user used for the installation
 * group (optional, default is 'was') - group the user belongs to
 
 Dockerfile.profile
@@ -47,7 +37,6 @@ Dockerfile.prereq:
 
 1. Installs IBM Installation Manager
 2. Installs IBM WebSphere Application Server 
-3. Updates IBM WebSphere Application Server with the Fixpack
 4. When the container is started a .tar file of the IBM WebSphere Application Server traditional for Developers installation is created
 
 Dockerfile.install:
@@ -64,13 +53,13 @@ Dockerfile.profile:
 
 ## Building the IBM WebSphere Application Server traditional for Developers image
 
-1. Place the downloaded IBM Installation Manager and IBM WebSphere Application Server traditional binaries on the FTP or HTTP server
-2. Clone this repository
-3. Move to the directory `developer/`
+1. Clone this repository
+2. Move to the directory `developer/`
+3. Place the downloaded IBM Installation Manager .zip file in this directory
 4. Build the prereq image by using:
 
     ```bash
-    docker build --build-arg user=<user> --build-arg group=<group>  --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
+    docker build --build-arg user=<user> --build-arg group=<group>  --build-arg IBMIDUSER=<IBMIDUSER> --build-arg IBMIDPWD=<IBMIDPWD> -t <prereq-image-name> -f Dockerfile.prereq .
     ```
 
 5. Run a container by using the prereq image to create the .tar file in the current folder by using:

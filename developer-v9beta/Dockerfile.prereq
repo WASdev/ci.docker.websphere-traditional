@@ -29,45 +29,49 @@ RUN groupadd $group && useradd $user -g $group -m \
 
 USER $user
 
-ARG URL
+ARG IBMIDUSER
+ARG IBMIDPWD
 
 ###################### IBM Installation Manager ##########################
 
+#Copy IBM Installation Manager into image
+COPY agent.installer.linux.gtk.x86_64_1.8.4001.20160217_1716.zip /tmp/
+
 #Install IBM Installation Manager
-RUN wget -q $URL/agent.installer.linux.gtk.x86_64_1.6.2000.20130301_2248.zip -O /tmp/IM.zip \
+RUN mv /tmp/agent.installer.linux.gtk.x86_64_1.8.4001.20160217_1716.zip /tmp/IM.zip \
     && mkdir /tmp/im &&  unzip -qd /tmp/im /tmp/IM.zip \
     && /tmp/im/installc -acceptLicense -accessRights nonAdmin \
       -installationDirectory "/opt/IBM/InstallationManager"  \
       -dataLocation "/var/ibm/InstallationManager" -showProgress \
     && rm -fr /tmp/IM.zip /tmp/im
 
+################# IBM ID Credentials ####################################
+
+#Save credentials to files for use by Installation Manager to retrieve binaries
+RUN tr -cd '[:alnum:]' </dev/urandom |fold -w30 | head -1 >/home/$user/master_password_file.txt \
+    && /opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential \
+      -url http://www.ibm.com/software/repositorymanager/V90WASBeta \
+      -userName $IBMIDUSER \
+      -userPassword $IBMIDPWD \
+      -secureStorageFile /home/$user/credential.store \
+      -masterPasswordFile /home/$user/master_password_file.txt \
+    && /opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential \
+      -passportAdvantage \
+      -userName $IBMIDUSER \
+      -userPassword $IBMIDPWD \
+      -secureStorageFile /home/$user/credential.store \
+      -masterPasswordFile /home/$user/master_password_file.txt
+
 ################# IBM WebSphere Application Server ######################
 
-#Install IBM WebSphere Application Server v855
-RUN wget -q $URL/was.repo.8550.developers.ilan_part1.zip  -O /tmp/was1.zip \
-    && wget -q $URL/was.repo.8550.developers.ilan_part2.zip  -O /tmp/was2.zip \
-    && wget -q $URL/was.repo.8550.developers.ilan_part3.zip  -O /tmp/was3.zip \ 
-    && mkdir /tmp/was  && unzip  -qd /tmp/was /tmp/was1.zip \
-    && unzip  -qd /tmp/was /tmp/was2.zip \
-    && unzip  -qd /tmp/was /tmp/was3.zip \
-    && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
-      -acceptLicense  install com.ibm.websphere.DEVELOPERSILAN.v85 \
-      -repositories /tmp/was/repository.config  \
+#Install IBM WebSphere Application Server v9 Beta
+RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+      -acceptLicense  install com.ibm.websphere.BASE.beta.v90_9.0.0.20160128_1232 \
+                              com.ibm.java.jdk.v8_8.0.2010.20160128_1040 \
+      -repositories http://www.ibm.com/software/repositorymanager/V90WASBeta  \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
-    && rm -fr /tmp/was /tmp/was1.zip  /tmp/was2.zip   /tmp/was3.zip 
-
-############## IBM WebSphere Application Server Fixpack ##################
-
-#Install IBM WebSphere Application Server Fixpack v8559
-RUN wget -q $URL/8.5.5-WS-WAS-FP0000009-part1.zip -O /tmp/wasfp1.zip \
-    && wget -q $URL/8.5.5-WS-WAS-FP0000009-part2.zip -O /tmp/wasfp2.zip \
-    && mkdir /tmp/wasfp \
-    && unzip  -qd /tmp/wasfp /tmp/wasfp1.zip  \
-    && unzip -qd /tmp/wasfp /tmp/wasfp2.zip \
-    && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
-      -acceptLicense  install com.ibm.websphere.DEVELOPERSILAN.v85 \
-      -repositories /tmp/wasfp/repository.config  \
-      -installationDirectory /opt/IBM/WebSphere/AppServer \
-    && rm -fr /tmp/wasfp /tmp/wasfp1.zip /tmp/wasfp2.zip
+      -secureStorageFile /home/$user/credential.store \
+      -masterPasswordFile /home/$user/master_password_file.txt \
+      -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=False,com.ibm.cic.common.core.preferences.keepFetchedFiles=False
 
 CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]
