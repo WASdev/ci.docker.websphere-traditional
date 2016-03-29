@@ -54,7 +54,7 @@ Dockerfile.profile:
 ## Building the IBM WebSphere Application Server traditional for Developers image
 
 1. Clone this repository
-2. Move to the directory `developer/`
+2. Move to the directory `developer-v9beta/`
 3. Place the downloaded IBM Installation Manager .zip file in this directory
 4. Build the prereq image by using:
 
@@ -83,6 +83,6 @@ Dockerfile.profile:
 
 ## Running the images                                                                                                                           
                                                                                                                                                 
-* [Using the IBM WebSphere Application Server traditional for Developers install image](Run-install-image.md)                                                                                               
-* [Using the IBM WebSphere Application Server traditional for Developers profile image](Run-profile-image.md)       
+* [Using the IBM WebSphere Application Server traditional for Developers install image](../developer/Run-install-image.md)                                                                                               
+* [Using the IBM WebSphere Application Server traditional for Developers profile image](../developer/Run-profile-image.md)       
 
