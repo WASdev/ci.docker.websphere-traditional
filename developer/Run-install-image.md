@@ -42,3 +42,15 @@ Example:
 ```bash                                                                                                                                         
 docker logs -f --tail=all test                                                                                                      
 ``` 
+
+# Stopping the Application Server gracefully
+
+```bash
+docker stop --time=<timeout> <container-name>
+```
+
+Example:
+
+```bash
+docker stop --time=60 test
+```
