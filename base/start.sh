@@ -7,8 +7,8 @@
 #                                                                                   #
 #####################################################################################
 
-if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]
-then
+update_hostname()
+{
     #Get the container hostname
     host=`hostname`
     
@@ -23,23 +23,53 @@ then
     $NODE_NAME $host
 
     touch /work/hostnameupdated
+}
 
-fi
+startServer()
+{
+   #Check whether profile name is provided or use default
+   if [ "$PROFILE_NAME" = "" ]
+   then
+       PROFILE_NAME="AppSrv01"
+   fi
 
-#Check whether profile name is provided or use default
-if [ "$PROFILE_NAME" = "" ]
+   echo "Starting server......................."
+   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh server1
+
+   if [ $? != 0 ]
+   then
+       echo " AppServer startup failed , exiting......"
+       exit 1
+   fi
+}
+
+
+stopServer()
+{
+   #Check whether profile name is provided or use default
+   if [ "$PROFILE_NAME" = "" ]
+   then
+       PROFILE_NAME="AppSrv01"
+   fi
+
+   echo "Stopping server......................."
+   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/stopServer.sh server1
+
+   if [ $? = 0 ]
+   then
+       echo " AppServer stopped successfully "
+   fi
+}
+
+
+if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]
 then
-    PROFILE_NAME="AppSrv01"
-fi
+   update_hostname
+fi 
 
-echo "Starting server......................."
-/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh server1
+startServer
 
-if [ $? != 0 ]
-then
-    echo " AppServer startup failed , exiting......"
-    exit 1
-fi
+trap "stopServer" SIGTERM
 
 sleep 10
 
