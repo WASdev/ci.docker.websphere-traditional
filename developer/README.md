@@ -13,9 +13,9 @@ An IBM WebSphere Application Server traditional for Developers image can be buil
   * was.repo.8550.developers.ilan_part2.zip
   * was.repo.8550.developers.ilan_part3.zip
 
-  Fixpack V8.5.5.8 binaries:
-  * 8.5.5-WS-WAS-FP0000008-part1.zip
-  * 8.5.5-WS-WAS-FP0000008-part2.zip
+  Fixpack V8.5.5.9 binaries:
+  * 8.5.5-WS-WAS-FP0000009-part1.zip
+  * 8.5.5-WS-WAS-FP0000009-part2.zip
 
 IBM WebSphere Application Server traditional for Developers image is created by using the following Dockerfiles, multiple Dockerfiles are used to reduce the final image size:
 
