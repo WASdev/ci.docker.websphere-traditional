@@ -13,9 +13,9 @@ An IBM WebSphere Application Server Base traditional image can be built by obtai
   * WAS_V8.5.5_2_OF_3.zip(CIK1RML)
   * WAS_V8.5.5_3_OF_3.zip(CIK1SML)
 
-  Fixpack V8.5.5.8 binaries:
-  * 8.5.5-WS-WAS-FP0000008-part1.zip
-  * 8.5.5-WS-WAS-FP0000008-part2.zip
+  Fixpack V8.5.5.9 binaries:
+  * 8.5.5-WS-WAS-FP0000009-part1.zip
+  * 8.5.5-WS-WAS-FP0000009-part2.zip
   
 IBM WebSphere Application Server Base traditional image is created by using the following Dockerfiles, multiple Dockerfiles are used to reduce the final image size:
 

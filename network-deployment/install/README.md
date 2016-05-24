@@ -13,9 +13,9 @@ An IBM WebSphere Application Server Network Deployment traditional image can be 
   * WASND_v8.5.5_2of3.zip(CIK2IML)
   * WASND_v8.5.5_3of3.zip(CIK2JML)
 
-  Fixpack V8.5.5.8 binaries:
-  * 8.5.5-WS-WAS-FP0000008-part1.zip
-  * 8.5.5-WS-WAS-FP0000008-part2.zip
+  Fixpack V8.5.5.9 binaries:
+  * 8.5.5-WS-WAS-FP0000009-part1.zip
+  * 8.5.5-WS-WAS-FP0000009-part2.zip
 
 An IBM WebSphere Application Server Network Deployment traditional install image is created in two steps by using the following two Dockerfiles to reduce the final image size:
 
