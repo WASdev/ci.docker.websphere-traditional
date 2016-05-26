@@ -48,6 +48,8 @@ The Dockerfile takes the following actions:
    docker run --name <container-name> -h <container-name> --net=<network-name> -e UPDATE_HOSTNAME=true -p 9060:9060 -d <dmgr-image-name>
    ```
 
+ *Federation to Deployment Manager fails if UPDATE_HOSTNAME=true is not specified during Deployment Manager container creation.
+
    Example:
 
    ```bash
