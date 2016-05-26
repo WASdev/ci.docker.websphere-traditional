@@ -3,26 +3,26 @@
 #                                                                                   #
 #  Script to start the server                                                       #
 #                                                                                   #
-#  Usage : start.sh                                                                 # 
+#  Usage : start.sh                                                                 #
 #                                                                                   #
 #####################################################################################
 
 update_hostname()
 {
-    #Get the container hostname
-    host=`hostname`
-    
-    #Check whether node name is provided or use default
-    if [ "$NODE_NAME" = "" ]
-    then
-       NODE_NAME="DefaultNode01" 
-    fi
+   #Get the container hostname
+   host=`hostname`
+   
+   #Check whether node name is provided or use default
+   if [ "$NODE_NAME" = "" ]
+   then
+      NODE_NAME="DefaultNode01" 
+   fi
 
-    # Update the hostname
-    /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
-    $NODE_NAME $host
+   # Update the hostname
+   /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
+   $NODE_NAME $host
 
-    touch /work/hostnameupdated
+   touch /work/hostnameupdated
 }
 
 startServer()
@@ -30,7 +30,7 @@ startServer()
    #Check whether profile name is provided or use default
    if [ "$PROFILE_NAME" = "" ]
    then
-       PROFILE_NAME="AppSrv01"
+      PROFILE_NAME="AppSrv01"
    fi
 
    echo "Starting server......................."
@@ -38,8 +38,8 @@ startServer()
 
    if [ $? != 0 ]
    then
-       echo " AppServer startup failed , exiting......"
-       exit 1
+      echo " AppServer startup failed , exiting......"
+      exit 1
    fi
 }
 
@@ -49,7 +49,7 @@ stopServer()
    #Check whether profile name is provided or use default
    if [ "$PROFILE_NAME" = "" ]
    then
-       PROFILE_NAME="AppSrv01"
+      PROFILE_NAME="AppSrv01"
    fi
 
    echo "Stopping server......................."
@@ -57,7 +57,7 @@ stopServer()
 
    if [ $? = 0 ]
    then
-       echo " AppServer stopped successfully "
+      echo " AppServer stopped successfully "
    fi
 }
 
@@ -76,5 +76,5 @@ sleep 10
 #Check the existence of server process
 while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1/server1.pid" ]
 do
-    sleep 5
+   sleep 5
 done

@@ -5,7 +5,7 @@ When the container is started by using the IBM WebSphere Application Server trad
 * PROFILE_NAME (optional, default is 'AppSrv01')
 * CELL_NAME (optional, default is 'DefaultCell01')
 * NODE_NAME (optional, default is 'DefaultNode01')
-* HOST_NAME (optional, default is 'localhost')  
+* HOST_NAME (optional, default is 'localhost')
 
 # Running the image by using the default values
 
@@ -19,17 +19,17 @@ Example:
 docker run --name test -h test -p 9060:9060 -p 9080:9080 -d devinstall
 ```
 
-# Running the image by passing values for the environment variables                                                                                                    
-                                                                                                                              
-```bash                                                                                                                                         
-docker run --name <container-name> -h <container-name> -e HOST_NAME=<container-name> -e PROFILE_NAME=<profile-name> -e CELL_NAME=<cell-name> -e NODE_NAME=<node-name> -p 9060:9060 -p 9080:9080 -d <install-image-name>                  
-```    
+# Running the image by passing values for the environment variables
+
+```bash
+docker run --name <container-name> -h <container-name> -e HOST_NAME=<container-name> -e PROFILE_NAME=<profile-name> -e CELL_NAME=<cell-name> -e NODE_NAME=<node-name> -p 9060:9060 -p 9080:9080 -d <install-image-name>
+```
 
 Example:
 
-```bash                                                                                                                                        
+```bash
 docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d devinstall
-``` 
+```
 
 # Checking the logs
 
@@ -39,9 +39,9 @@ docker logs -f --tail=all <container-name>
 
 Example:
 
-```bash                                                                                                                                         
-docker logs -f --tail=all test                                                                                                      
-``` 
+```bash
+docker logs -f --tail=all test
+```
 
 # Stopping the Application Server gracefully
 
