@@ -69,7 +69,7 @@ stopNode()
  
      if [ $? = 0 ]
      then
-          "NodeAgent stopped successfully."
+          echo "NodeAgent stopped successfully."
      fi
 }
 
