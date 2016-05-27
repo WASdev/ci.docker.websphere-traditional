@@ -4,14 +4,14 @@ An IBM WebSphere Application Server Network Deployment traditional image can be 
 * IBM Installation Manager binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html)
 
   IBM Installation Manager binaries:
-  * Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip(CIK2GML)
+  * Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip (CIK2GML)
 
 * IBM WebSphere Application Server Network Deployment traditional binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html) / [Fix Central](http://www-933.ibm.com/support/fixcentral/)
- 
+
   IBM WebSphere Application Server Network Deployment traditional V8.5.5 binaries:
-  * WASND_v8.5.5_1of3.zip(CIK2HML)
-  * WASND_v8.5.5_2of3.zip(CIK2IML)
-  * WASND_v8.5.5_3of3.zip(CIK2JML)
+  * WASND_v8.5.5_1of3.zip (CIK2HML)
+  * WASND_v8.5.5_2of3.zip (CIK2IML)
+  * WASND_v8.5.5_3of3.zip (CIK2JML)
 
   Fixpack V8.5.5.9 binaries:
   * 8.5.5-WS-WAS-FP0000009-part1.zip
@@ -35,7 +35,7 @@ Dockerfile.prereq takes the values for the following variables at build time:
 * URL (required) - URL from where the binaries are downloaded
 
 Dockerfile.install takes the following action:
-                                                                                                           
+
 1. Extracts the .tar file created by Dockerfile.prereq
 
 ## Building the IBM WebSphere Application Server Network Deployment traditional image
@@ -52,13 +52,12 @@ Dockerfile.install takes the following action:
 5. Run a container by using the prereq image to create the .tar file in the current folder by using:
 
     ```bash
-    docker run -v $(pwd):/tmp <prereq-image-name>
+    docker run --rm -v $(pwd):/tmp <prereq-image-name>
     ```
 
-6. Build the install image by using:       
+6. Build the install image by using:
 
     ```bash
     docker build --build-arg user=<user> --build-arg group=<group> -t <install-image-name> -f Dockerfile.install .
     ```
-
 
