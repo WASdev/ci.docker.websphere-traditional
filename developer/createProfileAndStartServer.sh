@@ -63,7 +63,9 @@ createProfile()
    /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -profileName $PROFILE_NAME \
       -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
       -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default \
-      -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME
+      -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
+      -enableAdminSecurity true -adminUserName wsadmin -adminPassword wsadmin
+      
 }
 
 
@@ -77,6 +79,10 @@ else
    createProfile
    if [ $? = 0 ]
    then
+      if [ ! -f "/work/passwordupdated" ]
+      then
+           /work/modifyPassword.sh
+      fi
       startServer
    else
       echo " Profile creation failed , exiting ........"
