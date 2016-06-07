@@ -19,7 +19,7 @@ FROM devinstall
 
 MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
-COPY start.sh update*.py /work/
+COPY start.sh update*.py modify*.sh /work/
 
 ARG PROFILE_NAME=AppSrv01
 
@@ -32,6 +32,7 @@ ARG HOST_NAME=localhost
 RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
     /opt/IBM/WebSphere/AppServer/profileTemplates/default/ -profileName $PROFILE_NAME \
     -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
-    -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME 
+    -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
+    -enableAdminSecurity true -adminUserName wsadmin -adminPassword wsadmin
 
 CMD ["/work/start.sh"]

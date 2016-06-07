@@ -38,6 +38,6 @@ ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
 RUN /opt/IBM/WebSphere/AppServer/bin/startManager.sh
 
-COPY startDmgr.sh updateHostName.py /work/
+COPY startDmgr.sh update*.py /work/
 
 CMD ["/work/startDmgr.sh"]

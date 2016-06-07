@@ -7,7 +7,7 @@
 #                                                                                   #
 #####################################################################################
 
-update_hostname()
+update_host_node_name()
 {
     #Get the container hostname
     host=`hostname`
@@ -16,13 +16,20 @@ update_hostname()
     if [ "$NODE_NAME" = "" ]
     then
        NODE_NAME="DefaultNode01"
+    else
+       # Update the nodename
+       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateNodeName.py \
+       DefaultNode01 $NODE_NAME
+       
+       echo "WAS_NODE=$NODE_NAME" >> /opt/IBM/WebSphere/AppServer/bin/setupCmdLine.sh
+
     fi
 
     # Update the hostname
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
     $NODE_NAME $host
 
-    touch /work/hostnameupdated
+    touch /work/host_nodenameupdated
 }
 
 startDmgr()
@@ -57,9 +64,9 @@ stopDmgr()
     fi
 }
 
-if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]
+if [ ! -f "/work/host_nodenameupdated" ]
 then
-    update_hostname
+    update_host_node_name
 fi
 
 startDmgr
