@@ -45,6 +45,8 @@ addNodeAndUpdateHostName()
      # Update the hostname
      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype SOAP -host $DMGR_HOST \
      -port $DMGR_PORT -f /work/updateHostName.py CustomNode $host
+
+    touch /work/nodefederated
 }
 
 startNode()
@@ -79,6 +81,11 @@ renameNode()
      /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/renameNode.sh $DMGR_HOST $DMGR_PORT $NODE_NAME
 }
 
+if [ "$WAIT" != "" ] && [ ! -f "/work/nodefederated" ]
+then
+     sleep $WAIT
+fi
+
 setEnv
 
 if [ -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/nodeagent ]
@@ -89,8 +96,8 @@ else
      # Rename and start the node
      if [ $NODE_NAME != "CustomNode" ]
      then
-         renameNode
-         startNode
+          renameNode
+          startNode
      fi
 fi
 

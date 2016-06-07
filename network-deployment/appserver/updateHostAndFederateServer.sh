@@ -80,6 +80,8 @@ updateHostNameAndAddNode()
     
      # Add the node
      /opt/IBM/WebSphere/AppServer/bin/addNode.sh $DMGR_HOST $DMGR_PORT
+
+     touch /work/nodefederated
 }
 
 renameNode()
@@ -87,6 +89,11 @@ renameNode()
       # rename the node
       /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/renameNode.sh $DMGR_HOST $DMGR_PORT $NODE_NAME
 }
+
+if [ "$WAIT" != "" ] && [ ! -f "/work/nodefederated" ]
+then
+      sleep $WAIT
+fi
 
 setEnv
 
