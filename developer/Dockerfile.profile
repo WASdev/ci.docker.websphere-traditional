@@ -15,7 +15,7 @@
 #                                                                          #
 ############################################################################
 
-FROM devinstalls
+FROM devinstall
 
 MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
