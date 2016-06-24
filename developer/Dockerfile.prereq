@@ -70,4 +70,20 @@ RUN wget -q $URL/8.5.5-WS-WAS-FP0000009-part1.zip -O /tmp/wasfp1.zip \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
     && rm -fr /tmp/wasfp /tmp/wasfp1.zip /tmp/wasfp2.zip
 
+########################### Install Java SDK 7 ########################
+
+# Install Java SDK 7
+RUN wget -q $URL/was.repo.8550.java7_part1.zip -O /tmp/java1.zip \
+    && wget -q $URL/was.repo.8550.java7_part2.zip -O /tmp/java2.zip \
+    && wget -q $URL/was.repo.8550.java7_part3.zip -O /tmp/java3.zip \
+    && mkdir /tmp/java \
+    && unzip -qd /tmp/java /tmp/java1.zip  \
+    && unzip -qd /tmp/java /tmp/java2.zip \
+    && unzip -qd /tmp/java /tmp/java3.zip \
+    && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+       -acceptLicense install com.ibm.websphere.IBMJAVA.v70 \
+       -repositories /tmp/java/repository.config \
+       -installationDirectory /opt/IBM/WebSphere/AppServer \
+    && rm -fr /tmp/java /tmp/java1.zip /tmp/java2.zip /tmp/java3.zip
+
 CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]

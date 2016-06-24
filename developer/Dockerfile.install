@@ -29,12 +29,15 @@ ADD create*.sh modify*sh update*py /work/
 
 RUN groupadd $group && useradd $user -g $group -m \
     && chown -R $user:$group /work \
-    && chmod +x /work/*sh
+    && chmod +x /work/*sh 
 
 USER $user
 
 ADD was.tar /
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
+
+RUN managesdk.sh -setCommandDefault -sdkname 1.7_64 \
+    && managesdk.sh -setNewProfileDefault -sdkname 1.7_64
 
 CMD ["/work/createProfileAndStartServer.sh"]
