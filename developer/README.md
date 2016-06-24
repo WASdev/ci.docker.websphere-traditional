@@ -13,6 +13,11 @@ An IBM WebSphere Application Server traditional for Developers image can be buil
   * was.repo.8550.developers.ilan_part2.zip
   * was.repo.8550.developers.ilan_part3.zip
 
+  IBM WebSphere SDK Java 7 binaries:
+  * was.repo.8550.java7_part1.zip
+  * was.repo.8550.java7_part2.zip
+  * was.repo.8550.java7_part3.zip
+
   Fixpack V8.5.5.9 binaries:
   * 8.5.5-WS-WAS-FP0000009-part1.zip
   * 8.5.5-WS-WAS-FP0000009-part2.zip
@@ -48,13 +53,15 @@ Dockerfile.prereq:
 1. Installs IBM Installation Manager
 2. Installs IBM WebSphere Application Server 
 3. Updates IBM WebSphere Application Server with the Fixpack
-4. When the container is started a .tar file for the IBM WebSphere Application Server traditional for Developers installation is created
+4. Installs IBM WebSphere SDK Java 7
+5. When the container is started a .tar file for the IBM WebSphere Application Server traditional for Developers installation is created
 
 Dockerfile.install:
 
 1. Extracts the .tar file created by Dockerfile.prereq
 2. Copies the profile creation and startup script to the image
-3. When the container is started, the profile is created and the server is started
+3. Switches to Java 7
+4. When the container is started, the profile is created and the server is started
 
 Dockerfile.profile:
 

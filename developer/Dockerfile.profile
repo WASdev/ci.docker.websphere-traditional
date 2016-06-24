@@ -15,7 +15,7 @@
 #                                                                          #
 ############################################################################
 
-FROM devinstall
+FROM ibmcom/websphere-traditional:install
 
 MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
