@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015.                                      #
+# (C) Copyright IBM Corporation 2015, 2016                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -15,26 +15,26 @@
 #                                                                          #
 ############################################################################
 
-FROM ibmcom/websphere-traditional:install
+FROM ubuntu:16.04
 
 MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
-COPY start.sh update*.py modify*.sh /work/
+RUN apt-get update && apt-get install -y openssl
 
-ARG PROFILE_NAME=AppSrv01
+ARG user=was
 
-ARG CELL_NAME=DefaultCell01
+ARG group=was
 
-ARG NODE_NAME=DefaultNode01
+ADD create*.sh modify*sh update*py /work/
 
-ARG HOST_NAME=localhost
+RUN groupadd $group && useradd $user -g $group -m \
+    && chown -R $user:$group /work \
+    && chmod +x /work/*sh 
 
-ARG SERVER_NAME=server1
+USER $user
 
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
-    /opt/IBM/WebSphere/AppServer/profileTemplates/default/ -profileName $PROFILE_NAME \
-    -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
-    -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
-    -serverName $SERVER_NAME -enableAdminSecurity true -adminUserName wsadmin -adminPassword wsadmin
+ADD was.tar /
 
-CMD ["/work/start.sh"]
+ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
+
+CMD ["/work/createProfileAndStartServer.sh"]

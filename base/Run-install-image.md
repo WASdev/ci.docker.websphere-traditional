@@ -6,29 +6,30 @@ When the container is started by using the IBM WebSphere Application Server Base
 * CELL_NAME (optional, default is 'DefaultCell01')
 * NODE_NAME (optional, default is 'DefaultNode01')
 * HOST_NAME (optional, default is 'localhost')
+* SERVER_NAME (optional, default is 'server1')
 
 # Running the image by using the default values
 
 ```bash
-docker run --name <container-name> -h <container-name> -p 9060:9060 -p 9080:9080 -d <install-image-name>
+docker run --name <container-name> -h <container-name> -p 9043:9043 -p 9443:9443 -d <install-image-name>
 ```
 
 Example:
 
 ```bash
-docker run --name test -h test -p 9060:9060 -p 9080:9080 -d baseinstall
+docker run --name test -h test -p 9043:9043 -p 9443:9443 -d baseinstall
 ```
 
 # Running the image by passing values for the environment variables
 
 ```bash
-docker run --name <container-name> -h <container-name> -e HOST_NAME=<container-name> -e PROFILE_NAME=<profile-name> -e CELL_NAME=<cell-name> -e NODE_NAME=<node-name> -p 9060:9060 -p 9080:9080 -d <install-image-name>
+docker run --name <container-name> -h <container-name> -e HOST_NAME=<container-name> -e PROFILE_NAME=<profile-name> -e CELL_NAME=<cell-name> -e NODE_NAME=<node-name>  -e SERVER_NAME=<server-name> -p 9043:9043 -p 9443:9443 -d <install-image-name>
 ```
 
 Example:
 
 ```bash
-docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d baseinstall
+docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -e SERVER_NAME=server2  -p 9043:9043 -p 9443:9443 -d baseinstall
 ```
 
 # Checking the logs

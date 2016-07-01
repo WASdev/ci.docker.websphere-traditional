@@ -32,12 +32,18 @@ setEnv()
    then
       HOST_NAME="localhost"
    fi
+
+   #Check whether server name is provided or use default
+   if [ "$SERVER_NAME" = "" ]
+   then
+      SERVER_NAME="server1"
+   fi
 }
 
 startServer()
 {
    echo "Starting server ..................."
-   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh server1
+   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh $SERVER_NAME
 
    if [ $? != 0 ]
    then
@@ -49,7 +55,7 @@ startServer()
 stopServer()
 {
    echo "Stopping server ..................."
-   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/stopServer.sh server1
+   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/stopServer.sh $SERVER_NAME
 
    if [ $? = 0 ]
    then
@@ -64,7 +70,7 @@ createProfile()
       -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
       -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default \
       -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
-      -enableAdminSecurity true -adminUserName wsadmin -adminPassword wsadmin
+      -serverName $SERVER_NAME -enableAdminSecurity true -adminUserName wsadmin -adminPassword wsadmin
       
 }
 
@@ -72,7 +78,7 @@ createProfile()
 setEnv
 
 #if profile is already created just start the server
-if [ -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1 ]
+if [ -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME ]
 then
    startServer
 else
@@ -95,7 +101,7 @@ trap "stopServer" SIGTERM
 sleep 10
 
 #Check the existence of server process
-while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1/server1.pid" ]
+while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/$SERVER_NAME.pid" ]
 do
    sleep 5
 done

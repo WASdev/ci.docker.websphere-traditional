@@ -39,6 +39,7 @@ Dockerfile.profile
 * NODE_NAME (optional, default is 'DefaultNode01') - node name
 * PROFILE_NAME (optional, default is 'AppSrv01') - profile name
 * HOST_NAME (optional, default is 'localhost') - host name 
+* SERVER_NAME (optional, default is 'server1') - server name
 
 
 Dockerfiles take the following actions:
@@ -89,7 +90,7 @@ Dockerfile.profile:
 7. Build the profile image by using:
 
     ```bash
-    docker build --build-arg CELL_NAME=<cell-name> --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> --build-arg HOST_NAME=<host-name> -t <profile-image-name> -f Dockerfile.profile .                              
+    docker build --build-arg CELL_NAME=<cell-name> --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> --build-arg HOST_NAME=<host-name> --build-arg SERVER_NAME=<server-name> -t <profile-image-name> -f Dockerfile.profile .                              
     ```
 
 ## Running the images

@@ -15,6 +15,11 @@ setEnv()
       PROFILE_NAME="AppSrv01"
    fi
 
+   #Check whether server name is provided or use default
+   if [ "$SERVER_NAME" = "" ]
+   then
+      SERVER_NAME="server1"
+   fi
 }
 
 update_hostname()
@@ -38,7 +43,7 @@ update_hostname()
 startServer()
 {
    echo "Starting server......................."
-   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh server1
+   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh $SERVER_NAME
 
    if [ $? != 0 ]
    then
@@ -57,7 +62,7 @@ stopServer()
    fi
 
    echo "Stopping server......................."
-   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/stopServer.sh server1
+   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/stopServer.sh $SERVER_NAME
 
    if [ $? = 0 ]
    then
@@ -85,7 +90,7 @@ trap "stopServer" SIGTERM
 sleep 10
 
 #Check the existence of server process
-while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/server1/server1.pid" ]
+while [ -f "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/$SERVER_NAME.pid" ]
 do
    sleep 5
 done
