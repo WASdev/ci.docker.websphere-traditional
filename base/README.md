@@ -17,6 +17,10 @@ An IBM WebSphere Application Server Base traditional image can be built by obtai
   * 8.5.5-WS-WAS-FP0000009-part1.zip
   * 8.5.5-WS-WAS-FP0000009-part2.zip
 
+  IBM WebSphere SDK Java Technology Edition V7.1.3.0 binaries:
+  * 7.1.3.30-WS-IBMWASJAVA-part1.zip
+  * 7.1.3.30-WS-IBMWASJAVA-part2.zip
+
 IBM WebSphere Application Server Base traditional image is created by using the following Dockerfiles, multiple Dockerfiles are used to reduce the final image size:
 
 1. [Dockerfile.prereq](Dockerfile.prereq)
