@@ -17,27 +17,23 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
+MAINTAINER David Currie <david_currie@uk.ibm.com>
 
 RUN apt-get update && apt-get install -y openssl
 
-ARG user=was
-
-ARG group=was
-
-ADD create*.sh modify*sh update*py /work/
-
-RUN groupadd $group && useradd $user -g $group -m \
-    && chown -R $user:$group /work \
-    && chmod +x /work/*sh 
-
-USER $user
-
 ADD was.tar /
+COPY createProfileAndStartServer.sh modifyPassword.sh updateHostName.py updatePassword.py /work/
+
+ARG USER=was
+ARG GROUP=was
+
+RUN groupadd $GROUP \
+  && useradd $USER -g $GROUP -m \
+  && chown -R $USER:$GROUP /work /opt \
+  && chmod +x /work/*sh 
+
+USER $USER
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
-
-RUN managesdk.sh -setCommandDefault -sdkname 1.7_64 \
-    && managesdk.sh -setNewProfileDefault -sdkname 1.7_64
 
 CMD ["/work/createProfileAndStartServer.sh"]
