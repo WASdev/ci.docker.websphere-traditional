@@ -11,15 +11,15 @@ If you wish to build these images for yourself you will need to obtain:
 ## Building the images
 
 The images can be built as follows:
+
 1. Clone this repository
 2. Change to the directory `developer/`
 3. Place the Installation Manager .zip file in the `prereq` directory.
-3. Build the `websphere-traditional:install` and `websphere-traditional:profile` images by running:
+4. Build the `websphere-traditional:install` and `websphere-traditional:profile` images by running:
 
     ```bash
     ./build <version> <IBMid> <IBMid password>
     ```
-
   where `<version>` is the required WebSphere Application Server fix-pack (e.g. `9.0.0.0`).
 
 The build script can be modified to pass the following optional values via the `--build-arg` argument on `docker build`.
