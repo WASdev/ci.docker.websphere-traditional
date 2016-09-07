@@ -14,13 +14,13 @@ The images can be built as follows:
 
 1. Clone this repository
 2. Change to the directory `developer/`
-3. Place the Installation Manager .zip file in the `prereq` directory.
+3. Place the Installation Manager .zip file in the `im` directory.
 4. Build the `websphere-traditional:install` and `websphere-traditional:profile` images by running:
 
     ```bash
     ./build <version> <IBMid> <IBMid password>
     ```
-  where `<version>` is the required WebSphere Application Server fix-pack (e.g. `9.0.0.0`).
+  where `<version>` is the required WebSphere Application Server fix-pack (e.g. `9.0.0.0`). The build will take some time as it is downloading the install binaries.
 
 The build script can be modified to pass the following optional values via the `--build-arg` argument on `docker build`.
 
@@ -32,7 +32,7 @@ For `websphere-traditional:profile`:
 * `CELL_NAME` (optional, default is `DefaultCell01`) - cell name
 * `NODE_NAME` (optional, default is `DefaultNode01`) - node name
 * `PROFILE_NAME` (optional, default is `AppSrv01`) - profile name
-* `HOST_NAME` (optional, default is `localhost`) - host name 
+* `HOST_NAME` (optional, default is `localhost`) - host name
 * `SERVER_NAME` (optional, default is `server1`) - server name
 
 ## Running the images
