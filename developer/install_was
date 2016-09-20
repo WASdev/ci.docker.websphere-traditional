@@ -20,6 +20,7 @@ VERSION=$1
 IBM_ID=$2
 IBM_PASSWORD=$3
 
+INSTALL_DIR=/opt/IBM/WebSphere/AppServer
 SECURE_STORAGE_FILE=/tmp/credentials
 
 function save_credential() {
@@ -43,7 +44,7 @@ function install_packages() {
   /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
     -acceptLicense install $packages \
     -repositories $repo \
-    -installationDirectory /opt/IBM/WebSphere/AppServer \
+    -installationDirectory $INSTALL_DIR \
     -secureStorageFile $SECURE_STORAGE_FILE \
     -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false
   result=$?
@@ -72,4 +73,4 @@ function select_latest_sdk() {
 
 install_version
 select_latest_sdk
-tar -cvf /host/install/was.tar /opt/IBM/WebSphere/AppServer
+tar -czvf /host/was-${VERSION}.tar.gz $INSTALL_DIR
