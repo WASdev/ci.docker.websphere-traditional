@@ -17,7 +17,7 @@ docker run --name <container-name> -h <container-name> -p 9043:9043 -p 9443:9443
 Example:
 
 ```bash
-docker run --name test -h test -p 9043:9043 -p 9443:9443 -d devinstall
+docker run --name test -h test -p 9043:9043 -p 9443:9443 -d websphere-traditional:install
 ```
 
 # Running the image by passing values for the environment variables
@@ -29,7 +29,7 @@ docker run --name <container-name> -h <container-name> -e HOST_NAME=<container-n
 Example:
 
 ```bash
-docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -e SERVER_NAME=server2 -p 9043:9043 -p 9443:9443 -d devinstall
+docker run --name test -h test -e HOST_NAME=test -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -e SERVER_NAME=server2 -p 9043:9043 -p 9443:9443 -d websphere-traditional:install
 ```
 
 # Checking the logs

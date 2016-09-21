@@ -21,7 +21,24 @@ if [ $# != 3 ]; then
   exit 1
 fi
 
+VERSION=$1
+IBM_ID=$2
+IBM_PASSWORD=$3
+
+# Build Installation Manager image
 docker build -t installation-manager im || exit $?
-docker run --rm -v $(pwd):/host installation-manager /host/install_was $1 $2 $3 || exit $?
-docker build -t websphere-traditional:install install || exit $?
+
+# Install WAS with IM and export as tar file
+docker run --rm -v $(pwd):/host installation-manager /host/install_was $VERSION $IBM_ID $IBM_PASSWORD || exit $?
+
+# Host tar file on HTTP server
+docker run -d --name tar_server -v $(pwd)/was-${VERSION}.tar.gz:/host/was-${VERSION}.tar.gz -w /host python:2-slim python -m SimpleHTTPServer
+tar_server_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' tar_server)
+tar_url="http://${tar_server_ip}:8000/was-${VERSION}.tar.gz"
+
+# Build install image from hosted tar file
+docker build -t websphere-traditional:install --build-arg TAR_URL=$tar_url install || exit $?
+docker rm -f tar_server
+
+# Build profile image
 docker build -t websphere-traditional:profile profile || exit $?

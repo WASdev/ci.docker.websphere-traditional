@@ -19,20 +19,22 @@ FROM ubuntu:16.04
 
 MAINTAINER David Currie <david_currie@uk.ibm.com>
 
-RUN apt-get update && apt-get install -y openssl
-
-ADD was.tar /
-COPY createProfileAndStartServer.sh modifyPassword.sh updateHostName.py updatePassword.py /work/
+RUN apt-get update && apt-get install -y openssl wget
 
 ARG USER=was
 ARG GROUP=was
+ARG TAR_URL
+
+COPY createProfileAndStartServer.sh modifyPassword.sh updateHostName.py updatePassword.py /work/
 
 RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
   && chown -R $USER:$GROUP /work /opt \
-  && chmod +x /work/*sh 
+  && chmod +x /work/*sh
 
 USER $USER
+
+RUN wget -q -O - $TAR_URL | tar xz
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
