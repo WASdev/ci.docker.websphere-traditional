@@ -35,7 +35,7 @@ ARG URL
 
 # Install IBM Installation Manager
 RUN wget -q $URL/agent.installer.lnx.gtk.x86_64_1.8.5.zip -O /tmp/IM.zip \
-    && mkdir /tmp/im &&  unzip -qd /tmp/im /tmp/IM.zip \
+    && mkdir /tmp/im && unzip -qd /tmp/im /tmp/IM.zip \
     && /tmp/im/installc -acceptLicense -accessRights nonAdmin \
       -installationDirectory "/opt/IBM/InstallationManager"  \
       -dataLocation "/var/ibm/InstallationManager" -showProgress \
@@ -44,14 +44,15 @@ RUN wget -q $URL/agent.installer.lnx.gtk.x86_64_1.8.5.zip -O /tmp/IM.zip \
 ### IBM WebSphere Application Server & IBM Java SDK ######################
 
 # Install IBM WebSphere Application Server v9 & IBM Java SDK 8.0.3
-RUN wget -q $URL/WAS_ND_V9.0_MP_ML.zip  -O /tmp/was.zip \
-    && wget -q $URL/sdk.repo.8030.java8.hpux.zip  -O /tmp/java.zip \
-    && mkdir /tmp/was /tmp/java  && unzip  -qd /tmp/was /tmp/was.zip \
+RUN wget -q $URL/WAS_ND_V9.0_MP_ML.zip -O /tmp/was.zip \
+    && wget -q $URL/sdk.repo.8030.java8.hpux.zip -O /tmp/java.zip \
+    && mkdir /tmp/was /tmp/java && unzip -qd /tmp/was /tmp/was.zip \
     && unzip -qd /tmp/java /tmp/java.zip \
     && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
       -acceptLicense install com.ibm.websphere.ND.v90 com.ibm.java.jdk.v8 \
       -repositories /tmp/was/repository.config,/tmp/java/repository.config \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
+      -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
     && rm -fr /tmp/was /tmp/java /tmp/was.zip /tmp/java.zip 
 
 CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]
