@@ -56,7 +56,7 @@ Dockerfile.install takes the following action:
 5. Run a container by using the prereq image to create the .tar file in the current folder by using:
 
     ```bash
-    docker run --rm -v $(pwd):/tmp <prereq-image-name>
+    docker run --rm -v $(pwd):/tmp -v /opt/:/opt <prereq-image-name>
     ```
 
 6. Build the install image by using:
