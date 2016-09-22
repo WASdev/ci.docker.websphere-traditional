@@ -30,13 +30,13 @@ IBM WebSphere Application Server Base traditional image is created by using the 
 The Dockerfiles take values for the following variables at build time:
 
 Dockerfile.prereq
-* user (optional, default is 'was') - user used for the installation
-* group (optional, default is 'was') - group the user belongs to
+* USER (optional, default is 'was') - user used for the installation
+* GROUP (optional, default is 'was') - group the user belongs to
 * URL (required) - URL from where the binaries are downloaded
 
 Dockerfile.install
-* user (optional, default is 'was') - user used for the installation
-* group (optional, default is 'was') - group the user belongs to
+* USER (optional, default is 'was') - user used for the installation
+* GROUP (optional, default is 'was') - group the user belongs to
 
 Dockerfile.profile
 * CELL_NAME (optional, default is 'DefaultCell01') - cell name
@@ -64,8 +64,7 @@ Dockerfile.install:
 Dockerfile.profile:
 
 1. Uses the image created by Dockerfile.install as the base image
-2. Copies the server startup script to the image
-3. When the container is started the server is started
+2. When the container is started the server is started
 
 ## Building the IBM WebSphere Application Server Base traditional image
 
@@ -75,7 +74,7 @@ Dockerfile.profile:
 4. Build the prereq image by using:
 
     ```bash
-    docker build --build-arg user=<user> --build-arg group=<group> --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
+    docker build --build-arg USER=<user> --build-arg GROUP=<group> --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
     ```
 
 5. Run a container by using the prereq image to create the .tar file in the current folder by using:
@@ -87,9 +86,9 @@ Dockerfile.profile:
 6. Build the install image by using:
 
     ```bash
-    docker build --build-arg user=<user> --build-arg group=<group> -t <install-image-name> -f Dockerfile.install .
+    docker build --build-arg USER=<user> --build-arg GROUP=<group> -t <install-image-name> -f Dockerfile.install .
     ```
-    Set the install image name as `baseinstall` if you are creating the base profile image.
+    Set the install image name as `websphere-traditional:install` if you are creating the base profile image.
 
 7. Build the profile image by using:
 
