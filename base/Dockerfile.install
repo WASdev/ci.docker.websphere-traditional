@@ -21,23 +21,20 @@ MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
 RUN apt-get update && apt-get install -y openssl
 
-ARG user=was
+ARG USER=was
+ARG GROUP=was
 
-ARG group=was
+COPY start_server create_profile create_and_start modify_password \
+  updateHostName.py updatePassword.py /work/
 
-ADD create*.sh modify*sh update*py /work/
+RUN groupadd $GROUP \
+  && useradd $USER -g $GROUP -m \
+  && chown -R $USER:$GROUP /work
 
-RUN groupadd $group && useradd $user -g $group -m \
-    && chown -R $user:$group /work \
-    && chmod +x /work/*sh 
-
-USER $user
+USER $USER
 
 ADD was.tar /
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
-RUN managesdk.sh -setCommandDefault -sdkname 1.7.1_64 \
-    && managesdk.sh -setNewProfileDefault -sdkname 1.7.1_64
-
-CMD ["/work/createProfileAndStartServer.sh"]
+CMD ["/work/create_and_start"]

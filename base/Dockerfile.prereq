@@ -20,14 +20,14 @@ MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
 RUN apt-get update && apt-get install -y unzip wget
 
-ARG user=was
+ARG USER=was
 
-ARG group=was
+ARG GROUP=was
 
-RUN groupadd $group && useradd $user -g $group -m\
-    && chown -R $user:$group /var /opt /tmp
+RUN groupadd $GROUP && useradd $USER -g $GROUP -m\
+    && chown -R $USER:$GROUP /var /opt /tmp
 
-USER $user
+USER $USER
 
 ARG URL
 
@@ -86,5 +86,8 @@ RUN wget -q $URL/7.1.3.30-WS-IBMWASJAVA-part1.zip -O /tmp/java1.zip \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
       -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
     && rm -fr /tmp/java /tmp/java1.zip /tmp/java2.zip
+
+RUN managesdk.sh -setCommandDefault -sdkname 1.7.1_64 \
+    && managesdk.sh -setNewProfileDefault -sdkname 1.7.1_64
 
 CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]

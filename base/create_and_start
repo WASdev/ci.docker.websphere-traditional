@@ -1,16 +1,11 @@
+#!/bin/bash
 #####################################################################################
 #                                                                                   #
-#  Script to update Password                                                        #
+#  Script to create AppServer profile, start server and then wait.                  #
 #                                                                                   #
-#  Usage : wsadmin -lang jython -f updatePassword.py password                       # 
+#  Usage : create_and_start                                                         #
 #                                                                                   #
 #####################################################################################
 
-
-def updatePassword(password):
-
-	AdminTask.changeFileRegistryAccountPassword('[-userId wsadmin -password '+ password +']') 
-
-	AdminConfig.save()
-
-updatePassword(sys.argv[0])	
+/work/create_profile
+exec /work/start_server
