@@ -12,7 +12,7 @@ SERVER_NAME=${SERVER_NAME:-"server1"}
 
 update_hostname()
 {
-  wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py ${NODE_NAME:-"DefaultNode01"} ${hostname}
+  wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py ${NODE_NAME:-"DefaultNode01"} $(hostname)
   touch /work/hostnameupdated
 }
 
