@@ -44,7 +44,11 @@ test_install_with_defaults()
 
 test_install_with_env_variables()
 {
-  start_container "-h testhost -e HOST_NAME=testhost -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 $image:install"
+  start_container "-h testhost -e HOST_NAME=testhost -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -e ADMIN_USER_NAME=admin $image:install"
+  cid=$(docker ps -lq)
+  password=$(docker exec $cid cat /tmp/PASSWORD)
+  docker exec $cid wsadmin.sh -lang jython -userName admin -password $password -c "AdminConfig.list('ServerIndex')"
+  [[ $? -eq 0 ]] || fail "Attempt to use modified admin user failed"
 }
 
 test_profile_with_defaults()
@@ -55,6 +59,11 @@ test_profile_with_defaults()
 test_profile_with_updated_hostname()
 {
   start_container "-e UPDATE_HOSTNAME=true $image:profile"
+  cid=$(docker ps -lq)
+  container_hostname=$(docker exec $cid hostname)
+  password=$(docker exec $cid cat /tmp/PASSWORD)
+  server_hostname=$(docker exec $cid wsadmin.sh -lang jython -userName wsadmin -password $password -c "si=AdminConfig.list('ServerIndex');print AdminConfig.showAttribute(si,'hostName')" | tail -1)
+  [[ $container_hostname = $server_hostname ]] || fail "Hostname not updated"
 }
 
 test_install_app()

@@ -1,6 +1,6 @@
 ## Running the IBM WebSphere Application Server Base traditional profile image
 
-When the container is started by using the IBM WebSphere Application Server Base traditional profile image, the start script is executed and takes the following environment variables:
+When the container is started by using the IBM WebSphere Application Server Base traditional profile image, it takes the following environment variables:
 
 * UPDATE_HOSTNAME (optional, set to 'true' if the hostname should be updated from the default of 'localhost')
 * PROFILE_NAME (optional, default is 'AppSrv01')
