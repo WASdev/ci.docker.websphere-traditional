@@ -34,6 +34,7 @@ For `websphere-traditional:profile`:
 * `PROFILE_NAME` (optional, default is `AppSrv01`) - profile name
 * `HOST_NAME` (optional, default is `localhost`) - host name
 * `SERVER_NAME` (optional, default is `server1`) - server name
+* `ADMIN_USER_NAME` (optional, default is `wsadmin`) - admin user name
 
 ## Running the images
 

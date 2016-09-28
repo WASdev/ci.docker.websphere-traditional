@@ -30,21 +30,21 @@ IBM WebSphere Application Server Base traditional image is created by using the 
 The Dockerfiles take values for the following variables at build time:
 
 Dockerfile.prereq
-* USER (optional, default is 'was') - user used for the installation
-* GROUP (optional, default is 'was') - group the user belongs to
-* URL (required) - URL from where the binaries are downloaded
+* `USER` (optional, default is `was`) - user used for the installation
+* `GROUP` (optional, default is `was`) - group the user belongs to
+* `URL` (required) - URL from where the binaries are downloaded
 
 Dockerfile.install
-* USER (optional, default is 'was') - user used for the installation
-* GROUP (optional, default is 'was') - group the user belongs to
+* `USER` (optional, default is `was`) - user used for the installation
+* `GROUP` (optional, default is `was`) - group the user belongs to
 
 Dockerfile.profile
-* CELL_NAME (optional, default is 'DefaultCell01') - cell name
-* NODE_NAME (optional, default is 'DefaultNode01') - node name
-* PROFILE_NAME (optional, default is 'AppSrv01') - profile name
-* HOST_NAME (optional, default is 'localhost') - host name 
-* SERVER_NAME (optional, default is 'server1') - server name
-
+* `CELL_NAME` (optional, default is `DefaultCell01`) - cell name
+* `NODE_NAME` (optional, default is `DefaultNode01`) - node name
+* `PROFILE_NAME` (optional, default is `AppSrv01`) - profile name
+* `HOST_NAME` (optional, default is `localhost`) - host name 
+* `SERVER_NAME` (optional, default is `server1`) - server name
+* `ADMIN_USER_NAME` (optional, default is `wsadmin`) - admin user name
 
 Dockerfiles take the following actions:
 
@@ -74,7 +74,8 @@ Dockerfile.profile:
 4. Build the prereq image by using:
 
     ```bash
-    docker build --build-arg USER=<user> --build-arg GROUP=<group> --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
+    docker build --build-arg USER=<user> --build-arg GROUP=<group> \
+      --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
     ```
 
 5. Run a container by using the prereq image to create the .tar file in the current folder by using:
@@ -86,14 +87,19 @@ Dockerfile.profile:
 6. Build the install image by using:
 
     ```bash
-    docker build --build-arg USER=<user> --build-arg GROUP=<group> -t <install-image-name> -f Dockerfile.install .
+    docker build --build-arg USER=<user> --build-arg GROUP=<group> \
+      -t <install-image-name> -f Dockerfile.install .
     ```
     Set the install image name as `websphere-traditional:install` if you are creating the base profile image.
 
 7. Build the profile image by using:
 
     ```bash
-    docker build --build-arg CELL_NAME=<cell-name> --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> --build-arg HOST_NAME=<host-name> --build-arg SERVER_NAME=<server-name> -t <profile-image-name> -f Dockerfile.profile .                              
+    docker build --build-arg CELL_NAME=<cell-name> \
+      --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> \
+      --build-arg HOST_NAME=<host-name> --build-arg SERVER_NAME=<server-name> \
+      --build-arg ADMIN_USER_NAME=<admin-user-name> -t <profile-image-name> \
+      -f Dockerfile.profile .                              
     ```
 
 ## Running the images
