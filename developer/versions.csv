@@ -1,4 +1,5 @@
 #version,repo|package package ...,repo|package...,...
 8.5.5.9,http://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85|com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5009.20160225_0435,http://www.ibm.com/software/repositorymanager/com.ibm.websphere.IBMJAVA.v80|com.ibm.websphere.IBMJAVA.v80_8.0.3000.20160720_1754
 8.5.5.10,http://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85|com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5010.20160721_0036,http://www.ibm.com/software/repositorymanager/com.ibm.websphere.IBMJAVA.v80|com.ibm.websphere.IBMJAVA.v80_8.0.3000.20160720_1754
-9.0.0.0,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.0.20160526_1854 com.ibm.java.jdk.v8_8.0.3012.20160926_0717
+9.0.0.0,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.0.20160526_1854 com.ibm.java.jdk.v8
+9.0.0.1,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.1.20160906_0049 com.ibm.java.jdk.v8
