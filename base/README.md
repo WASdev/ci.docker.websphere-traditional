@@ -83,6 +83,8 @@ Dockerfile.profile:
     ```bash
     docker run --rm -v $(pwd):/tmp <prereq-image-name>
     ```
+    
+    Note: the user that the image is running as (UID 1) needs to have write access to the current directory.
 
 6. Build the install image by using:
 
