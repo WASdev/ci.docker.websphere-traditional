@@ -16,17 +16,14 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
-
-RUN apt-get update && apt-get install -y unzip wget
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip wget \
+    && rm -rf /var/lib/apt/lists/*
 
 ARG USER=was
-
 ARG GROUP=was
-
 RUN groupadd $GROUP && useradd $USER -g $GROUP -m\
     && chown -R $USER:$GROUP /var /opt /tmp
-
 USER $USER
 
 ARG URL
@@ -59,9 +56,9 @@ RUN wget -q $URL/WAS_V8.5.5_1_OF_3.zip -O /tmp/was1.zip \
 
 ############## IBM WebSphere Application Server Fixpack ##################
 
-# Install IBM WebSphere Application Server Fixpack v8559
-RUN wget -q $URL/8.5.5-WS-WAS-FP0000009-part1.zip -O /tmp/wasfp1.zip \
-    && wget -q $URL/8.5.5-WS-WAS-FP0000009-part2.zip -O /tmp/wasfp2.zip \
+# Install IBM WebSphere Application Server Fixpack v85510
+RUN wget -q $URL/8.5.5-WS-WAS-FP0000010-part1.zip -O /tmp/wasfp1.zip \
+    && wget -q $URL/8.5.5-WS-WAS-FP0000010-part2.zip -O /tmp/wasfp2.zip \
     && mkdir /tmp/wasfp \
     && unzip -qd /tmp/wasfp /tmp/wasfp1.zip  \
     && unzip -qd /tmp/wasfp /tmp/wasfp2.zip \
@@ -72,23 +69,21 @@ RUN wget -q $URL/8.5.5-WS-WAS-FP0000009-part1.zip -O /tmp/wasfp1.zip \
       -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
     && rm -fr /tmp/wasfp /tmp/wasfp1.zip /tmp/wasfp2.zip
 
-########################### Install Java SDK 7.1 ########################
+########################### Install Java SDK 8.0 ########################
 
-# Install Java SDK 7.1
-RUN wget -q $URL/7.1.3.30-WS-IBMWASJAVA-part1.zip -O /tmp/java1.zip \
-    && wget -q $URL/7.1.3.30-WS-IBMWASJAVA-part2.zip -O /tmp/java2.zip \
+# Install Java SDK 8.0
+RUN wget -q $URL/8.0.2.10-WS-IBMWASJAVA-Linux.zip -O /tmp/java.zip \
     && mkdir /tmp/java \
-    && unzip -qd /tmp/java /tmp/java1.zip  \
-    && unzip -qd /tmp/java /tmp/java2.zip \
+    && unzip -qd /tmp/java /tmp/java.zip  \
     && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
-      -acceptLicense install com.ibm.websphere.IBMJAVA.v71 \
+      -acceptLicense install com.ibm.websphere.IBMJAVA.v80 \
       -repositories /tmp/java/repository.config \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
       -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
-    && rm -fr /tmp/java /tmp/java1.zip /tmp/java2.zip
-    
+    && rm -fr /tmp/java /tmp/java.zip
+
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
-RUN managesdk.sh -setCommandDefault -sdkname 1.7.1_64 \
-    && managesdk.sh -setNewProfileDefault -sdkname 1.7.1_64
+RUN managesdk.sh -setCommandDefault -sdkname 1.8_64 \
+    && managesdk.sh -setNewProfileDefault -sdkname 1.8_64
 
 CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]

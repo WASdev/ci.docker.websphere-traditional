@@ -1,6 +1,9 @@
-# Building an IBM WebSphere Application Server Base traditional V8.5.5 image from binaries
+# Building an IBM WebSphere Application Server traditional base image from binaries
 
-An IBM WebSphere Application Server Base traditional image can be built by obtaining the following binaries:
+The following instructions can be used to build an IBM WebSphere Application Server traditional base image from binaries for either V8.5.5 or V9.0.0.
+
+## Binaries required for V8.5.5
+
 * IBM Installation Manager binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html)
 
   IBM Installation Manager binaries:
@@ -13,98 +16,86 @@ An IBM WebSphere Application Server Base traditional image can be built by obtai
   * WAS_V8.5.5_2_OF_3.zip (CIK1RML)
   * WAS_V8.5.5_3_OF_3.zip (CIK1SML)
 
-  Fixpack V8.5.5.9 binaries:
-  * 8.5.5-WS-WAS-FP0000009-part1.zip
-  * 8.5.5-WS-WAS-FP0000009-part2.zip
+  Fixpack V8.5.5.10 binaries:
+  * 8.5.5-WS-WAS-FP0000010-part1.zip
+  * 8.5.5-WS-WAS-FP0000010-part2.zip
 
-  IBM WebSphere SDK Java Technology Edition V7.1.3.0 binaries:
-  * 7.1.3.30-WS-IBMWASJAVA-part1.zip
-  * 7.1.3.30-WS-IBMWASJAVA-part2.zip
+  IBM WebSphere SDK Java Technology Edition V8.0.2.10 binaries:
+  * 8.0.2.10-WS-IBMWASJAVA-Linux.zip
 
-IBM WebSphere Application Server Base traditional image is created by using the following Dockerfiles, multiple Dockerfiles are used to reduce the final image size:
+## Binaries required for V9.0.0
 
-1. [Dockerfile.prereq](Dockerfile.prereq)
-2. [Dockerfile.install](Dockerfile.install)
-3. [Dockerfile.profile](Dockerfile.profile) (Optional, use to create an image with a profile)
+* IBM Installation Manager binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html)
 
-The Dockerfiles take values for the following variables at build time:
+  IBM Installation Manager V1.8.5 for Linux x86_64 binaries:
+  * agent.installer.lnx.gtk.x86_64_1.8.5.zip (CND0ZML)
 
-Dockerfile.prereq
-* `USER` (optional, default is `was`) - user used for the installation
-* `GROUP` (optional, default is `was`) - group the user belongs to
-* `URL` (required) - URL from where the binaries are downloaded
+* IBM WebSphere Application Server Base traditional binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html) / [Fix Central](http://www-933.ibm.com/support/fixcentral/)
 
-Dockerfile.install
-* `USER` (optional, default is `was`) - user used for the installation
-* `GROUP` (optional, default is `was`) - group the user belongs to
+  IBM WebSphere Application Server V9.0 binaries:
+  * was.repo.9000.base.zip (CND1AML)
+
+  Fixpack V9.0.0.1 binaries:
+  * 9.0.0-WS-WAS-FP001.zip
+
+  IBM SDK, Java (TM) Technology Edition, Version 8 for Linux binaries:
+  * sdk.repo.8030.java8.linux.zip (CND18ML)
 
 Dockerfile.profile
-* `CELL_NAME` (optional, default is `DefaultCell01`) - cell name
-* `NODE_NAME` (optional, default is `DefaultNode01`) - node name
-* `PROFILE_NAME` (optional, default is `AppSrv01`) - profile name
-* `HOST_NAME` (optional, default is `localhost`) - host name 
-* `SERVER_NAME` (optional, default is `server1`) - server name
-* `ADMIN_USER_NAME` (optional, default is `wsadmin`) - admin user name
-
-Dockerfiles take the following actions:
-
-Dockerfile.prereq:
-
-1. Installs IBM Installation Manager
-2. Installs IBM WebSphere Application Server 
-3. Updates IBM WebSphere Application Server with the Fixpack
-4. When the container is started a .tar file for the IBM WebSphere Application Server Base traditional installation is created
-
-Dockerfile.install:
-
-1. Extracts the .tar file created by Dockerfile.prereq
-2. Copies the profile creation and startup script to the image
-3. When the container is started, the profile is created and the server is started
-
-Dockerfile.profile:
-
-1. Uses the image created by Dockerfile.install as the base image
-2. When the container is started the server is started
 
 ## Building the IBM WebSphere Application Server Base traditional image
 
-1. Place the downloaded IBM Installation Manager and IBM WebSphere Application Server traditional binaries on the FTP or HTTP server
+1. Place the downloaded IBM Installation Manager and IBM WebSphere Application Server traditional binaries on an FTP or HTTP server
 2. Clone this repository
-3. Move to the directory `base/`
-4. Build the prereq image by using:
+3. Move to the directory `base`
+4. Build the prereq image for V8.5.5:
 
     ```bash
     docker build --build-arg USER=<user> --build-arg GROUP=<group> \
-      --build-arg URL=<URL> -t <prereq-image-name> -f Dockerfile.prereq .
+      --build-arg URL=<URL> -t websphere-traditional:prereq \
+      -f Dockerfile.v855.prereq .
     ```
 
-5. Run a container by using the prereq image to create the .tar file in the current folder by using:
+    or for V9.0.0:
 
     ```bash
-    docker run --rm -v $(pwd):/tmp <prereq-image-name>
+    docker build --build-arg USER=<user> --build-arg GROUP=<group> \
+      --build-arg URL=<URL> -t websphere-traditional:prereq \
+      -f Dockerfile.v9.prereq .
     ```
-    
+
+    This installs Installation Manager, WebSphere Application Server (and fix pack) and IBM Java. The `USER` and `GROUP` build arguments specify the OS user and group to create for the install. They are optional and, by default, are both set to `was`. The `URL` build argument is required and specifies the URL of the FTP or HTTP server directory where the binaries are hosted.
+
+5. Run a container by using the prereq image to create the .tar file with the installed products in the current folder by using:
+
+    ```bash
+    docker run --rm -v $(pwd):/tmp websphere-traditional:prereq
+    ```
+
     Note: the user that the image is running as (UID 1) needs to have write access to the current directory.
 
 6. Build the install image by using:
 
     ```bash
     docker build --build-arg USER=<user> --build-arg GROUP=<group> \
-      -t <install-image-name> -f Dockerfile.install .
+      -t websphere-traditional:install -f Dockerfile.install .
     ```
-    Set the install image name as `websphere-traditional:install` if you are creating the base profile image.
 
-7. Build the profile image by using:
+    This unpacks the .tar file in to a clean image and copies the profile creation and startup script to the image. When the image is run, the profile is created and the server is started. The `USER` and `GROUP` build arguments must be given the same values specified when the prereq image was built.
+
+7. Optionally, build an image with a profile created by using:
 
     ```bash
     docker build --build-arg CELL_NAME=<cell-name> \
       --build-arg NODE_NAME=<node-name> --build-arg PROFILE_NAME=<profile-name> \
       --build-arg HOST_NAME=<host-name> --build-arg SERVER_NAME=<server-name> \
-      --build-arg ADMIN_USER_NAME=<admin-user-name> -t <profile-image-name> \
-      -f Dockerfile.profile .                              
+      --build-arg ADMIN_USER_NAME=<admin-user-name> \
+      -t websphere-traditional:profile -f Dockerfile.profile .
     ```
+
+    This creates a profile in the image so that the servers starts immediately when the image is run. The build arguments are all optional and the default values can be found in [Dockerfile.profile](Dockerfile.profile).
 
 ## Running the images
 
-* [Using the IBM WebSphere Application Server Base traditional install image](Run-install-image.md) 
+* [Using the IBM WebSphere Application Server Base traditional install image](Run-install-image.md)
 * [Using the IBM WebSphere Application Server Base traditional profile image](Run-profile-image.md)
