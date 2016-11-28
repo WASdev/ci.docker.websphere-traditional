@@ -10,7 +10,7 @@ The Dockerfile takes the values for the following variables at build time:
 
 The Dockerfile takes the following actions:
 
-1. Uses the `nd` install image as a base image
+1. Uses the `websphere-traditional:nd-install` install image as a base image
 2. Creates a deployment manager profile
 3. Exposes the required ports
 4. Copies the startup script to the image
@@ -19,12 +19,12 @@ The Dockerfile takes the following actions:
 ## Building the IBM WebSphere Application Server Network Deployment traditional deployment manager image
 
 1. Clone this repository
-3. Build the `nd` install image following the [install build instructions](../install/README.md), if not built already
+3. Build the `websphere-traditional:nd-install` install image following the [install build instructions](../install/README.md), if not built already
 3. Move to the directory `network-deployment/dmgr`
 4. Build the deployment manager image by using:
 
     ```bash
-    docker build -t <dmgr-image-name> .
+    docker build -t websphere-traditional:dmgr .
     ```
 
 ## Running the IBM WebSphere Application Server Network Deployment traditional deployment manager image
@@ -45,11 +45,13 @@ The Dockerfile takes the following actions:
 2. Run the deployment manager image by using:
 
    ```bash
-   docker run --name <container-name> -h <container-name> --net=<network-name> -p 9060:9060 -d <dmgr-image-name>
+   docker run --name <container-name> -h <container-name> --net=<network-name> \
+    -p 9060:9060 -d websphere-traditional:dmgr
    ```
 
    Example:
 
    ```bash
-   docker run --name dmgr -h dmgr --net=cell-network  -p 9060:9060 -d dmgr
+   docker run --name dmgr -h dmgr --net=cell-network  -p 9060:9060 -d \
+    websphere-traditional:dmgr
    ```

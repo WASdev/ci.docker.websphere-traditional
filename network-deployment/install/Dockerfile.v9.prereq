@@ -16,17 +16,14 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
-
-RUN apt-get update && apt-get install -y unzip wget
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip wget \
+    && rm -rf /var/lib/apt/lists/*
 
 ARG user=was
-
 ARG group=was
-
 RUN groupadd $group && useradd $user -g $group -m\
     && chown -R $user:$group /var /opt /tmp
-
 USER $user
 
 ARG URL
@@ -53,6 +50,6 @@ RUN wget -q $URL/WAS_ND_V9.0_MP_ML.zip -O /tmp/was.zip \
       -repositories /tmp/was/repository.config,/tmp/java/repository.config \
       -installationDirectory /opt/IBM/WebSphere/AppServer \
       -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
-    && rm -fr /tmp/was /tmp/java /tmp/was.zip /tmp/java.zip 
+    && rm -fr /tmp/was /tmp/java /tmp/was.zip /tmp/java.zip
 
 CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]
