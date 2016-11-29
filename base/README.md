@@ -41,8 +41,6 @@ The following instructions can be used to build an IBM WebSphere Application Ser
   IBM SDK, Java (TM) Technology Edition, Version 8 for Linux binaries:
   * sdk.repo.8030.java8.linux.zip (CND18ML)
 
-Dockerfile.profile
-
 ## Building the IBM WebSphere Application Server Base traditional image
 
 1. Place the downloaded IBM Installation Manager and IBM WebSphere Application Server traditional binaries on an FTP or HTTP server

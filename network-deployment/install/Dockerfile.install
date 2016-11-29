@@ -17,20 +17,12 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
-
 ARG user=was
-
 ARG group=was
-
 RUN groupadd $group && useradd $user -g $group -m \
     && mkdir /work && chown -R $user:$group /work
-
 USER $user
 
 ADD was.tar /
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
-
-RUN managesdk.sh -setCommandDefault -sdkname 1.7.1_64 \
-    && managesdk.sh -setNewProfileDefault -sdkname 1.7.1_64

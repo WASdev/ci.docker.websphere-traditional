@@ -10,7 +10,7 @@ The Dockerfile takes the values for the following variables at build time:
 
 The Dockerfile takes the following actions:
 
-1. Uses the `nd` install image as a base image
+1. Uses the `websphere-traditional:nd-install` install image as a base image
 2. Creates a custom node profile
 3. Exposes the required ports
 4. Copies the update scripts to the image
@@ -19,12 +19,12 @@ The Dockerfile takes the following actions:
 ## Building the IBM WebSphere Application Server Network Deployment traditional custom node image
 
 1. Clone this repository
-2. Build the `nd` install image following the [install build instructions](../install/README.md), if not built already
+2. Build the `websphere-traditional:nd-install` install image following the [install build instructions](../install/README.md), if not built already
 3. Move to the directory `network-deployment/custom`
 4. Build the custom node image by using:
 
     ```bash
-    docker build -t <customnode-image-name> .
+    docker build -t websphere-traditional:custom .
     ```
 
 ## Running the IBM WebSphere Application Server Network Deployment traditional custom node image
@@ -32,19 +32,24 @@ The Dockerfile takes the following actions:
 Running the custom node image by using the default values:
 
 ```bash
-docker run --name <container-name> -h <container-name> --net=<network-name> -d <customnode-image-name>
+docker run --name <container-name> -h <container-name> --net=<network-name> \
+  -d websphere-traditional:custom
 ```
 
 Example:
 
 ```bash
-docker run --name custom1 -h custom1 --net=cell-network -d custom
+docker run --name custom1 -h custom1 --net=cell-network -d \
+  websphere-traditional:custom
 ```
 
 Running the Custom Node image by passing values for the environment variables:
 
 ```bash
-docker run --name <container-name> -h <container-name> --net=<network-name> -e PROFILE_NAME=<profile-name> -e NODE_NAME=<node-name> -e DMGR_HOST=<dmgr-host> -e DMGR_PORT=<dmgr-port> -d <customnode-image-name>
+docker run --name <container-name> -h <container-name> --net=<network-name> \
+  -e PROFILE_NAME=<profile-name> -e NODE_NAME=<node-name> \
+  -e DMGR_HOST=<dmgr-host> -e DMGR_PORT=<dmgr-port> -d \
+  websphere-traditional:custom
 ```
 
 Example:
