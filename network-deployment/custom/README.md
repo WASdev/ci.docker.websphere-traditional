@@ -55,5 +55,7 @@ docker run --name <container-name> -h <container-name> --net=<network-name> \
 Example:
 
 ```bash
-docker run --name custom1 -h custom1 --net=cell-network -e PROFILE_NAME=Custom01 -e NODE_NAME=CustomNode01 -e DMGR_HOST=dmgr -e DMGR_PORT=8879 -d custom
+docker run --name custom1 -h custom1 --net=cell-network \
+  -e PROFILE_NAME=Custom01 -e NODE_NAME=CustomNode01 -e DMGR_HOST=dmgr \
+  -e DMGR_PORT=8879 -d websphere-traditional:custom
 ```
