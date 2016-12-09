@@ -1,16 +1,15 @@
 #####################################################################################
 #                                                                                   #
-#  Script to update Hostname                                                        #
+#  Script to update Password                                                        #
 #                                                                                   #
-#  Usage : wsadmin -lang jython -f updateHostName.py <node name >  < host name >    # 
+#  Usage : wsadmin -lang jython -f updatePassword.py userId password                # 
 #                                                                                   #
 #####################################################################################
 
 
-def updateHostName(nodename,hostname):
+def updatePassword(userId, password):
 
-        AdminTask.changeHostName('[-nodeName '+ nodename +' -hostName '+ hostname +' -regenDefaultCert true ]')
-
+	AdminTask.changeFileRegistryAccountPassword('[-userId ' + userId + ' -password '+ password +']') 
 	AdminConfig.save()
 
-updateHostName(sys.argv[0], sys.argv[1])	
+updatePassword(sys.argv[0], sys.argv[1])	

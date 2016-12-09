@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015.                                      #
+# (C) Copyright IBM Corporation 2015, 2016                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -15,23 +15,27 @@
 #                                                                          #
 ############################################################################
 
-FROM devinstall
+FROM ubuntu:16.04
 
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
+MAINTAINER David Currie <david_currie@uk.ibm.com>
 
-COPY start.sh update*.py /work/
+RUN apt-get update && apt-get install -y openssl wget
 
-ARG PROFILE_NAME=AppSrv01
+ARG USER=was
+ARG GROUP=was
+ARG TAR_URL
 
-ARG CELL_NAME=DefaultCell01
+COPY start_server create_profile create_and_start modify_password \
+  updateHostName.py updatePassword.py /work/
 
-ARG NODE_NAME=DefaultNode01
+RUN groupadd $GROUP \
+  && useradd $USER -g $GROUP -m \
+  && chown -R $USER:$GROUP /work /opt
 
-ARG HOST_NAME=localhost
+USER $USER
 
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
-    /opt/IBM/WebSphere/AppServer/profileTemplates/default/ -profileName $PROFILE_NAME \
-    -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
-    -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME 
+RUN wget -q -O - $TAR_URL | tar xz
 
-CMD ["/work/start.sh"]
+ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
+
+CMD ["/work/create_and_start"]

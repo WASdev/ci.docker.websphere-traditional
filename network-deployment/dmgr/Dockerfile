@@ -14,16 +14,11 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-FROM nd
-
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
+FROM websphere-traditional:nd-install
 
 ARG PROFILE_NAME=Dmgr01
-
 ARG CELL_NAME=DefaultCell01
-
 ARG NODE_NAME=DefaultNode01
-
 ARG HOST_NAME=localhost
 
 # Create Deployment Manager profile
@@ -38,6 +33,6 @@ ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
 RUN /opt/IBM/WebSphere/AppServer/bin/startManager.sh
 
-COPY startDmgr.sh updateHostName.py /work/
+COPY startDmgr.sh update*.py /work/
 
 CMD ["/work/startDmgr.sh"]

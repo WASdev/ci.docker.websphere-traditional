@@ -1,0 +1,89 @@
+###########################################################################
+# (C) Copyright IBM Corporation 2015, 2016.                               #
+#                                                                         #
+# Licensed under the Apache License, Version 2.0 (the "License");         #
+# you may not use this file except in compliance with the License.        #
+# You may obtain a copy of the License at                                 #
+#                                                                         #
+#      http://www.apache.org/licenses/LICENSE-2.0                         #
+#                                                                         #
+# Unless required by applicable law or agreed to in writing, software     #
+# distributed under the License is distributed on an "AS IS" BASIS,       #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.#
+# See the License for the specific language governing permissions and     #
+# limitations under the License.                                          #
+###########################################################################
+
+FROM ubuntu:16.04
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends unzip wget \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG USER=was
+ARG GROUP=was
+RUN groupadd $GROUP && useradd $USER -g $GROUP -m\
+    && chown -R $USER:$GROUP /var /opt /tmp
+USER $USER
+
+ARG URL
+
+###################### IBM Installation Manager ##########################
+
+# Install IBM Installation Manager
+RUN wget -q $URL/Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip -O /tmp/IM.zip \
+    && mkdir /tmp/im &&  unzip -qd /tmp/im /tmp/IM.zip \
+    && /tmp/im/installc -acceptLicense -accessRights nonAdmin \
+      -installationDirectory "/opt/IBM/InstallationManager"  \
+      -dataLocation "/var/ibm/InstallationManager" -showProgress \
+    && rm -fr /tmp/IM.zip /tmp/im
+
+################# IBM WebSphere Application Server ######################
+
+# Install IBM WebSphere Application Server v855
+RUN wget -q $URL/WAS_V8.5.5_1_OF_3.zip -O /tmp/was1.zip \
+    && wget -q $URL/WAS_V8.5.5_2_OF_3.zip -O /tmp/was2.zip \
+    && wget -q $URL/WAS_V8.5.5_3_OF_3.zip -O /tmp/was3.zip \
+    && mkdir /tmp/was && unzip -qd /tmp/was /tmp/was1.zip \
+    && unzip -qd /tmp/was /tmp/was2.zip \
+    && unzip -qd /tmp/was /tmp/was3.zip \
+    && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+      -acceptLicense install com.ibm.websphere.BASE.v85 \
+      -repositories /tmp/was/repository.config  \
+      -installationDirectory /opt/IBM/WebSphere/AppServer \
+      -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
+    && rm -fr /tmp/was /tmp/was1.zip /tmp/was2.zip /tmp/was3.zip
+
+############## IBM WebSphere Application Server Fixpack ##################
+
+# Install IBM WebSphere Application Server Fixpack v85510
+RUN wget -q $URL/8.5.5-WS-WAS-FP0000010-part1.zip -O /tmp/wasfp1.zip \
+    && wget -q $URL/8.5.5-WS-WAS-FP0000010-part2.zip -O /tmp/wasfp2.zip \
+    && mkdir /tmp/wasfp \
+    && unzip -qd /tmp/wasfp /tmp/wasfp1.zip  \
+    && unzip -qd /tmp/wasfp /tmp/wasfp2.zip \
+    && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+      -acceptLicense install com.ibm.websphere.BASE.v85 \
+      -repositories /tmp/wasfp/repository.config  \
+      -installationDirectory /opt/IBM/WebSphere/AppServer \
+      -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
+    && rm -fr /tmp/wasfp /tmp/wasfp1.zip /tmp/wasfp2.zip
+
+########################### Install Java SDK 8.0 ########################
+
+# Install Java SDK 8.0
+RUN wget -q $URL/8.0.2.10-WS-IBMWASJAVA-Linux.zip -O /tmp/java.zip \
+    && mkdir /tmp/java \
+    && unzip -qd /tmp/java /tmp/java.zip  \
+    && /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+      -acceptLicense install com.ibm.websphere.IBMJAVA.v80 \
+      -repositories /tmp/java/repository.config \
+      -installationDirectory /opt/IBM/WebSphere/AppServer \
+      -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
+    && rm -fr /tmp/java /tmp/java.zip
+
+ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
+RUN managesdk.sh -setCommandDefault -sdkname 1.8_64 \
+    && managesdk.sh -setNewProfileDefault -sdkname 1.8_64
+
+CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]

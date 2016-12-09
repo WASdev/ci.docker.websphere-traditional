@@ -118,7 +118,7 @@ test1()
         cleanup $cname                                                                                                   
    fi                                                                                                              
                                                                                                                    
-   cid=`docker run --name $cname -h $cname --net=$nname -p 9060:9060 -d $cname`                                                                    
+   cid=`docker run --name $cname -h $cname --net=$nname -e UPDATE_HOSTNAME=true -p 9060:9060 -d $cname`                                                                    
    scid=${cid:0:12}                                                                                                
    sleep 10                                                                                                        
    if [ $scid != "" ]                                                                                              

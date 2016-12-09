@@ -15,24 +15,19 @@
 #                                                                          #
 ############################################################################
 
-FROM ubuntu:14.04
+FROM websphere-traditional:install
 
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
+ARG PROFILE_NAME=AppSrv01
+ARG CELL_NAME=DefaultCell01
+ARG NODE_NAME=DefaultNode01
+ARG HOST_NAME=localhost
+ARG SERVER_NAME=server1
+ARG ADMIN_USER_NAME=wsadmin
 
-ARG user=was
+ENV PROFILE_NAME=$PROFILE_NAME \
+  SERVER_NAME=$SERVER_NAME \
+  ADMIN_USER_NAME=$ADMIN_USER_NAME
 
-ARG group=was
+RUN /work/create_profile
 
-ADD create*.sh /work/
-
-RUN groupadd $group && useradd $user -g $group -m \
-    && chown -R $user:$group /work \
-    && chmod +x /work/create*sh
-
-USER $user
-
-ADD was.tar /
-
-ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
-
-CMD ["/work/createProfileAndStartServer.sh"]
+CMD ["/work/start_server"]

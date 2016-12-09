@@ -1,5 +1,7 @@
+#!/bin/bash
+#
 ###########################################################################
-# (C) Copyright IBM Corporation 2015.                                     #
+# (C) Copyright IBM Corporation 2016.                                     #
 #                                                                         #
 # Licensed under the Apache License, Version 2.0 (the "License");         #
 # you may not use this file except in compliance with the License.        #
@@ -14,23 +16,29 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-FROM websphere-traditional:nd-install
+if [ $# != 3 ]; then
+  echo "Usage: build <version> <IBMid> <IBMid password>"
+  exit 1
+fi
 
-ARG PROFILE_NAME=AppSrv01
-ARG CELL_NAME=ServerCell
-ARG NODE_NAME=ServerNode
-ARG HOST_NAME=localhost
+VERSION=$1
+IBM_ID=$2
+IBM_PASSWORD=$3
 
-# Create default AppServer profile
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
-    /opt/IBM/WebSphere/AppServer/profileTemplates/default -profileName $PROFILE_NAME -profilePath \
-    /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME -cellName $CELL_NAME -nodeName $NODE_NAME -hostName $HOST_NAME
+# Build Installation Manager image
+docker build -t installation-manager im || exit $?
 
-#Expose the ports
-EXPOSE 9060 9043 9080 9443 2809 5060 5061 8880 9633 9401 9403 9402 9100 9353 7276 7286 5558 5578 11003 11004
+# Install WAS with IM and export as tar file
+docker run --rm -v $(pwd):/host installation-manager /host/install_was $VERSION $IBM_ID $IBM_PASSWORD || exit $?
 
-ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
+# Host tar file on HTTP server
+docker run -d --name tar_server -v $(pwd)/was-${VERSION}.tar.gz:/host/was-${VERSION}.tar.gz -w /host python:2-slim python -m SimpleHTTPServer
+tar_server_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' tar_server)
+tar_url="http://${tar_server_ip}:8000/was-${VERSION}.tar.gz"
 
-COPY *.sh *.py /work/
+# Build install image from hosted tar file
+docker build -t websphere-traditional:install --build-arg TAR_URL=$tar_url install || exit $?
+docker rm -f tar_server
 
-CMD ["/work/updateHostAndFederateServer.sh"]
+# Build profile image
+docker build -t websphere-traditional:profile profile || exit $?

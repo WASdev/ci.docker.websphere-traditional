@@ -1,5 +1,7 @@
+#!/bin/bash
+#
 ###########################################################################
-# (C) Copyright IBM Corporation 2015.                                     #
+# (C) Copyright IBM Corporation 2016.                                     #
 #                                                                         #
 # Licensed under the Apache License, Version 2.0 (the "License");         #
 # you may not use this file except in compliance with the License.        #
@@ -14,23 +16,24 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-FROM websphere-traditional:nd-install
+if [ $# != 2 ]; then
+  echo "Usage: build_all <IBMid> <IBMid password>"
+  exit 1
+fi
 
-ARG PROFILE_NAME=AppSrv01
-ARG CELL_NAME=ServerCell
-ARG NODE_NAME=ServerNode
-ARG HOST_NAME=localhost
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Create default AppServer profile
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
-    /opt/IBM/WebSphere/AppServer/profileTemplates/default -profileName $PROFILE_NAME -profilePath \
-    /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME -cellName $CELL_NAME -nodeName $NODE_NAME -hostName $HOST_NAME
-
-#Expose the ports
-EXPOSE 9060 9043 9080 9443 2809 5060 5061 8880 9633 9401 9403 9402 9100 9353 7276 7286 5558 5578 11003 11004
-
-ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
-
-COPY *.sh *.py /work/
-
-CMD ["/work/updateHostAndFederateServer.sh"]
+while read line; do
+  if [[ $line == \#* ]]; then continue; fi
+  version=$(cut -d, -f1 <<< $line)
+  log_file="build-${version}.log"
+  echo "Building ${version} - outputing logs to ${log_file}"
+  $DIR/build ${version} $1 $2 &> build-${version}.log
+  if [ $? == 0 ]; then
+    docker tag websphere-traditional:install websphere-traditional:${version}-install
+    docker tag websphere-traditional:profile websphere-traditional:${version}-profile
+    echo "Successfully built websphere-traditional:${version}-install and websphere-traditional:${version}-profile"
+  else
+    echo "Build failed - see build-${version}.log"
+  fi
+done < versions.csv
