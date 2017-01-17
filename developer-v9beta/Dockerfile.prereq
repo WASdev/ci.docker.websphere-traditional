@@ -1,0 +1,77 @@
+#########################################################################
+# (C) Copyright IBM Corporation 2015.                                     #
+#                                                                         #
+# Licensed under the Apache License, Version 2.0 (the "License");         #
+# you may not use this file except in compliance with the License.        #
+# You may obtain a copy of the License at                                 #
+#                                                                         #
+#      http://www.apache.org/licenses/LICENSE-2.0                         #
+#                                                                         #
+# Unless required by applicable law or agreed to in writing, software     #
+# distributed under the License is distributed on an "AS IS" BASIS,       #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.#
+# See the License for the specific language governing permissions and     #
+# limitations under the License.                                          #
+###########################################################################
+
+FROM ubuntu:14.04
+
+MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
+
+RUN apt-get install -y unzip wget
+
+ARG user=was
+
+ARG group=was
+
+RUN groupadd $group && useradd $user -g $group -m \
+    && chown -R $user:$group /var /opt /tmp /home/$user
+
+USER $user
+
+ARG IBMIDUSER
+ARG IBMIDPWD
+
+###################### IBM Installation Manager ##########################
+
+#Copy IBM Installation Manager into image
+COPY agent.installer.linux.gtk.x86_64_1.8.4001.20160217_1716.zip /tmp/
+
+#Install IBM Installation Manager
+RUN mv /tmp/agent.installer.linux.gtk.x86_64_1.8.4001.20160217_1716.zip /tmp/IM.zip \
+    && mkdir /tmp/im &&  unzip -qd /tmp/im /tmp/IM.zip \
+    && /tmp/im/installc -acceptLicense -accessRights nonAdmin \
+      -installationDirectory "/opt/IBM/InstallationManager"  \
+      -dataLocation "/var/ibm/InstallationManager" -showProgress \
+    && rm -fr /tmp/IM.zip /tmp/im
+
+################# IBM ID Credentials ####################################
+
+#Save credentials to files for use by Installation Manager to retrieve binaries
+RUN tr -cd '[:alnum:]' </dev/urandom |fold -w30 | head -1 >/home/$user/master_password_file.txt \
+    && /opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential \
+      -url http://www.ibm.com/software/repositorymanager/V90WASBeta \
+      -userName $IBMIDUSER \
+      -userPassword $IBMIDPWD \
+      -secureStorageFile /home/$user/credential.store \
+      -masterPasswordFile /home/$user/master_password_file.txt \
+    && /opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential \
+      -passportAdvantage \
+      -userName $IBMIDUSER \
+      -userPassword $IBMIDPWD \
+      -secureStorageFile /home/$user/credential.store \
+      -masterPasswordFile /home/$user/master_password_file.txt
+
+################# IBM WebSphere Application Server ######################
+
+#Install IBM WebSphere Application Server v9 Beta
+RUN /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+      -acceptLicense  install com.ibm.websphere.BASE.beta.v90_9.0.0.20160128_1232 \
+                              com.ibm.java.jdk.v8_8.0.2010.20160128_1040 \
+      -repositories http://www.ibm.com/software/repositorymanager/V90WASBeta  \
+      -installationDirectory /opt/IBM/WebSphere/AppServer \
+      -secureStorageFile /home/$user/credential.store \
+      -masterPasswordFile /home/$user/master_password_file.txt \
+      -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=False,com.ibm.cic.common.core.preferences.keepFetchedFiles=False
+
+CMD ["tar","cvf","/tmp/was.tar","/opt/IBM/WebSphere/AppServer"]

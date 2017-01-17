@@ -1,0 +1,37 @@
+# Based on Dockerfile.profile and defines the image used by the Arquillian
+# project to test the WebSphere container adapter.
+FROM devinstall
+
+MAINTAINER Gerhard Poul <gerhard.poul@gmail.com>
+
+USER root
+
+ARG user=was
+
+ARG group=was
+
+# Install everything we need for running the tests
+RUN apt-get update && apt-get install -y default-jdk git maven
+
+# Create the directories used by wercker (they need to be created because we run as non-root)
+RUN mkdir /pipeline && mkdir /report && chown -R $user:$group /pipeline /report
+
+USER $user
+
+COPY start.sh update*.py /work/
+
+# Create a test profile
+ARG PROFILE_NAME=AppSrv01
+ARG CELL_NAME=DefaultCell01
+ARG NODE_NAME=DefaultNode01
+ARG HOST_NAME=localhost
+
+RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
+    /opt/IBM/WebSphere/AppServer/profileTemplates/default/ -profileName $PROFILE_NAME \
+    -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
+    -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME 
+
+# Required because we're still testing the V8.5 arquillian container adapter on WAS V9.0 Beta
+RUN cp /opt/IBM/WebSphere/AppServer/runtimes/com.ibm.ws.admin.client_9.0.jar /opt/IBM/WebSphere/AppServer/runtimes/com.ibm.ws.admin.client_8.5.0.jar
+
+CMD ["/work/start.sh"]
