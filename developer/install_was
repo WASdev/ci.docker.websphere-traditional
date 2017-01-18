@@ -41,14 +41,24 @@ function install_packages() {
   shift
   packages="$@"
   save_credential $repo
+  fixpack=$(echo $VERSION | cut -d'.' -f 4)
+  properties=""
+  if [[ $VERSION == 8.5.5.* ]] && [[ $fixpack -ge 11 ]]; then
+    echo "Setting Java version to 8"
+    properties="-properties user.wasjava=java8"
+  fi
   /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
     -acceptLicense install $packages \
     -repositories $repo \
     -installationDirectory $INSTALL_DIR \
     -secureStorageFile $SECURE_STORAGE_FILE \
-    -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false
+    -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
+    $properties
   result=$?
   remove_credential
+  if [[ -z $properties ]]; then
+    select_latest_sdk
+  fi
   return $result
 }
 
@@ -71,6 +81,6 @@ function select_latest_sdk() {
   fi
 }
 
+echo "Starting install of TWAS version:" $VERSION
 install_version
-select_latest_sdk
 tar -czvf /host/was-${VERSION}.tar.gz $INSTALL_DIR

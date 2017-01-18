@@ -29,7 +29,7 @@ IBM_PASSWORD=$3
 docker build -t installation-manager im || exit $?
 
 # Install WAS with IM and export as tar file
-docker run --rm -v $(pwd):/host installation-manager /host/install_was $VERSION $IBM_ID $IBM_PASSWORD || exit $?
+docker run --rm -v $(pwd):/host:Z installation-manager /host/install_was $VERSION $IBM_ID $IBM_PASSWORD || exit $?
 
 # Host tar file on HTTP server
 docker run -d --name tar_server -v $(pwd)/was-${VERSION}.tar.gz:/host/was-${VERSION}.tar.gz -w /host python:2-slim python -m SimpleHTTPServer
