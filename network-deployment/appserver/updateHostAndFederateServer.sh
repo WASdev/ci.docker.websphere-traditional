@@ -45,12 +45,16 @@ startNodeAndServer()
      #if nodeagent started successfully , start the server
      if [ $? = 0 ]
      then
-           echo "Starting server......................."
-           /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh server1
+           startServer
      else
            echo " Nodeagent startup failed , exiting....... "
            exit 1
      fi
+}
+
+startServer() {
+     echo "Starting server......................."
+     /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh server1
 }
 
 stopServerAndNode()
@@ -77,7 +81,7 @@ updateHostNameAndAddNode()
      # Update the hostname
      /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
      ServerNode $host
-    
+
      # Add the node
      /opt/IBM/WebSphere/AppServer/bin/addNode.sh $DMGR_HOST $DMGR_PORT
 
@@ -103,13 +107,15 @@ then
       startNodeAndServer
 else
       updateHostNameAndAddNode
-        
-      # Rename the node name and start the node
+
+      # Rename the node name
       if [ $NODE_NAME != "ServerNode" ]
       then
            renameNode
-           startNodeAndServer
       fi
+
+      # start the server
+      startServer
 fi
 
 trap "stopServerAndNode" SIGTERM
