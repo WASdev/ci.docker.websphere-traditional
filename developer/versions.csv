@@ -5,3 +5,5 @@
 9.0.0.0,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.0.20160526_1854 com.ibm.java.jdk.v8
 9.0.0.1,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.1.20160906_0049 com.ibm.java.jdk.v8
 9.0.0.2,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.2.20161108_1719 com.ibm.java.jdk.v8
+9.0.0.3,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.3.20170217_1945 com.ibm.java.jdk.v8
+9.0.0.4,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.4.20170523_1327 com.ibm.java.jdk.v8
