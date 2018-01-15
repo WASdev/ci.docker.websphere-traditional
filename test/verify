@@ -1,0 +1,92 @@
+#!/bin/bash
+#####################################################################################
+#                                                                                   #
+#  Script to verify WebSphere traditional Docker image                              #
+#                                                                                   #
+#  Usage : verify [<Image name>]                                                    #
+#                                                                                   #
+#####################################################################################
+
+image=${1-"websphere-traditional"}
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+tear_down()
+{
+  docker rm -f $(docker ps -lq)
+}
+
+fail()
+{
+  echo $1 >&2
+  tear_down
+  exit 1
+}
+
+start_container()
+{
+  cid=$(docker run -p 9043:9043 -p 9443:9443 -d $1)
+  [[ $? == 0 ]] || fail "Failed to run container"
+  echo "Waiting for server to start in container $cid"
+  timeout 300s $DIR/wait_for_log_message $cid "WSVR0001I"
+  [[ $? != 124 ]] || fail "Server failed to start" $cid
+  echo "Server started"
+}
+
+test_output_version()
+{
+  docker run "$image:install" versionInfo.sh
+}
+
+test_install_with_defaults()
+{
+  start_container "$image:install"
+}
+
+test_install_with_env_variables()
+{
+  start_container "-h testhost -e HOST_NAME=testhost -e PROFILE_NAME=AppSrv02 -e CELL_NAME=DefaultCell02 -e NODE_NAME=DefaultNode02 -e ADMIN_USER_NAME=admin $image:install"
+  cid=$(docker ps -lq)
+  password=$(docker exec $cid cat /tmp/PASSWORD)
+  docker exec $cid wsadmin.sh -lang jython -userName admin -password $password -c "AdminConfig.list('ServerIndex')"
+  [[ $? -eq 0 ]] || fail "Attempt to use modified admin user failed"
+}
+
+test_profile_with_defaults()
+{
+  start_container "$image:profile"
+}
+
+test_profile_with_updated_hostname()
+{
+  start_container "-e UPDATE_HOSTNAME=true $image:profile"
+  cid=$(docker ps -lq)
+  container_hostname=$(docker exec $cid hostname)
+  password=$(docker exec $cid cat /tmp/PASSWORD)
+  server_hostname=$(docker exec $cid wsadmin.sh -lang jython -userName wsadmin -password $password -c "si=AdminConfig.list('ServerIndex');print AdminConfig.showAttribute(si,'hostName')" | tail -1)
+  [[ $container_hostname = $server_hostname ]] || fail "Hostname not updated"
+}
+
+test_install_app()
+{
+  docker build -t $image:app .
+  start_container "$image:app"
+  response=$(curl -skL -w "%{http_code}" https://$(docker port $(docker ps -lq) 9443)/ferret/ -o /dev/null)
+  [[ $response -eq 200 ]] || fail "Call to application failed"
+}
+
+test_stop()
+{
+  start_container "$image:install"
+  cid=$(docker ps -lq)
+  docker stop $cid
+  timeout 120s $DIR/wait_for_log_message $cid "WSVR0024I"
+}
+
+tests=$(declare -F | cut -d" " -f3 | grep "test")
+for name in $tests
+do
+  echo "*** $name - Executing"
+  eval $name
+  tear_down
+  echo "*** $name - Completed successfully"
+done

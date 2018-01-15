@@ -2,15 +2,15 @@
 #                                                                                   #
 #  Script to update Hostname                                                        #
 #                                                                                   #
-#  Usage : wsadmin -lang jython -f updateHostName.py <node name >  < host name >    # 
+#  Usage : wsadmin -lang jython -f updateNodeName.py <old nodename > <new nodename> # 
 #                                                                                   #
 #####################################################################################
 
 
-def updateHostName(nodename,hostname):
+def updateNodeName(oldnodename, newnodename):
 
-        AdminTask.changeHostName('[-nodeName '+ nodename +' -hostName '+ hostname +' -regenDefaultCert true ]')
+	AdminTask.renameNode('[-nodeName '+ oldnodename +' -newNodeName '+ newnodename +']') 
 
 	AdminConfig.save()
 
-updateHostName(sys.argv[0], sys.argv[1])	
+updateNodeName(sys.argv[0], sys.argv[1])	

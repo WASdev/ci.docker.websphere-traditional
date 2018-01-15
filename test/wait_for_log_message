@@ -1,0 +1,6 @@
+#!/bin/bash
+# Usage wait_for_log_message <container id> <message>
+
+docker logs --tail=all -f $1 2> /dev/null | while read LINE; do
+  [[ "${LINE}" == *$2* ]] && pkill -P $$ docker
+done

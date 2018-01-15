@@ -1,33 +1,41 @@
 ## Running the IBM WebSphere Application Server traditional for Developers profile image
 
-When the container is started by using the IBM WebSphere Application Server traditional for Developers profile image, the start script is executed and takes the following environment variables:
+When the container is started by using the IBM WebSphere Application Server traditional for Developers profile image, it takes the following environment variables:
 
-* UPDATE_HOSTNAME (optional, set to 'true' if the hostname should be updated from the default of 'localhost')
-* PROFILE_NAME (optional, default is 'AppSrv01')
-* NODE_NAME (optional, default is 'DefaultNode01') 
+* `UPDATE_HOSTNAME` (optional, set to `true` if the hostname should be updated from the default of `localhost`)
+* `PROFILE_NAME` (optional, default is `AppSrv01`)
+* `NODE_NAME` (optional, default is `DefaultNode01`)
+* `SERVER_NAME` (optional, default is `server1`)
 
 # Running the image by using the default values
 
 ```bash
-docker run --name <container-name> -h <container-name> -p 9060:9060 -p 9080:9080 -d <profile-image-name>
+docker run --name <container-name> -h <container-name> \
+  -p 9043:9043 -p 9443:9443 -d <profile-image-name>
 ```
 
 Example:
 
 ```bash
-docker run --name test -h test -p 9060:9060 -p 9080:9080 -d devprofile
+docker run --name test -h test -p 9043:9043 -p 9443:9443 \
+  -d websphere-traditional:profile
 ```
 
-# Running the image by passing values for the environment variables                                                                                                    
-                                                                                                                              
-```bash                                                                                                                                         
-docker run --name <container-name> -h <container-name> -e UPDATE_HOSTNAME=true -e PROFILE_NAME=<profile-name> -e NODE_NAME=<node-name> -p 9060:9060 -p 9080:9080 -d <profile-image-name>                  
+# Running the image by passing values for the environment variables
+
+```bash
+docker run --name <container-name> -h <container-name> \
+  -e UPDATE_HOSTNAME=true -e PROFILE_NAME=<profile-name> \
+  -e NODE_NAME=<node-name> -e SERVER_NAME=<server-name> \
+  -p 9043:9043 -p 9443:9443 -d <profile-image-name>
 ```    
 
 Example:
 
-```bash                                                                                                                                        
-docker run --name test -h test -e UPDATE_HOSTNAME=true -e PROFILE_NAME=AppSrv02 -e NODE_NAME=DefaultNode02 -p 9060:9060 -p 9080:9080 -d devprofile 
+```bash
+docker run --name test -h test -e UPDATE_HOSTNAME=true \
+  -e PROFILE_NAME=AppSrv02 -e NODE_NAME=DefaultNode02 -e SERVER_NAME=server2 \
+  -p 9043:9043 -p 9443:9443 -d websphere-traditional:profile 
 ``` 
 
 # Checking the logs
@@ -38,8 +46,8 @@ docker logs -f --tail=all <container-name>
 
 Example:
 
-```bash                                                                                                                                         
-docker logs -f --tail=all test                                                                                                      
+```bash
+docker logs -f --tail=all test
 ``` 
 
 # Stopping the Application Server gracefully

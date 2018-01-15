@@ -1,16 +1,11 @@
+#!/bin/bash
 #####################################################################################
 #                                                                                   #
-#  Script to update Hostname                                                        #
+#  Script to create AppServer profile, start server and then wait.                  #
 #                                                                                   #
-#  Usage : wsadmin -lang jython -f updateHostName.py <node name >  < host name >    # 
+#  Usage : create_and_start                                                         #
 #                                                                                   #
 #####################################################################################
 
-
-def updateHostName(nodename,hostname):
-
-        AdminTask.changeHostName('[-nodeName '+ nodename +' -hostName '+ hostname +' -regenDefaultCert true ]')
-
-	AdminConfig.save()
-
-updateHostName(sys.argv[0], sys.argv[1])	
+/work/create_profile
+exec /work/start_server

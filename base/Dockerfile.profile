@@ -15,23 +15,19 @@
 #                                                                          #
 ############################################################################
 
-FROM baseinstall
-
-MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
-
-COPY start.sh update*.py /work/
+FROM websphere-traditional:install
 
 ARG PROFILE_NAME=AppSrv01
-
 ARG CELL_NAME=DefaultCell01
-
 ARG NODE_NAME=DefaultNode01
-
 ARG HOST_NAME=localhost
+ARG SERVER_NAME=server1
+ARG ADMIN_USER_NAME=wsadmin
 
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh -create -templatePath \
-    /opt/IBM/WebSphere/AppServer/profileTemplates/default/ -profileName $PROFILE_NAME \
-    -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
-    -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME 
+ENV PROFILE_NAME=$PROFILE_NAME \
+  SERVER_NAME=$SERVER_NAME \
+  ADMIN_USER_NAME=$ADMIN_USER_NAME
 
-CMD ["/work/start.sh"]
+RUN /work/create_profile
+
+CMD ["/work/start_server"]

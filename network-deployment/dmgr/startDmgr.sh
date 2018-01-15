@@ -7,10 +7,8 @@
 #                                                                                   #
 #####################################################################################
 
-echo "Starting deployment manager ............"
-
-if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]
-then
+update_host_node_name()
+{
     #Get the container hostname
     host=`hostname`
 
@@ -18,27 +16,62 @@ then
     if [ "$NODE_NAME" = "" ]
     then
        NODE_NAME="DefaultNode01"
+    else
+       # Update the nodename
+       /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateNodeName.py \
+       DefaultNode01 $NODE_NAME
+       
+       echo "WAS_NODE=$NODE_NAME" >> /opt/IBM/WebSphere/AppServer/bin/setupCmdLine.sh
+
     fi
 
     # Update the hostname
     /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py \
     $NODE_NAME $host
 
-    touch /work/hostnameupdated
+    touch /work/host_nodenameupdated
+}
 
-fi
+startDmgr()
+{
+    if [ "$PROFILE_NAME" = "" ]
+    then
+        PROFILE_NAME="Dmgr01"
+    fi
 
-if [ "$PROFILE_NAME" = "" ]
+    echo "Starting deployment manager ............"
+    /opt/IBM/WebSphere/AppServer/bin/startManager.sh
+
+    if [ $? != 0 ]
+    then
+        echo " Dmgr startup failed , exiting....."
+    fi
+}
+
+stopDmgr()
+{
+    if [ "$PROFILE_NAME" = "" ]
+    then
+        PROFILE_NAME="Dmgr01"
+    fi
+
+    echo "Stopping deployment manager ............"
+    /opt/IBM/WebSphere/AppServer/bin/stopManager.sh
+
+    if [ $? = 0 ]
+    then
+        echo " Dmgr stopped successfully. "
+    fi
+}
+
+if [ ! -f "/work/host_nodenameupdated" ]
 then
-    PROFILE_NAME="Dmgr01"
+    update_host_node_name
 fi
 
-/opt/IBM/WebSphere/AppServer/bin/startManager.sh
+startDmgr
 
-if [ $? != 0 ]
-then
-    echo " Dmgr startup failed , exiting....."
-fi
+trap "stopDmgr" SIGTERM
 
 sleep 10
 

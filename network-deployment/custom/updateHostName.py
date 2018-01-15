@@ -7,14 +7,14 @@
 #####################################################################################
 
 
-def updateHostName( nodename,hostname):
-    
+def updateHostName(nodename,hostname):
+
         AdminTask.changeHostName('[-nodeName '+ nodename +' -hostName '+ hostname +']')
-        
+
 	AdminTask.modifyServerPort('nodeagent', '[-nodeName '+ nodename +' -endPointName BOOTSTRAP_ADDRESS -host '+ hostname +' -port 2809 -modifyShared true]') 
 
 	AdminTask.modifyServerPort('nodeagent', '[-nodeName '+ nodename +' -endPointName CSIV2_SSL_MUTUALAUTH_LISTENER_ADDRESS -host '+ hostname +' -port 9202 -modifyShared true]') 
-	
+
 	AdminTask.modifyServerPort('nodeagent', '[-nodeName '+ nodename +' -endPointName CSIV2_SSL_SERVERAUTH_LISTENER_ADDRESS -host '+ hostname +' -port 9201 -modifyShared true]') 
 
 	AdminTask.modifyServerPort('nodeagent', '[-nodeName '+ nodename +' -endPointName NODE_DISCOVERY_ADDRESS -host '+ hostname +' -port 7272 -modifyShared true]') 
@@ -31,6 +31,6 @@ def updateHostName( nodename,hostname):
 
 	AdminTask.modifyServerPort('nodeagent', '[-nodeName '+ nodename +' -endPointName XDAGENT_PORT -host '+ hostname +' -port 7062 -modifyShared true]')  
 
-        AdminConfig.save()
-	
+	AdminConfig.save()
+
 updateHostName(sys.argv[0], sys.argv[1])	

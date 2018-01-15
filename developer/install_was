@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+###########################################################################
+# (C) Copyright IBM Corporation 2015, 2016.                               #
+#                                                                         #
+# Licensed under the Apache License, Version 2.0 (the "License");         #
+# you may not use this file except in compliance with the License.        #
+# You may obtain a copy of the License at                                 #
+#                                                                         #
+#      http://www.apache.org/licenses/LICENSE-2.0                         #
+#                                                                         #
+# Unless required by applicable law or agreed to in writing, software     #
+# distributed under the License is distributed on an "AS IS" BASIS,       #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.#
+# See the License for the specific language governing permissions and     #
+# limitations under the License.                                          #
+###########################################################################
+
+VERSION=$1
+IBM_ID=$2
+IBM_PASSWORD=$3
+
+INSTALL_DIR=/opt/IBM/WebSphere/AppServer
+SECURE_STORAGE_FILE=/tmp/credentials
+
+function save_credential() {
+  url=$1
+  /opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential \
+    -url $url \
+    -userName $IBM_ID \
+    -userPassword $IBM_PASSWORD \
+    -secureStorageFile $SECURE_STORAGE_FILE
+}
+
+function remove_credential() {
+  rm $SECURE_STORAGE_FILE
+}
+
+function install_packages() {
+  repo=$1
+  shift
+  packages="$@"
+  save_credential $repo
+  fixpack=$(echo $VERSION | cut -d'.' -f 4)
+  properties=""
+  if [[ $VERSION == 8.5.5.* ]] && [[ $fixpack -ge 11 ]]; then
+    echo "Setting Java version to 8"
+    properties="-properties user.wasjava=java8"
+  fi
+  /opt/IBM/InstallationManager/eclipse/tools/imcl -showProgress \
+    -acceptLicense install $packages \
+    -repositories $repo \
+    -installationDirectory $INSTALL_DIR \
+    -secureStorageFile $SECURE_STORAGE_FILE \
+    -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false \
+    $properties
+  result=$?
+  remove_credential
+  if [[ -z $properties ]]; then
+    select_latest_sdk
+  fi
+  return $result
+}
+
+function install_version() {
+  line=$(grep "^$VERSION" /host/versions.csv | cut -d "," -f 2-)
+  IFS=',' read -ra entries <<< "$line"
+  for entry in "${entries[@]}"; do
+    IFS='|' read repo packages <<< "$entry"
+    install_packages $repo $packages || exit $?
+  done
+}
+
+function select_latest_sdk() {
+  sdks=$(/opt/IBM/WebSphere/AppServer/bin/managesdk.sh -listAvailable | sed -ne 's/.*CWSDK1005I.* //p')
+  num_sdks=$(echo "$sdks" | wc -l)
+  if [ $num_sdks -gt 1 ]; then
+    latest_sdk=$(echo "$sdks" | tail -1)
+    /opt/IBM/WebSphere/AppServer/bin/managesdk.sh -setCommandDefault -sdkname $latest_sdk || exit $?
+    /opt/IBM/WebSphere/AppServer/bin/managesdk.sh -setNewProfileDefault -sdkname $latest_sdk || exit $?
+  fi
+}
+
+echo "Starting install of TWAS version:" $VERSION
+install_version
+tar -czvf /host/was-${VERSION}.tar.gz $INSTALL_DIR

@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015.                                      #
+# (C) Copyright IBM Corporation 2015, 2016                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -15,27 +15,26 @@
 #                                                                          #
 ############################################################################
 
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER Kavitha Suresh Kumar <kavisuresh@in.ibm.com>
 
-ARG user=was
+RUN apt-get update && apt-get install -y openssl
 
-ARG group=was
+ARG USER=was
+ARG GROUP=was
 
-ADD create*.sh /work/
+COPY start_server create_profile create_and_start modify_password \
+  updateHostName.py updatePassword.py /work/
 
-RUN groupadd $group && useradd $user -g $group -m \
-    && chown -R $user:$group /work \
-    && chmod +x /work/create*sh
+RUN groupadd $GROUP \
+  && useradd $USER -g $GROUP -m \
+  && chown -R $USER:$GROUP /work
 
-USER $user
+USER $USER
 
 ADD was.tar /
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
-RUN managesdk.sh -setCommandDefault -sdkname 1.7.1_64 \
-    && managesdk.sh -setNewProfileDefault -sdkname 1.7.1_64
-
-CMD ["/work/createProfileAndStartServer.sh"]
+CMD ["/work/create_and_start"]
