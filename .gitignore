@@ -2,3 +2,4 @@
 *.tar
 *.zip
 *.tar.gz
+.DS_STORE
