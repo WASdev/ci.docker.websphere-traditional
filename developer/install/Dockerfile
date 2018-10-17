@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015, 2016                                 #
+# (C) Copyright IBM Corporation 2015, 2018                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -17,7 +17,7 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER David Currie <david_currie@uk.ibm.com>
+MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
 
 RUN apt-get update && apt-get install -y openssl wget
 
