@@ -1,27 +1,6 @@
 # Building an IBM WebSphere Application Server traditional base image from binaries
 
-The following instructions can be used to build an IBM WebSphere Application Server traditional base image from binaries for either V8.5.5 or V9.0.0.
-
-## Binaries required for V8.5.5
-
-* IBM Installation Manager binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html)
-
-  IBM Installation Manager binaries:
-  * Install_Mgr_v1.6.2_Lnx_WASv8.5.5.zip (CIK2GML)
-
-* IBM WebSphere Application Server Base traditional binaries from [Passport Advantage](http://www-01.ibm.com/software/passportadvantage/pao_customer.html) / [Fix Central](http://www-933.ibm.com/support/fixcentral/)
-
-  IBM WebSphere Application Server Base traditional V8.5.5 binaries:
-  * WAS_V8.5.5_1_OF_3.zip (CIK1QML)
-  * WAS_V8.5.5_2_OF_3.zip (CIK1RML)
-  * WAS_V8.5.5_3_OF_3.zip (CIK1SML)
-
-  Fixpack V8.5.5.10 binaries:
-  * 8.5.5-WS-WAS-FP0000010-part1.zip
-  * 8.5.5-WS-WAS-FP0000010-part2.zip
-
-  IBM WebSphere SDK Java Technology Edition V8.0.2.10 binaries:
-  * 8.0.2.10-WS-IBMWASJAVA-Linux.zip
+The following instructions can be used to build an IBM WebSphere Application Server traditional base image from binaries for V9.0.0.
 
 ## Binaries required for V9.0.0
 
@@ -46,16 +25,7 @@ The following instructions can be used to build an IBM WebSphere Application Ser
 1. Place the downloaded IBM Installation Manager and IBM WebSphere Application Server traditional binaries on an FTP or HTTP server
 2. Clone this repository
 3. Move to the directory `base`
-4. Build the prereq image for V8.5.5:
-
-    ```bash
-    docker build --build-arg USER=<user> --build-arg GROUP=<group> \
-      --build-arg URL=<URL> -t websphere-traditional:prereq \
-      -f Dockerfile.v855.prereq .
-    ```
-
-    or for V9.0.0:
-
+4. Build the prereq image for V9.0.0:
     ```bash
     docker build --build-arg USER=<user> --build-arg GROUP=<group> \
       --build-arg URL=<URL> -t websphere-traditional:prereq \

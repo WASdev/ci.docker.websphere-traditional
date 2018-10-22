@@ -31,8 +31,7 @@ ENV PROFILE_NAME=$PROFILE_NAME \
 
 RUN /work/create_profile
 
-COPY applyConfig.sh /work
-COPY applyConfig.py /work
+COPY applyConfig.sh applyConfig.py /work
 
 USER root
 RUN chown $USER:$USER -R /work && chmod +x /work/applyConfig.sh
