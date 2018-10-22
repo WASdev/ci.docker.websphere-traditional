@@ -50,7 +50,6 @@ COPY myApp.war /work/app/
 RUN /work/applyConfig.sh && /work/installApp.sh 
 ```
 
-
 ## Manually Building an IBM WebSphere Application Server traditional for Developers image
 
 If you wish to build these images for yourself you will need to follow the steps below.
