@@ -4,4 +4,4 @@ Under this directory you can find build scripts for Docker images (Dockerfiles) 
 
 Main folders:
 * [Information about the Docker Hub image](developer)
-* [Information on how to build your own traditional WAS base image]](base)
+* [Information on how to build your own traditional WAS base image](base)
