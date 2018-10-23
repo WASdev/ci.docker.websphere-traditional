@@ -11,7 +11,7 @@ According to Docker's best practices you should create a new image (`FROM ibmcom
 
 Even if you `docker save` the manually configured container, the steps to reproduce the image from `ibmcom/websphere-traditional` will be lost and you will hinder your ability to update that image.
 
-### Adding configuration during build phase
+### Adding configuration during build phase (under construction)
 
 Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/was-config.props` file.  
 
