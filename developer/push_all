@@ -45,13 +45,9 @@ push_to_namespace()
 while read line; do
   if [[ $line == \#* ]]; then continue; fi
   version=$(cut -d, -f1 <<< $line)
-  prefix="websphere-traditional:${version}-"
-  for suffix in "install" "profile"; do
-    name="${prefix}${suffix}"
-    push_to_namespace $name $NAMESPACE
- done
+  name="websphere-traditional:${version}-profile"
+  push_to_namespace $name $NAMESPACE
 done < $DIR/versions.csv
 
-push "websphere-traditional:${version}-install" "$NAMESPACE/websphere-traditional:install"
 push "websphere-traditional:${version}-profile" "$NAMESPACE/websphere-traditional:profile"
 push "websphere-traditional:${version}-profile" "$NAMESPACE/websphere-traditional:latest"
