@@ -29,11 +29,14 @@ while read line; do
   log_file="build-${version}.log"
   echo "Building ${version} - outputing logs to ${log_file}"
   $DIR/build ${version} $1 $2 &> build-${version}.log
+  echo "---\nVersion ${version} build output:"
+  cat build-${version}.log
+  echo "---\n"
   if [ $? == 0 ]; then
     docker tag websphere-traditional:install websphere-traditional:${version}-install
     docker tag websphere-traditional:profile websphere-traditional:${version}-profile
     echo "Successfully built websphere-traditional:${version}-install and websphere-traditional:${version}-profile"
   else
-    echo "Build failed - see build-${version}.log"
+    echo "Build failed - see build-${version}.log or build output above"
   fi
 done < versions.csv
