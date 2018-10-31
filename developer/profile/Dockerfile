@@ -24,17 +24,18 @@ ARG HOST_NAME=localhost
 ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 ARG USER=was
+ARG GROUP=was
 ENV PROFILE_NAME=$PROFILE_NAME \
   SERVER_NAME=$SERVER_NAME \
   ADMIN_USER_NAME=$ADMIN_USER_NAME
 
 RUN /work/create_profile
 
-COPY applyConfig.sh /work
-COPY applyConfig.py /work
+COPY . /work
 
 USER root
-RUN chown $USER:$USER -R /work && chmod +x /work/applyConfig.sh
+RUN chown $USER:$GROUP -R /work && chmod +x /work/applyConfig.sh \
+&& chmod +x /work/configure.sh && chmod +x /work/run_py_script.sh
 USER $USER
 
 CMD ["/work/start_server"]
