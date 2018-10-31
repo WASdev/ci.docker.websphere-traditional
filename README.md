@@ -74,8 +74,8 @@ Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run i
 FROM ibmcom/websphere-traditional:profile
 COPY configA.py /work/
 COPY configB.py /work/
-RUN /work/run_py_script.sh /work/configA.py \
-    && /work/run_py_script.sh /work/configB.py 
+RUN /work/run_py_script.sh /work/configA.py <args> \
+    && /work/run_py_script.sh /work/configB.py <args>
 ```
 
 ## How to run this image
