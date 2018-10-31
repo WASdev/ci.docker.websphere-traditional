@@ -63,6 +63,20 @@ COPY dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
 
+### Running Python scripts individually
+
+If you have some Python scripts that must be run in a certain order, or if they require parameters to be passed in, then you can directly call
+the `/work/run_py_script.sh` script - once for each script.  
+
+Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run in that order.  You can configure them via the following Dockerfile:
+
+```
+FROM ibmcom/websphere-traditional:profile
+COPY configA.py /work/
+COPY configB.py /work/
+RUN /work/run_py_script.sh /work/configA.py \
+    && /work/run_py_script.sh /work/configB.py 
+```
 
 ## How to run this image
 

@@ -43,7 +43,7 @@ COPY scripts/ /work/
 RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
   && mkdir /opt/IBM \
-  && chown -R $USER:$GROUP /work /opt/IBM
+  && chown -R $USER:$GROUP /work /opt/IBM \
   && chmod -R +x /work/*
 
 
