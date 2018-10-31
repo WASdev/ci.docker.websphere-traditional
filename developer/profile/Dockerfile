@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015.                                      #
+# (C) Copyright IBM Corporation 2015, 2018                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -15,7 +15,21 @@
 #                                                                          #
 ############################################################################
 
-FROM websphere-traditional:install
+FROM ubuntu:16.04
+
+MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
+
+RUN apt-get update && apt-get install -y openssl wget unzip
+
+ARG IMURL
+ARG IBMID
+ARG IBMID_PWD
+ARG IFIXES=none
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90
+ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
+
+ARG USER=was
+ARG GROUP=was
 
 ARG PROFILE_NAME=AppSrv01
 ARG CELL_NAME=DefaultCell01
@@ -23,19 +37,52 @@ ARG NODE_NAME=DefaultNode01
 ARG HOST_NAME=localhost
 ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
-ARG USER=was
-ARG GROUP=was
-ENV PROFILE_NAME=$PROFILE_NAME \
-  SERVER_NAME=$SERVER_NAME \
-  ADMIN_USER_NAME=$ADMIN_USER_NAME
+
+COPY start_server create_profile modify_password apply_fixes \
+  apply_fixes updateHostName.py updatePassword.py /work/
+
+RUN groupadd $GROUP \
+  && useradd $USER -g $GROUP -m \
+  && mkdir /opt/IBM \
+  && chown -R $USER:$GROUP /work /opt/IBM
+
+USER $USER
+
+RUN cd /work && wget $IMURL \
+  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && rm -rf agent.installer.linux.gtk.x86_64*.zip \
+  && echo "your_secureStore_password" > /tmp/secureStorePwd \
+  && /work/InstallationManagerKit/tools/imutilsc saveCredential \
+    -userName $IBMID -userPassword $IBMID_PWD \
+    -secureStorageFile /tmp/secureStore \
+    -masterPasswordFile /tmp/secureStorePwd \
+    -url $REPO \
+  && /work/InstallationManagerKit/tools/imcl install \
+    $PRODUCTID com.ibm.java.jdk.v8 \
+    -acceptLicense -accessRights nonAdmin -showProgress \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
+    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
+    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
+    -preferences offering.service.repositories.areUsed=false,\
+com.ibm.cic.common.core.preferences.searchForUpdates=true,\
+com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
+com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
+  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+
+ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
+    PROFILE_NAME=$PROFILE_NAME \
+    SERVER_NAME=$SERVER_NAME \
+    ADMIN_USER_NAME=$ADMIN_USER_NAME
 
 RUN /work/create_profile
 
-COPY . /work
+# Copy IBM scripts into the image
+COPY /scripts /work
 
+# Change permissions to run as non-root
 USER root
-RUN chown $USER:$GROUP -R /work && chmod +x /work/applyConfig.sh \
-&& chmod +x /work/configure.sh && chmod +x /work/run_py_script.sh
+RUN chown -R $USER:$GROUP /work && chmod -R +x /work/*
 USER $USER
 
 CMD ["/work/start_server"]
