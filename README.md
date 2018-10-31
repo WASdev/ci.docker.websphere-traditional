@@ -1,6 +1,6 @@
 # Docker Hub Image
 
-The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional for Developers. If you wish to build these yourself just follow [these instructions](profile/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
+The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional for Developers. If you wish to build these yourself just follow [these instructions](docker-build/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
 
 ## Building an application image 
 
