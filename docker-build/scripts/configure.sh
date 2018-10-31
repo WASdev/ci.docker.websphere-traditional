@@ -11,7 +11,7 @@ stop_server()
 }
 
 echo "Updating Password"
-/work/modify_password
+/work/modify_password.sh
 start_server
 PID=$(ps -C java -o pid= | tr -d " ")
 echo "Applying configuration"

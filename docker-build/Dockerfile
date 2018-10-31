@@ -76,6 +76,6 @@ ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     SERVER_NAME=$SERVER_NAME \
     ADMIN_USER_NAME=$ADMIN_USER_NAME
 
-RUN /work/create_profile
+RUN /work/create_profile.sh
 
-CMD ["/work/start_server"]
+CMD ["/work/start_server.sh"]
