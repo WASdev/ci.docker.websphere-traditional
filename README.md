@@ -1,6 +1,6 @@
 # Docker Hub Image
 
-The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional for Developers. If you wish to build these yourself just follow [these instructions](docker-build/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
+The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional. If you wish to build these yourself just follow [these instructions](docker-build/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
 
 ## Building an application image 
 
@@ -11,9 +11,19 @@ According to Docker's best practices you should create a new image (`FROM ibmcom
 
 Even if you `docker save` the manually configured container, the steps to reproduce the image from `ibmcom/websphere-traditional` will be lost and you will hinder your ability to update that image.
 
-### Adding configuration during build phase (under construction)
+The key point to take-away from the sections below is that your application Dockerfile should always follow a pattern similar to:
 
-Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/was-config.props` file.  
+```
+FROM ibmcom/websphere-traditional:<version>
+# copy property files and python scripts
+RUN /work/configure.sh
+```
+
+This will result in a Docker image that has your application and configuration pre-loaded, which means you can spawn new fully-configured containers at any time.
+
+### Adding properties during build phase 
+
+Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/was-config.props` file.  This script will be run with the server in `stopped` mode.
 
 For example, if you had the following `was-config.props`:
 
@@ -34,12 +44,13 @@ You can then create a new image which has this configuration by simply building 
 ```
 FROM ibmcom/websphere-traditional:profile
 COPY was-config.props /work
-RUN /work/applyConfig.sh
+RUN /work/configure.sh
 ```
 
-### Adding an applicationg during build phase (under construction)
+### Adding an application and advanced configuration during build phase 
 
-Similar to the example above, you can also deploy an application by placing under the `/work/app` folder and running the script from `/work/installApp.sh`.  
+Similar to the example above, you can also deploy an application and advanced configuration by placing their Python (`.py`) scripts under
+the folder `/work/config`.  
 
 Putting it all together, you would have a Dockerfile such as:
 
@@ -47,7 +58,9 @@ Putting it all together, you would have a Dockerfile such as:
 FROM ibmcom/websphere-traditional:profile
 COPY was-config.props /work/
 COPY myApp.war /work/app/
-RUN /work/applyConfig.sh && /work/installApp.sh 
+COPY myAppDeploy.py /work/config
+COPY dataSourceConfig.py /work/config
+RUN /work/configure.sh
 ```
 
 
