@@ -1,5 +1,12 @@
 # How to build this image
 
+## Clone repo
+``git clone git@github.com:WASdev/ci.docker.websphere-traditional.git`
+
+`cd ci.docker.websphere-traditional/docker-build`
+
+## Building the image
+
 To create an image with the latest fixpack version of IBM Websphere Application Server (ILAN) V9.0 using your [IBMid](https://www.ibm.com/account/reg/us-en/signup?formid=urx-19776) and the IBM Installation Manager install kit download url (see [instructions](download-iim.md) to get the download url).  
 
 For example:
