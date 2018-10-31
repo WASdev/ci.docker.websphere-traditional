@@ -38,13 +38,14 @@ ARG HOST_NAME=localhost
 ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
-COPY start_server create_profile modify_password apply_fixes \
-  apply_fixes updateHostName.py updatePassword.py /work/
+COPY scripts/ /work/
 
 RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
   && mkdir /opt/IBM \
   && chown -R $USER:$GROUP /work /opt/IBM
+  && chmod -R +x /work/*
+
 
 USER $USER
 
@@ -76,13 +77,5 @@ ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     ADMIN_USER_NAME=$ADMIN_USER_NAME
 
 RUN /work/create_profile
-
-# Copy IBM scripts into the image
-COPY /scripts /work
-
-# Change permissions to run as non-root
-USER root
-RUN chown -R $USER:$GROUP /work && chmod -R +x /work/*
-USER $USER
 
 CMD ["/work/start_server"]
