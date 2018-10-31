@@ -1,7 +1,7 @@
 # How to build this image
 
 ## Clone repo
-``git clone git@github.com:WASdev/ci.docker.websphere-traditional.git`
+`git clone git@github.com:WASdev/ci.docker.websphere-traditional.git`
 
 `cd ci.docker.websphere-traditional/docker-build`
 
