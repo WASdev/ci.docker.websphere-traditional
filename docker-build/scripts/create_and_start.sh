@@ -7,5 +7,5 @@
 #                                                                                   #
 #####################################################################################
 
-/work/create_profile
-exec /work/start_server
+/work/create_profile.sh
+exec /work/start_server.sh
