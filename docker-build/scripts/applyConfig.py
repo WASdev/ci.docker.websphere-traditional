@@ -1,5 +1,5 @@
 import os
 import sys
-
-AdminTask.applyConfigProperties('[-propertiesFileName /work/was-config.props -validate true]')
+filename = sys.argv[0]
+AdminTask.applyConfigProperties('[-propertiesFileName ' + filename + ' -validate true]')
 AdminConfig.save()
