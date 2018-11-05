@@ -15,7 +15,7 @@ The key point to take-away from the sections below is that your application Dock
 
 ```
 FROM ibmcom/websphere-traditional:<version>
-# copy property files and python scripts
+# copy property files and python scripts, using the flag `--chown was:was` to set the appropriate permission
 RUN /work/configure.sh
 ```
 
@@ -23,9 +23,9 @@ This will result in a Docker image that has your application and configuration p
 
 ### Adding properties during build phase 
 
-Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/was-config.props` file.  This script will be run with the server in `stopped` mode.
+Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/config/was-config.props` file.  This script will be run with the server in `stopped` mode.
 
-For example, if you had the following `was-config.props`:
+For example, if you had the following `/work/config/was-config.props`:
 
 ```
 ResourceType=JavaVirtualMachine
@@ -43,7 +43,7 @@ You can then create a new image which has this configuration by simply building 
 
 ```
 FROM ibmcom/websphere-traditional:profile
-COPY was-config.props /work
+COPY --chown was:was was-config.props /work/config
 RUN /work/configure.sh
 ```
 
@@ -56,10 +56,9 @@ Putting it all together, you would have a Dockerfile such as:
 
 ```
 FROM ibmcom/websphere-traditional:profile
-COPY was-config.props /work/
-COPY myApp.war /work/app/
-COPY myAppDeploy.py /work/config
-COPY dataSourceConfig.py /work/config
+COPY --chown was:was was-config.props /work/config
+COPY --chown was:was myApp.war /work/app
+COPY --chown was:was myAppDeploy.py dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
 
@@ -72,10 +71,9 @@ Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run i
 
 ```
 FROM ibmcom/websphere-traditional:profile
-COPY configA.py /work/
-COPY configB.py /work/
-RUN /work/run_py_script.sh /work/configA.py <args> \
-    && /work/run_py_script.sh /work/configB.py <args>
+COPY --chown was:was configA.py configB.py /work/
+RUN /work/configure.sh /work/configA.py <args> \
+    && /work/configure.sh /work/configB.py <args>
 ```
 
 ## How to run this image

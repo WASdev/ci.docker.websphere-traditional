@@ -43,10 +43,11 @@ COPY scripts/ /work/
 RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
   && mkdir /opt/IBM \
-  && chown -R $USER:$GROUP /work /opt/IBM \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
-  && chown $USER:$GROUP /etc/websphere
+  && mkdir /work/config \
+  && chown -R $USER:$GROUP /work /opt/IBM /etc/websphere 
+
 
 USER $USER
 
