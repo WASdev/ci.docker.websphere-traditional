@@ -44,8 +44,9 @@ RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
   && mkdir /opt/IBM \
   && chown -R $USER:$GROUP /work /opt/IBM \
-  && chmod -R +x /work/*
-
+  && chmod -R +x /work/* \
+  && mkdir /etc/websphere \
+  && chown $USER:$GROUP /etc/websphere
 
 USER $USER
 
@@ -77,5 +78,9 @@ ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     ADMIN_USER_NAME=$ADMIN_USER_NAME
 
 RUN /work/create_profile.sh
+
+USER root
+RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown $USER:$GROUP /logs
+USER $USER
 
 CMD ["/work/start_server.sh"]

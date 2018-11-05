@@ -28,13 +28,22 @@ stop_server()
   kill -s INT $PID 
 }
 
+applyConfigs(){
+  if [ ! -z "$(ls /etc/websphere)" ]; then
+    echo "+ Found config-files under /etc/websphere. Executing..."
+    find /etc/websphere -name "*.props" -exec /work/applyConfig.sh {} \;
+  fi
+}
+
+applyConfigs
+
 if [ ! -f "/work/passwordupdated" ]; then
   /work/modify_password.sh
 fi
 
 if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]; then
   update_hostname.sh
-fi 
+fi
 
 trap "stop_server" TERM INT
 start_server || exit $?
