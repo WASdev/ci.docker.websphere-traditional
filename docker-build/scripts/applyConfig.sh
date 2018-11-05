@@ -4,6 +4,6 @@ if [ ! -z "$1" ]; then
 	exit 0
 fi
 
-if [ -f /work/was-config.props ]; then
-	/opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -conntype None -f /work/applyConfig.py /work/was-config.props
+if [ -f /work/config/was-config.props ]; then
+	/opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -conntype None -f /work/applyConfig.py /work/config/was-config.props
 fi

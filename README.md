@@ -23,9 +23,9 @@ This will result in a Docker image that has your application and configuration p
 
 ### Adding properties during build phase 
 
-Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/was-config.props` file.  This script will be run with the server in `stopped` mode.
+Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/config/was-config.props` file.  This script will be run with the server in `stopped` mode.
 
-For example, if you had the following `was-config.props`:
+For example, if you had the following `/work/config/was-config.props`:
 
 ```
 ResourceType=JavaVirtualMachine
@@ -43,7 +43,7 @@ You can then create a new image which has this configuration by simply building 
 
 ```
 FROM ibmcom/websphere-traditional:profile
-COPY --chown was:was was-config.props /work
+COPY --chown was:was was-config.props /work/config
 RUN /work/configure.sh
 ```
 
@@ -56,8 +56,8 @@ Putting it all together, you would have a Dockerfile such as:
 
 ```
 FROM ibmcom/websphere-traditional:profile
-COPY --chown was:was was-config.props /work/
-COPY --chown was:was myApp.war /work/app/
+COPY --chown was:was was-config.props /work/config
+COPY --chown was:was myApp.war /work/app
 COPY --chown was:was myAppDeploy.py dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
