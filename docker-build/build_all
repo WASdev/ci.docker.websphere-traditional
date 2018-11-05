@@ -16,8 +16,8 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-if [ $# != 2 ]; then
-  echo "Usage: build_all <IBMid> <IBMid password>"
+if [ $# != 3 ]; then
+  echo "Usage: build_all <IBMid> <IBMid password> <IM download url>"
   exit 1
 fi
 
@@ -28,7 +28,7 @@ while read line; do
   version=$(cut -d, -f1 <<< $line)
   log_file="build-${version}.log"
   echo "Building ${version} using ID $1 - outputing logs to ${log_file}"
-  $DIR/build ${version} $1 $2 &> build-${version}.log
+  $DIR/build ${version} $1 $2 "$3" &> build-${version}.log
   echo "---"
   echo "Version ${version} build output:"
   cat build-${version}.log
