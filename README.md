@@ -76,6 +76,17 @@ RUN /work/configure.sh /work/configA.py <args> \
     && /work/configure.sh /work/configB.py <args>
 ```
 
+### Runtime configuration
+
+How about properties that are dynamic and depend on the environment (eg: changing JAAS passwords or data source host at runtime)?  tWAS is not nearly as dynamic as Liberty, but we have augmented the `start_server` script to look into `/etc/websphere` for any property files that need to applied to the server.
+
+So during `docker run` you can setup a volume that mounts property files into `/etc/websphere`, such as:
+
+```bash
+docker run -v /config:/etc/websphere  -p 9043:9043 -p 9443:9443 websphere-traditional:9.0.0.9-profile
+```
+
+
 ## How to run this image
 
 When the container is started by using the IBM WebSphere Application Server traditional for Developers profile image, it takes the following environment variables:
@@ -89,7 +100,7 @@ When the container is started by using the IBM WebSphere Application Server trad
   
 ```bash
    docker run --name was-server -h was-server -p 9043:9043 -p 9443:9443 -d \
-   websphere-traditional:9.0.9.9-ilan
+   websphere-traditional:9.0.0.9-profile
 ```
 
 ### Running the image by passing values for the environment variables
