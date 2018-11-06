@@ -65,7 +65,7 @@ RUN /work/configure.sh
 ### Running Python scripts individually
 
 If you have some Python scripts that must be run in a certain order, or if they require parameters to be passed in, then you can directly call
-the `/work/run_py_script.sh` script - once for each script.  
+the `/work/configure.sh` script - once for each script.  
 
 Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run in that order.  You can configure them via the following Dockerfile:
 
