@@ -42,7 +42,7 @@ initialHeapSize=2048 #integer,default(0)
 You can then create a new image which has this configuration by simply building the following Dockerfile:
 
 ```
-FROM ibmcom/websphere-traditional:profile
+FROM ibmcom/websphere-traditional:latest
 COPY --chown was:was was-config.props /work/config
 RUN /work/configure.sh
 ```
@@ -55,7 +55,7 @@ the folder `/work/config`.
 Putting it all together, you would have a Dockerfile such as:
 
 ```
-FROM ibmcom/websphere-traditional:profile
+FROM ibmcom/websphere-traditional:latest
 COPY --chown was:was was-config.props /work/config
 COPY --chown was:was myApp.war /work/app
 COPY --chown was:was myAppDeploy.py dataSourceConfig.py /work/config
@@ -70,7 +70,7 @@ the `/work/configure.sh` script - once for each script.
 Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run in that order.  You can configure them via the following Dockerfile:
 
 ```
-FROM ibmcom/websphere-traditional:profile
+FROM ibmcom/websphere-traditional:latest
 COPY --chown was:was configA.py configB.py /work/
 RUN /work/configure.sh /work/configA.py <args> \
     && /work/configure.sh /work/configB.py <args>
