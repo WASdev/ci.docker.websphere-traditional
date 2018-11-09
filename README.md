@@ -15,7 +15,7 @@ The key point to take-away from the sections below is that your application Dock
 
 ```
 FROM ibmcom/websphere-traditional:<version>
-# copy property files and python scripts, using the flag `--chown was:was` to set the appropriate permission
+# copy property files and jython scripts, using the flag `--chown was:was` to set the appropriate permission
 RUN /work/configure.sh
 ```
 
@@ -49,7 +49,7 @@ RUN /work/configure.sh
 
 ### Adding an application and advanced configuration during build phase 
 
-Similar to the example above, you can also deploy an application and advanced configuration by placing their Python (`.py`) scripts under
+Similar to the example above, you can also deploy an application and advanced configuration by placing their Jython (`.py`) scripts under
 the folder `/work/config`.  
 
 Putting it all together, you would have a Dockerfile such as:
@@ -62,9 +62,9 @@ COPY --chown was:was myAppDeploy.py dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
 
-### Running Python scripts individually
+### Running Jython scripts individually
 
-If you have some Python scripts that must be run in a certain order, or if they require parameters to be passed in, then you can directly call
+If you have some Jython scripts that must be run in a certain order, or if they require parameters to be passed in, then you can directly call
 the `/work/configure.sh` script - once for each script.  
 
 Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run in that order.  You can configure them via the following Dockerfile:
