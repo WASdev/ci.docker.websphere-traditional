@@ -15,7 +15,7 @@ The key point to take-away from the sections below is that your application Dock
 
 ```
 FROM ibmcom/websphere-traditional:<version>
-# copy property files and jython scripts, using the flag `--chown was:was` to set the appropriate permission
+# copy property files and jython scripts, using the flag `--chown=was:was` to set the appropriate permission
 RUN /work/configure.sh
 ```
 
@@ -43,7 +43,7 @@ You can then create a new image which has this configuration by simply building 
 
 ```
 FROM ibmcom/websphere-traditional:latest
-COPY --chown was:was was-config.props /work/config
+COPY --chown=was:was was-config.props /work/config
 RUN /work/configure.sh
 ```
 
@@ -56,9 +56,9 @@ Putting it all together, you would have a Dockerfile such as:
 
 ```
 FROM ibmcom/websphere-traditional:latest
-COPY --chown was:was was-config.props /work/config
-COPY --chown was:was myApp.war /work/app
-COPY --chown was:was myAppDeploy.py dataSourceConfig.py /work/config
+COPY --chown=was:was was-config.props /work/config
+COPY --chown=was:was myApp.war /work/app
+COPY --chown=was:was myAppDeploy.py dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
 
@@ -71,7 +71,7 @@ Let's say you have 2 scripts, `configA.py` and `configB.py`, which must be run i
 
 ```
 FROM ibmcom/websphere-traditional:latest
-COPY --chown was:was configA.py configB.py /work/
+COPY --chown=was:was configA.py configB.py /work/
 RUN /work/configure.sh /work/configA.py <args> \
     && /work/configure.sh /work/configB.py <args>
 ```
