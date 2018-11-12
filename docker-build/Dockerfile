@@ -39,6 +39,7 @@ ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
 COPY scripts/ /work/
+COPY licenses /licenses/
 
 RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
