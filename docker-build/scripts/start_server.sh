@@ -37,6 +37,10 @@ applyConfigs(){
 
 applyConfigs
 
+if [ ! -z "$EXTRACT_PORT_FROM_HOST_HEADER" ]; then
+  /work/applyConfig.sh /work/config-ibm/webContainer.props
+fi
+
 if [ ! -f "/work/passwordupdated" ]; then
   /work/modify_password.sh
 fi
