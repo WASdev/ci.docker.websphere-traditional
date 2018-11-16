@@ -76,7 +76,8 @@ com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \
     SERVER_NAME=$SERVER_NAME \
-    ADMIN_USER_NAME=$ADMIN_USER_NAME
+    ADMIN_USER_NAME=$ADMIN_USER_NAME \
+    EXTRACT_PORT_FROM_HOST_HEADER=true
 
 RUN /work/create_profile.sh
 
