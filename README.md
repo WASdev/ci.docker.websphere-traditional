@@ -7,6 +7,7 @@ The files in this directory are used to build the `ibmcom/websphere-traditional`
 The Docker Hub image contains a tradittional WebSphere Application Server v9 instance with no applications or configuration applied to it.
 
 ### Best practices
+
 According to Docker's best practices you should create a new image (`FROM ibmcom/websphere-traditional`) which adds a single application and the corresponding configuration.   You should avoid configuring the image manually (after it started) via Admin Console or wsadmin (unless it is for debugging purposes) because such changes won't be present if you spawn a new container from the image.  
 
 Even if you `docker save` the manually configured container, the steps to reproduce the image from `ibmcom/websphere-traditional` will be lost and you will hinder your ability to update that image.
@@ -20,6 +21,8 @@ RUN /work/configure.sh
 ```
 
 This will result in a Docker image that has your application and configuration pre-loaded, which means you can spawn new fully-configured containers at any time.
+
+![App Image](/graphics/twas_app_image.png)
 
 ### Adding properties during build phase 
 
@@ -86,6 +89,8 @@ So during `docker run` you can setup a volume that mounts property files into `/
 docker run -v /config:/etc/websphere  -p 9043:9043 -p 9443:9443 websphere-traditional:9.0.0.9-profile
 ```
 
+![Dynamic](/graphics/twas_container_local.png)
+
 
 ## How to run this image
 
@@ -145,6 +150,11 @@ Example:
 ```bash
 docker logs -f --tail=all test
 ``` 
+
+The logs from this container is also available inside `/logs`, therefore you can setup a volume mount to persist these logs into an external directory:
+
+![Logs](/graphics/persisted_logs.png)
+
 
 ### Stopping the Application Server gracefully
 
