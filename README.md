@@ -2,6 +2,8 @@
 
 The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional. If you wish to build these yourself just follow [these instructions](docker-build/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
 
+**Note:** Have you considered trying out WebSphere Liberty?  It's based on the Open Source project `Open Liberty`, fully supports Java EE8 and MicroProfile 2.0, and it's much lighter, faster and easier to configure than WAS traditional. You can try it today for free from [Docker Hub](https://hub.docker.com/_/websphere-liberty/). If you have entitlement for WAS traditional you already have entitlement for Liberty included.  Find out more about how to use this in Kubernetes [here](https://www.ibm.com/blogs/bluemix/2018/10/certified-kubernetes-deployments-for-websphere-liberty/).
+
 ## Building an application image 
 
 The Docker Hub image contains a tradittional WebSphere Application Server v9 instance with no applications or configuration applied to it.
