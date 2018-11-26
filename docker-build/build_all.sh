@@ -17,12 +17,17 @@
 ###########################################################################
 
 if [ $# != 3 ]; then
-  echo "Usage: build <IBMid> <IBMid password> <IM download url>"
+  echo "Usage: build_all <IBMid> <IBMid password> <IM download url>"
   exit 1
 fi
 
-IBM_ID=$1
+IBMID=$1
 IBM_PASSWORD=$2
 IM_URL=$3
 
-docker build -t websphere-traditional:profile --build-arg IBMID=$IBM_ID --build-arg IBMID_PWD=$IBM_PASSWORD --build-arg IMURL="$IM_URL" . || exit $?
+for FILE in *; do
+    if [ -d "$FILE" ]; then
+      cd "$FILE"
+      ./build $IBMID $IBM_PASSWORD $IM_URL
+    fi
+done
