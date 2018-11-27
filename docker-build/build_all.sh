@@ -21,22 +21,13 @@ if [ $# != 3 ]; then
   exit 1
 fi
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+IBMID=$1
+IBM_PASSWORD=$2
+IM_URL=$3
 
-while read line; do
-  if [[ $line == \#* ]]; then continue; fi
-  version=$(cut -d, -f1 <<< $line)
-  log_file="build-${version}.log"
-  echo "Building ${version} using ID $1 - outputing logs to ${log_file}"
-  $DIR/build ${version} $1 $2 "$3" &> build-${version}.log
-  echo "---"
-  echo "Version ${version} build output:"
-  cat build-${version}.log
-  echo "---"
-  if [ $? == 0 ]; then
-    docker tag websphere-traditional:profile websphere-traditional:${version}-profile
-    echo "Successfully built websphere-traditional:${version}-profile"
-  else
-    echo "Build failed - see build-${version}.log or build output above"
-  fi
-done < versions.csv
+for FILE in *; do
+    if [ -d "$FILE" ]; then
+      cd "$FILE"
+      ./build $IBMID $IBM_PASSWORD $IM_URL
+    fi
+done

@@ -1,4 +1,0 @@
-#version,repo|package package ...,repo|package...,...
-9.0.0.7,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.7.20180302_0440 com.ibm.java.jdk.v8
-9.0.0.8,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.8.20180530_1827 com.ibm.java.jdk.v8
-9.0.0.9,http://www.ibm.com/software/repositorymanager/V9WASILAN|com.ibm.websphere.ILAN.v90_9.0.9.20180906_1004 com.ibm.java.jdk.v8

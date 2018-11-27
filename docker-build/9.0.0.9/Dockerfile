@@ -25,7 +25,7 @@ ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.9.20180906_1004
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 ARG USER=was
