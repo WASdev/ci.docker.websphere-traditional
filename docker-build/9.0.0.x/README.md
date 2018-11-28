@@ -29,7 +29,7 @@ docker build -t websphere-traditional:9.0.0.9-base . \
     --build-arg REPO=https://www.ibm.com/software/repositorymanager/com.ibm.websphere.BASE.v90
 ```
 
-To create an image with the lastes fixack version with all recommended iFixes, you will include the build-arg ```IFIXES=recommended```
+To create an image with the latest fixpack version with all recommended iFixes, you will include the build-arg ```IFIXES=recommended```
 
 For example:
 ```
