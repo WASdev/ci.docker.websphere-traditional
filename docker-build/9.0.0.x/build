@@ -21,9 +21,8 @@ if [ $# != 4 ]; then
   exit 1
 fi
 
-VERSION=$1
-IBM_ID=$2
-IBM_PASSWORD=$3
-IM_URL=$4
+IBM_ID=$1
+IBM_PASSWORD=$2
+IM_URL=$3
 
 docker build -t websphere-traditional:profile --build-arg IBMID=$IBM_ID --build-arg IBMID_PWD=$IBM_PASSWORD --build-arg IMURL="$IM_URL" . || exit $?

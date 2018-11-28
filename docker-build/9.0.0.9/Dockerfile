@@ -25,7 +25,7 @@ ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.9.20180906_1004
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 ARG USER=was
@@ -77,7 +77,8 @@ com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \
     SERVER_NAME=$SERVER_NAME \
-    ADMIN_USER_NAME=$ADMIN_USER_NAME
+    ADMIN_USER_NAME=$ADMIN_USER_NAME \
+    EXTRACT_PORT_FROM_HOST_HEADER=true
 
 RUN /work/create_profile.sh
 

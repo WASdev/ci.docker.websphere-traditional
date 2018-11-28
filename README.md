@@ -1,12 +1,15 @@
 # Docker Hub Image
 
-The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional. If you wish to build these yourself just follow [these instructions](docker-build/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
+The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional. If you wish to build these yourself just follow [these instructions](docker-build/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!  Once you're ready to deploy this into Kubernetes, please see our [helm chart](https://github.com/IBM/charts/tree/master/stable/ibm-websphere-traditional).
+
+**Note:** Have you considered trying out WebSphere Liberty?  It's based on the Open Source project `Open Liberty`, fully supports Java EE8 and MicroProfile 2.0, and it's much lighter, faster and easier to configure than WAS traditional. You can try it today for free from [Docker Hub](https://hub.docker.com/_/websphere-liberty/). If you have entitlement for WAS traditional you already have entitlement for Liberty included.  Find out more about how to use WebSphere Liberty in Kubernetes [here](https://www.ibm.com/blogs/bluemix/2018/10/certified-kubernetes-deployments-for-websphere-liberty/).
 
 ## Building an application image 
 
 The Docker Hub image contains a tradittional WebSphere Application Server v9 instance with no applications or configuration applied to it.
 
 ### Best practices
+
 According to Docker's best practices you should create a new image (`FROM ibmcom/websphere-traditional`) which adds a single application and the corresponding configuration.   You should avoid configuring the image manually (after it started) via Admin Console or wsadmin (unless it is for debugging purposes) because such changes won't be present if you spawn a new container from the image.  
 
 Even if you `docker save` the manually configured container, the steps to reproduce the image from `ibmcom/websphere-traditional` will be lost and you will hinder your ability to update that image.
@@ -21,9 +24,11 @@ RUN /work/configure.sh
 
 This will result in a Docker image that has your application and configuration pre-loaded, which means you can spawn new fully-configured containers at any time.
 
+![App Image](/graphics/twas_app_image.png)
+
 ### Adding properties during build phase 
 
-Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the properties found inside the `/work/config/was-config.props` file.  This script will be run with the server in `stopped` mode.
+Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_7propbasedconfig.html) found inside the `/work/config/was-config.props` file.  This script will be run with the server in `stopped` mode.
 
 For example, if you had the following `/work/config/was-config.props`:
 
@@ -86,6 +91,8 @@ So during `docker run` you can setup a volume that mounts property files into `/
 docker run -v /config:/etc/websphere  -p 9043:9043 -p 9443:9443 websphere-traditional:9.0.0.9-profile
 ```
 
+![Dynamic](/graphics/twas_container_local.png)
+
 
 ## How to run this image
 
@@ -145,6 +152,11 @@ Example:
 ```bash
 docker logs -f --tail=all test
 ``` 
+
+The logs from this container is also available inside `/logs`, therefore you can setup a volume mount to persist these logs into an external directory:
+
+![Logs](/graphics/persisted_logs.png)
+
 
 ### Stopping the Application Server gracefully
 

@@ -16,38 +16,13 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-if [ $# != 1 ]; then
-  echo "Usage: push_all <[repository:port/]namespace>"
+if [ $# != 3 ]; then
+  echo "Usage: build <IBMid> <IBMid password> <IM download url>"
   exit 1
 fi
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-NAMESPACE=$1
+IBM_ID=$1
+IBM_PASSWORD=$2
+IM_URL=$3
 
-push()
-{
-  from_name=$1
-  to_name=$2
-  echo "*** Pushing $from_name to $to_name ***"
-  docker tag $from_name $to_name
-  docker push $to_name
-  docker rmi $to_name
-}
-
-push_to_namespace()
-{
-  from_name=$1
-  namespace=$2
-  to_name="$namespace/$from_name"
-  push $from_name $to_name
-}  
-
-while read line; do
-  if [[ $line == \#* ]]; then continue; fi
-  version=$(cut -d, -f1 <<< $line)
-  name="websphere-traditional:${version}-profile"
-  push_to_namespace $name $NAMESPACE
-done < $DIR/versions.csv
-
-push "websphere-traditional:${version}-profile" "$NAMESPACE/websphere-traditional:profile"
-push "websphere-traditional:${version}-profile" "$NAMESPACE/websphere-traditional:latest"
+docker build -t websphere-traditional:profile --build-arg IBMID=$IBM_ID --build-arg IBMID_PWD=$IBM_PASSWORD --build-arg IMURL="$IM_URL" . || exit $?
