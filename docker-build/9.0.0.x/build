@@ -16,8 +16,8 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-if [ $# != 4 ]; then
-  echo "Usage: build <version> <IBMid> <IBMid password> <IM download url>"
+if [ $# -lt 3 ]; then
+  echo "Usage: build <IBMid> <IBMid password> <IM download url>"
   exit 1
 fi
 
@@ -25,4 +25,7 @@ IBM_ID=$1
 IBM_PASSWORD=$2
 IM_URL=$3
 
-docker build -t websphere-traditional:profile --build-arg IBMID=$IBM_ID --build-arg IBMID_PWD=$IBM_PASSWORD --build-arg IMURL="$IM_URL" . || exit $?
+[ ! -z "$4" ] && REPO="--build-arg REPO=$4"
+[ ! -z "$5" ] && PRODUCTID="--build-arg PRODUCTID=$5"
+
+docker build -t websphere-traditional:profile --build-arg IBMID=$IBM_ID --build-arg IBMID_PWD=$IBM_PASSWORD --build-arg IMURL="$IM_URL" $REPO $PRODUCTID . || exit $?
