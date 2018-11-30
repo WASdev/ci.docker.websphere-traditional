@@ -1,9 +1,12 @@
 #!/bin/bash
 #####################################################################################
 #                                                                                   #
-#  Script to modify the wsadmin password                                            #
+#  Script to set the wsadmin password.                                              #
+#  If a value exists in /tmp/PASSWORD that value will be used,                      #
+#  otherwise a random value will be generated and used (and also                    #
+#  persisted in /tmp/PASSWORD).                                                     #
 #                                                                                   #
-#  Usage : modify_password                                                          #
+#  Usage : set_password                                                             #
 #                                                                                   #
 #####################################################################################
 
