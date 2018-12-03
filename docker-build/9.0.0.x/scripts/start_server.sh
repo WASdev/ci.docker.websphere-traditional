@@ -22,6 +22,11 @@ start_server()
   /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/startServer.sh $SERVER_NAME
 }
 
+run_logviewer(){
+  echo "run logViewer.sh"
+  /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor -resumable -resume -format json | grep "^{" &
+}
+
 stop_server()
 {
   echo "Stopping server ..................."
@@ -51,9 +56,16 @@ fi
 
 trap "stop_server" TERM INT
 start_server || exit $?
+run_logviewer
+
+if [ -e "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/logdata" ]; then
+  echo "HPEL is enabled"
+  rm -f /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log*
+  rm -f /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log*
+fi
+
 PID=$(ps -C java -o pid= | tr -d " ")
-tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log --pid $PID -n +0 &
-tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log --pid $PID -n +0 >&2 &
+
 while [ -e "/proc/$PID" ]; do
   sleep 1
 done
