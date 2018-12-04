@@ -46,7 +46,7 @@ if [ ! -f "/work/passwordupdated" ]; then
 fi
 
 if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]; then
-  update_hostname.sh
+  update_hostname
 fi
 
 trap "stop_server" TERM INT
