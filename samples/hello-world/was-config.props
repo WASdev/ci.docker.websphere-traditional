@@ -1,0 +1,8 @@
+ResourceType=ThreadPool
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:ThreadPoolManager=:ThreadPool=
+
+maximumSize=100
+name=WebContainer
+minimumSize=100
+inactivityTimeout=60000
