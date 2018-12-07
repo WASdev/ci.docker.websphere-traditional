@@ -21,5 +21,6 @@ elif [ ! -z "$(ls /work/config)" ]; then
     echo "+ Found config-files under /work/config. Executing..."
     find /work/config -name "*.py" -exec /work/run_py_script.sh {} \;
 fi
+/work/configure_logging.sh
 work/applyConfig.sh
 stop_server

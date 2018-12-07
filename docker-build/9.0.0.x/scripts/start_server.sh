@@ -56,15 +56,20 @@ fi
 
 trap "stop_server" TERM INT
 start_server || exit $?
-run_logviewer
+
+PID=$(ps -C java -o pid= | tr -d " ")
+echo "$LOGGING_MODE"
+LOGGING_MODE=${LOGGING_MODE:-"HPEL"}
 
 if [ -e "/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/logdata" ]; then
   echo "HPEL is enabled"
   rm -f /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log*
   rm -f /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log*
+  run_logviewer
+else
+  tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log --pid $PID -n +0 &
+  tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log --pid $PID -n +0 >&2 &
 fi
-
-PID=$(ps -C java -o pid= | tr -d " ")
 
 while [ -e "/proc/$PID" ]; do
   sleep 1
