@@ -92,8 +92,10 @@ while [ -e "/proc/$PID" ]; do
   if [ $? -eq 0 ]; then
     echo "logViewer is running." > /dev/null
   else
-    echo "logViewer is not running.  Restarting"
-    /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor -resumable -resume -format json | grep "^{" &
+    if [ "$ENABLE_BASIC_LOGGING" = false ]; then
+      echo "logViewer is not running.  Restarting" > /dev/null
+      /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor -resumable -resume -format json | grep "^{" &
+    fi
   fi
   sleep 1
 done
