@@ -1,7 +1,5 @@
 import os
 
-print os.environ
-
 cellName = os.environ.get('WAS_CELL')
 if cellName is None:
 	cellName = "DefaultCell01"
