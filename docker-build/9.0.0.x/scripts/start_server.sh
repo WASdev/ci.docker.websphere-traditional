@@ -49,12 +49,7 @@ echo "ENABLE_BASIC_LOGGING is $ENABLE_BASIC_LOGGING"
 ENABLE_BASIC_LOGGING=${ENABLE_BASIC_LOGGING:-"false"}
 
 if [ "$ENABLE_BASIC_LOGGING" = false ]; then
-  echo "Setting Password"
-  /work/set_password.sh
-  start_server || exit $? > /dev/null
-  PID=$(ps -C java -o pid= | tr -d " ")
   configure_logging
-  stop_server
 fi
 
 applyConfigs

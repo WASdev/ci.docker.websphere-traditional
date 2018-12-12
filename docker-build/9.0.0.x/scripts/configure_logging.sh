@@ -1,5 +1,5 @@
 ENABLE_BASIC_LOGGING="${ENABLE_BASIC_LOGGING:-false}"
 
 if [ "$ENABLE_BASIC_LOGGING" = false ]; then
-	/work/run_py_script.sh "/work/configHPEL.py"
+	/opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -conntype None -f /work/configHPEL.py
 fi
