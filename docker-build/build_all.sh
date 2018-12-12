@@ -28,6 +28,6 @@ IM_URL=$3
 for FILE in *; do
     if [ -d "$FILE" ]; then
       cd "$FILE"
-      ./build $IBMID $IBM_PASSWORD $IM_URL
+      ./build $IBMID $IBM_PASSWORD "$IM_URL"
     fi
 done
