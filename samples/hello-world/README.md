@@ -22,11 +22,11 @@ Push the built image to the private image registry of IBM Cloud Private. See [Pu
 
 2. Tag the image.
 
-    `docker tag imagename:tagname <cluster_CA_domain>:8500/namespacename/imagename:tagname`
+    `docker tag app:hello-world <cluster_CA_domain>:8500/samples/app:hello-world`
 
 3. Push the image to the private image registry.
 
-    `docker push <cluster_CA_domain>:8500/namespacename/imagename:tagname`
+    `docker push <cluster_CA_domain>:8500/samples/app:hello-world`
 
 ## Deploying the application into IBM Cloud Private using a Helm chart
 
