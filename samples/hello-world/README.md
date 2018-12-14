@@ -86,9 +86,9 @@ The official helm chart for IBM WebSphere Application Server traditional Base ed
       configMapName: my-config-properties
     ```
 
-  - `image` parameter specifies the Docker image to deploy. Use the image we earlier pushed into the private image registry. Replace `<cluster_CA_domain>` with the the right CA domain for your cluster.
-  - `ingress` parameter enables the [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
-  - `configProperties` parameter refers to the ConfigMap from Step 3.
+    - `image` parameter specifies the Docker image to deploy. Use the image we earlier pushed into the private image registry. Replace `<cluster_CA_domain>` with the the right CA domain for your cluster.
+    - `ingress` parameter enables the [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
+    - `configProperties` parameter refers to the ConfigMap from Step 3.
 
 5. Add the Helm repo that contains the helm chart:
 
@@ -101,9 +101,9 @@ The official helm chart for IBM WebSphere Application Server traditional Base ed
 7. Run the commands from the `NOTES` section (at the bottom of the output from running above command) to get the URL to the deployed application:
 
     ```bash
-      export INGRESS_IP=$(kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}")
-      export APP_PATH=/demo/
-      echo https://$INGRESS_IP$APP_PATH
+    export INGRESS_IP=$(kubectl get nodes -l proxy=true -o jsonpath="{.items[0].status.addresses[?(@.type==\"Hostname\")].address}")
+    export APP_PATH=/demo/
+    echo https://$INGRESS_IP$APP_PATH
     ```
 
 8. Get the status of deployment by running:
@@ -113,9 +113,9 @@ The official helm chart for IBM WebSphere Application Server traditional Base ed
     You should see an output similar to the following:
 
     ```
-        NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+    NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 
-        hello-world-ibm-webspher   1         1         1            1           2m
+    hello-world-ibm-webspher   1         1         1            1           2m
     ```
 
     Wait till the value under `AVAILABLE` column changes to `1`, which indicates that the pod is available. Run the command again to see updated value, if necessary.
