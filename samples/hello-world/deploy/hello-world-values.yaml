@@ -1,0 +1,11 @@
+image:
+  repository: greyjoy.icp:8500/samples/app # Specify your cluster CA domain here
+  tag: hello-world
+
+ingress:
+  enabled: true
+  path: /demo/
+  rewriteTarget: /HelloWorld/hello
+
+configProperties:
+  configMapName: my-config-properties

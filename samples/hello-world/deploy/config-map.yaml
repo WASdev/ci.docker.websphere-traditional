@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config-properties
+data:
+  jvm.props: |-
+    ResourceType=JavaVirtualMachine
+    ImplementingResourceType=Server
+    ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:JavaProcessDef=:JavaVirtualMachine=
+    AttributeInfo=jvmEntries
+    initialHeapSize=2048
+
+    # Header JVM System properties
+    ResourceType=JavaVirtualMachine
+    ImplementingResourceType=Server
+    ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:JavaProcessDef=:JavaVirtualMachine=
+    AttributeInfo=systemProperties(name,value)
+    #Properties
+    my.system.prop=hello
+    
+    
