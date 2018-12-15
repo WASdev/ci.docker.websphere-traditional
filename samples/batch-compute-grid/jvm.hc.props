@@ -1,0 +1,13 @@
+#
+# SubSection 1.0.12.0.4 # JVM Section
+#
+ResourceType=JavaVirtualMachine
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:JavaProcessDef=ID#JavaProcessDef_1183122130078:JavaVirtualMachine=ID#JavaVirtualMachine_1183122130078
+AttributeInfo=jvmEntries
+#
+
+#
+#Properties
+#
+genericJvmArguments="-Xhealthcenter:level=headless -Dcom.ibm.java.diagnostics.healthcenter.headless.output.directory=/work/hc -Dcom.ibm.java.diagnostics.healthcenter.headless.files.max.size=1073741824 -Dcom.ibm.java.diagnostics.healthcenter.headless.files.to.keep=10 -Dcom.ibm.java.diagnostics.healthcenter.thread.collection.interval=5"
