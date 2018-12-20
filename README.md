@@ -66,7 +66,18 @@ COPY --chown=was:was myApp.war /work/app
 COPY --chown=was:was myAppDeploy.py dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
+### Logging configuration
+	
+By default, the Docker Hub image is using High Performance Extensible Logging (HPEL) mode and is outputing logs in JSON format. This logging configuration will make the docker container a lot easier to work with ELK stacks. 
 
+Alternatively, user can use basic logging mode is plain text format. You can switch the logging mode to basic via the following Dockerfile:
+
+```
+FROM ibmcom/websphere-traditional:latest
+ENV ENABLE_BASIC_LOGGING = true
+RUN /work/configure.sh
+	```
+    
 ### Running Jython scripts individually
 
 If you have some Jython scripts that must be run in a certain order, or if they require parameters to be passed in, then you can directly call
