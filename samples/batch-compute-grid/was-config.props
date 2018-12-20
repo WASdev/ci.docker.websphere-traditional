@@ -1,0 +1,112 @@
+#
+# SubSection 1.0.3 # TraceService Section
+#
+ResourceType=TraceService
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:TraceService=ID#TraceService_1183122130078
+AttributeInfo=services
+#
+
+#
+#Properties
+#
+startupTraceSpecification="*=info"  # Batch "MustGather" trace =>   "*=info:com.ibm.ws.batch*=all:com.ibm.ws.grid.*=all:com.ibm.ws.gridcontainer.*=all:com.ibm.ws.ci.*=all:com.ibm.ws.batch.jobmanagement.web.*=info"
+enable=true #boolean,default(false)
+context=!{serverName}
+memoryBufferSize=8 #integer,required,default(8)
+traceFormat=BASIC #ENUM(LOG_ANALYZER|BASIC|ADVANCED),default(BASIC)
+traceOutputType=SPECIFIED_FILE #ENUM(SPECIFIED_FILE|MEMORY_BUFFER),default(MEMORY_BUFFER)
+
+
+#
+# SubSection 1.0.3.1 # TraceLog Section
+#
+ResourceType=TraceLog
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:TraceService=ID#TraceService_1183122130078:TraceLog=ID#TraceLog_1183122130078
+AttributeInfo=traceLog
+#
+
+#
+#Properties
+#
+maxNumberOfBackupFiles=10
+rolloverSize=80 #integer,default(100)
+fileName="${SERVER_LOG_ROOT}/trace.log"
+
+
+#
+# SubSection 1.0.3.2 # TraceService properties
+#
+ResourceType=TraceService
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:TraceService=ID#TraceService_1183122130078
+AttributeInfo=properties(name,value)
+#
+
+
+
+
+#
+# SubSection 1.0.6 # StartupBeansService Section
+#
+ResourceType=StartupBeansService
+ImplementingResourceType=PMEServerExtension
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:PMEServerExtension=ID#PMEServerExtension_1:StartupBeansService=ID#StartupBeansService_1
+AttributeInfo=startupBeansService
+#
+
+#
+#Properties
+#
+enable=true #boolean,default(false)
+context=null
+
+
+#
+# SubSection 1.0.6.1 # StartupBeansService properties
+#
+ResourceType=StartupBeansService
+ImplementingResourceType=PMEServerExtension
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:PMEServerExtension=ID#PMEServerExtension_1:StartupBeansService=ID#StartupBeansService_1
+AttributeInfo=properties(name,value)
+#
+
+
+
+#
+# SubSection 1.0.12.0.4 # JVM Section
+#
+ResourceType=JavaVirtualMachine
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:JavaProcessDef=ID#JavaProcessDef_1183122130078:JavaVirtualMachine=ID#JavaVirtualMachine_1183122130078
+AttributeInfo=jvmEntries
+#
+
+#
+#Properties
+#
+internalClassAccessMode=ALLOW #ENUM(ALLOW|RESTRICT),default(ALLOW)
+JavaHome="/opt/IBM/WebSphere/AppServer/java" #readonly
+debugArgs="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7777"
+classpath={}
+initialHeapSize=0 #integer,default(0)
+runHProf=false #boolean,default(false)
+genericJvmArguments=
+hprofArguments=
+osName=null
+bootClasspath={}
+verboseModeJNI=false #boolean,default(false)
+maximumHeapSize=0 #integer,default(0)
+disableJIT=false #boolean,default(false)
+executableJarFileName=
+verboseModeGarbageCollection=true #boolean,default(true)
+debugMode=true #boolean,default(false)
+verboseModeClass=false #boolean,default(false)
+
+
+#Environment Variables
+#cellName=DefaultCell01
+#nodeName=DefaultNode01
+#serverName=server1
+#SERVER_LOG_ROOT=/logs/${serverName}
