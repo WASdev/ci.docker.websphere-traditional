@@ -76,7 +76,7 @@ Alternatively, user can use basic logging mode is plain text format. You can swi
 FROM ibmcom/websphere-traditional:latest
 ENV ENABLE_BASIC_LOGGING = true
 RUN /work/configure.sh
-	```
+```
     
 ### Running Jython scripts individually
 
