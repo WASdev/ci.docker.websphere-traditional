@@ -40,6 +40,27 @@ docker build -t websphere-traditional:9.0.0.10-ilan . \
     --build-arg IFIXES=recommended
 ```
 
+## Offline Build
+
+On `im` directory, you can build an Installation Manager image, use it to download Websphere and keep it on local storage for future build iterations.
+
+```
+docker build -t ibm-im . --build-arg IMURL={IBM_Installation_Manager_download_url}
+```
+
+Run this image to download Websphere:
+```
+docker run --rm -v $(pwd):/host:Z ibm-im /host/install_was $VERSION $IBM_ID $IBM_PASSWORD $PRODUCTID $REPO
+```
+
+Or edit `versions.csv` and run the `download_was` to download several Websphere versions, keep it on local storage and use it to build WAS image:
+
+```
+docker build -t websphere-traditional:9.0.0.10-ilan . \
+--build-arg WAS_VERSION={Previously donwloaded WAS version} \
+-f Dockerfile.offline
+```
+
 ## License
 
 The Dockerfiles and associated scripts are licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).

@@ -36,7 +36,9 @@ stop_server()
 applyConfigs(){
   if [ ! -z "$(ls /etc/websphere)" ]; then
     echo "+ Found config-files under /etc/websphere. Executing..."
-    find /etc/websphere -name "*.props" -exec /work/applyConfig.sh {} \;
+    for i in $(ls /etc/websphere/*conf); do
+    /work/applyConfig.sh $i
+    done
   fi
 }
 

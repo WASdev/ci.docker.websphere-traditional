@@ -28,9 +28,9 @@ This will result in a Docker image that has your application and configuration p
 
 ### Adding properties during build phase 
 
-Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_7propbasedconfig.html) found inside the `/work/config/was-config.props` file.  This script will be run with the server in `stopped` mode.
+Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_7propbasedconfig.html) found inside the `/work/config/*.props` file.  This script will be run with the server in `stopped` mode and the props will be applied in alphabetic order.
 
-For example, if you had the following `/work/config/was-config.props`:
+For example, if you had the following `/work/config/001-was-config.props`:
 
 ```
 ResourceType=JavaVirtualMachine
@@ -51,6 +51,8 @@ FROM ibmcom/websphere-traditional:latest
 COPY --chown=was:was was-config.props /work/config
 RUN /work/configure.sh
 ```
+
+You may use numeric prefix on your prop files names, so props the have dependencies can be applied in an adequate order.
 
 ### Adding an application and advanced configuration during build phase 
 
@@ -101,6 +103,8 @@ So during `docker run` you can setup a volume that mounts property files into `/
 ```bash
 docker run -v /config:/etc/websphere  -p 9043:9043 -p 9443:9443 websphere-traditional:9.0.0.9-profile
 ```
+
+Similarly to build-phase props, the dynamic runtime props will also be applied in alphabetic order, so you can also use numeric prefixes to guarantee dependent props are applied in an adequate order.
 
 ![Dynamic](/graphics/twas_container_local.png)
 
