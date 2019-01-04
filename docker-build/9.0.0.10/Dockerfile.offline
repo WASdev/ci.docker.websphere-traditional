@@ -28,8 +28,6 @@ COPY licenses /licenses/
 
 RUN apt-get update && apt-get install -y openssl
 
-COPY scripts/ /work/
-
 RUN groupadd $GROUP --gid 510 \
   && useradd $USER -g $GROUP -m --uid 500 \
   && mkdir /opt/IBM \
