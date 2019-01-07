@@ -36,7 +36,7 @@ echo "your_secureStore_password" > /tmp/secureStorePwd
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
     -url $REPO \
-  && /opt/IBM/InstallationManager/eclipse/tools//imcl install $PRODUCTID com.ibm.java.jdk.v8 \
+  && /opt/IBM/InstallationManager/eclipse/tools//imcl install $PRODUCTID \
     -acceptLicense -accessRights nonAdmin -showProgress \
     -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
     -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
