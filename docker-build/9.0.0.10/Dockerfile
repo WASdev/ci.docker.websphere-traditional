@@ -72,15 +72,15 @@ ARG ADMIN_USER_NAME=wsadmin
 COPY scripts/ /work/
 COPY licenses /licenses/
 
-RUN groupadd $GROUP --gid 510 \
-  && useradd $USER -g $GROUP -m --uid 500 \
+RUN groupadd $GROUP --gid 0 \
+  && useradd $USER -g $GROUP -m --uid 1001 \
   && mkdir /opt/IBM \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
   && mkdir /work/config \
   && chown -R $USER:$GROUP /work /opt/IBM /etc/websphere 
 
-COPY --chown=500:510 --from=builder /opt/IBM /opt/IBM
+COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
 
 USER $USER
 
