@@ -15,10 +15,8 @@
 #                                                                          #
 ############################################################################
 
-FROM ubuntu:16.04
-
-MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
-
+# Build step - download and install tWAS
+FROM ubuntu:16.04 as builder
 RUN apt-get update && apt-get install -y openssl wget unzip
 
 ARG IMURL
@@ -28,31 +26,7 @@ ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.10.20181119_1807
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
-ARG USER=was
-ARG GROUP=was
-
-ARG PROFILE_NAME=AppSrv01
-ARG CELL_NAME=DefaultCell01
-ARG NODE_NAME=DefaultNode01
-ARG HOST_NAME=localhost
-ARG SERVER_NAME=server1
-ARG ADMIN_USER_NAME=wsadmin
-
-COPY scripts/ /work/
-COPY licenses /licenses/
-
-RUN groupadd $GROUP \
-  && useradd $USER -g $GROUP -m \
-  && mkdir /opt/IBM \
-  && chmod -R +x /work/* \
-  && mkdir /etc/websphere \
-  && mkdir /work/config \
-  && chown -R $USER:$GROUP /work /opt/IBM /etc/websphere 
-
-
-USER $USER
-
-RUN cd /work && wget $IMURL \
+RUN mkdir /work && cd /work && wget $IMURL \
   && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
   && rm -rf agent.installer.linux.gtk.x86_64*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
@@ -73,6 +47,43 @@ com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
   && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+
+RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh \
+    && sed -i 's/-Xmx256m/-Xmx1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh
+
+
+# Final image
+FROM ubuntu:16.04
+
+MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
+
+RUN apt-get update && apt-get install -y openssl wget unzip
+
+ARG USER=was
+ARG GROUP=was
+
+ARG PROFILE_NAME=AppSrv01
+ARG CELL_NAME=DefaultCell01
+ARG NODE_NAME=DefaultNode01
+ARG HOST_NAME=localhost
+ARG SERVER_NAME=server1
+ARG ADMIN_USER_NAME=wsadmin
+
+COPY scripts/ /work/
+COPY licenses /licenses/
+
+RUN groupadd $GROUP --gid 0 \
+  && useradd $USER -g $GROUP -m --uid 1001 \
+  && mkdir /opt/IBM \
+  && chmod -R +x /work/* \
+  && mkdir /etc/websphere \
+  && mkdir /work/config \
+  && chown -R $USER:$GROUP /work /opt/IBM /etc/websphere 
+
+COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
+
+USER $USER
+
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \

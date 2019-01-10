@@ -15,49 +15,19 @@
 #                                                                          #
 ############################################################################
 
-# Build step - download and install tWAS
-FROM ubuntu:16.04 as builder
+FROM ubuntu:16.04
+
+MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
+
 RUN apt-get update && apt-get install -y openssl wget unzip
 
 ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.10.20181119_1807
-ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
-RUN mkdir /work && cd /work && wget $IMURL \
-  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
-  && rm -rf agent.installer.linux.gtk.x86_64*.zip \
-  && echo "your_secureStore_password" > /tmp/secureStorePwd \
-  && /work/InstallationManagerKit/tools/imutilsc saveCredential \
-    -userName $IBMID -userPassword $IBMID_PWD \
-    -secureStorageFile /tmp/secureStore \
-    -masterPasswordFile /tmp/secureStorePwd \
-    -url $REPO \
-  && /work/InstallationManagerKit/tools/imcl install \
-    $PRODUCTID com.ibm.java.jdk.v8 \
-    -acceptLicense -accessRights nonAdmin -showProgress \
-    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
-    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
-    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
-    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
-    -preferences offering.service.repositories.areUsed=false,\
-com.ibm.cic.common.core.preferences.searchForUpdates=true,\
-com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
-com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
-  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
-
-RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh \
-    && sed -i 's/-Xmx256m/-Xmx1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh
-
-
-# Final image
-FROM ubuntu:16.04
-
-MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
-
-RUN apt-get update && apt-get install -y openssl wget unzip
+ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5014.20180802_1018
+ARG REPO=http://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85
 
 ARG USER=was
 ARG GROUP=was
@@ -72,18 +42,38 @@ ARG ADMIN_USER_NAME=wsadmin
 COPY scripts/ /work/
 COPY licenses /licenses/
 
-RUN groupadd $GROUP --gid 0 \
-  && useradd $USER -g $GROUP -m --uid 1001 \
+RUN groupadd $GROUP \
+  && useradd $USER -g $GROUP -m \
   && mkdir /opt/IBM \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
   && mkdir /work/config \
   && chown -R $USER:$GROUP /work /opt/IBM /etc/websphere 
 
-COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
 
 USER $USER
 
+RUN cd /work && wget $IMURL \
+  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && rm -rf agent.installer.linux.gtk.x86_64*.zip \
+  && echo "your_secureStore_password" > /tmp/secureStorePwd \
+  && /work/InstallationManagerKit/tools/imutilsc saveCredential \
+    -userName $IBMID -userPassword $IBMID_PWD \
+    -secureStorageFile /tmp/secureStore \
+    -masterPasswordFile /tmp/secureStorePwd \
+    -url $REPO \
+  && /work/InstallationManagerKit/tools/imcl install \
+    $PRODUCTID \
+    -acceptLicense -accessRights nonAdmin -showProgress \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
+    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
+    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
+    -preferences offering.service.repositories.areUsed=false,\
+com.ibm.cic.common.core.preferences.searchForUpdates=true,\
+com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
+com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
+  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \

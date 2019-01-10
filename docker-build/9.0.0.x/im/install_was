@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+###########################################################################
+# (C) Copyright IBM Corporation 2015, 2016.                               #
+#                                                                         #
+# Licensed under the Apache License, Version 2.0 (the "License");         #
+# you may not use this file except in compliance with the License.        #
+# You may obtain a copy of the License at                                 #
+#                                                                         #
+#      http://www.apache.org/licenses/LICENSE-2.0                         #
+#                                                                         #
+# Unless required by applicable law or agreed to in writing, software     #
+# distributed under the License is distributed on an "AS IS" BASIS,       #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.#
+# See the License for the specific language governing permissions and     #
+# limitations under the License.                                          #
+###########################################################################
+
+VERSION=$1
+IBMID=$2
+IBMID_PWD=$3
+PRODUCTID=$4
+REPO=$5
+JDK=$6
+IFIXES=recommended
+INSTALL_DIR=/opt/IBM/WebSphere/AppServer
+
+echo "Starting install of TWAS version:" $VERSION
+echo "Repository URL:" $REPO
+echo "Product ID:" $PRODUCTID
+echo "Java SDK:" $JDK
+echo "your_secureStore_password" > /tmp/secureStorePwd 
+
+/opt/IBM/InstallationManager/eclipse/tools/imutilsc saveCredential \
+    -userName $IBMID -userPassword $IBMID_PWD \
+    -secureStorageFile /tmp/secureStore \
+    -masterPasswordFile /tmp/secureStorePwd \
+    -url $REPO \
+  && /opt/IBM/InstallationManager/eclipse/tools//imcl install $PRODUCTID com.ibm.java.jdk.v8 \
+    -acceptLicense -accessRights nonAdmin -showProgress \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
+    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
+    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
+    -preferences offering.service.repositories.areUsed=false,\
+com.ibm.cic.common.core.preferences.searchForUpdates=true,\
+com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
+com.ibm.cic.common.core.preferences.keepFetchedFiles=false
+
+tar -czvf /host/was-${VERSION}.tar.gz $INSTALL_DIR
