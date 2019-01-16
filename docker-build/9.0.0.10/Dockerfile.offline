@@ -40,11 +40,12 @@ COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
 
 USER $USER
 
-CMD ["/work/create_and_start.sh"]TH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
+ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \
     SERVER_NAME=$SERVER_NAME \
     ADMIN_USER_NAME=$ADMIN_USER_NAME \
     EXTRACT_PORT_FROM_HOST_HEADER=true
+
 
 RUN /work/create_profile.sh
 
