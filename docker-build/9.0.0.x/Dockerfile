@@ -34,7 +34,7 @@ RUN mkdir /work && cd /work && wget $IMURL \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
-    -url $REPO \
+    -url $REPO -verbose \
   && /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTID com.ibm.java.jdk.v8 \
     -acceptLicense -accessRights nonAdmin -showProgress \
@@ -60,7 +60,6 @@ MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
 RUN apt-get update && apt-get install -y openssl wget unzip
 
 ARG USER=was
-ARG GROUP=was
 
 ARG PROFILE_NAME=AppSrv01
 ARG CELL_NAME=DefaultCell01
@@ -72,13 +71,12 @@ ARG ADMIN_USER_NAME=wsadmin
 COPY scripts/ /work/
 COPY licenses /licenses/
 
-RUN groupadd $GROUP --gid 0 \
-  && useradd $USER -g $GROUP -m --uid 1001 \
+RUN useradd $USER -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
   && mkdir /work/config \
-  && chown -R $USER:$GROUP /work /opt/IBM /etc/websphere 
+  && chown -R 1001:0 /work /opt/IBM /etc/websphere
 
 COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
 
@@ -94,7 +92,7 @@ ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
 RUN /work/create_profile.sh
 
 USER root
-RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown $USER:$GROUP /logs
+RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
 USER $USER
 
 CMD ["/work/start_server.sh"]
