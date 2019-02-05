@@ -6,7 +6,7 @@ The files in this directory are used to build the `ibmcom/websphere-traditional`
 
 ## Building an application image 
 
-The Docker Hub image contains a tradittional WebSphere Application Server v9 instance with no applications or configuration applied to it.
+The Docker Hub image contains a traditional WebSphere Application Server v9 instance with no applications or configuration applied to it.
 
 ### Best practices
 
