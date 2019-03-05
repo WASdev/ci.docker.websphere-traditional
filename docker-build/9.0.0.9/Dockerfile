@@ -24,6 +24,7 @@ RUN apt-get update && apt-get install -y openssl wget unzip
 ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
+ARG BUILDLABEL=cf091835.02
 ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.9.20180906_1004
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
@@ -60,7 +61,7 @@ RUN cd /work && wget $IMURL \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
-    -url $REPO \
+    -url $REPO -verbose \
   && /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTID com.ibm.java.jdk.v8 \
     -acceptLicense -accessRights nonAdmin -showProgress \
@@ -73,6 +74,8 @@ com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
   && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+
+LABEL "BuildLabel"="$BUILDLABEL"
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \
