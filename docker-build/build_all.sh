@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ###########################################################################
-# (C) Copyright IBM Corporation 2016.                                     #
+# (C) Copyright IBM Corporation 2016, 2019.                               #
 #                                                                         #
 # Licensed under the Apache License, Version 2.0 (the "License");         #
 # you may not use this file except in compliance with the License.        #
@@ -16,18 +16,31 @@
 # limitations under the License.                                          #
 ###########################################################################
 
+# Executing this script builds all released versions of the websphere-traditional Docker images.
+
 if [ $# != 3 ]; then
   echo "Usage: build_all <IBMid> <IBMid password> <IM download url>"
+  echo "  see download-iim.md for information on the IM download url"
   exit 1
 fi
 
 IBMID=$1
-IBM_PASSWORD=$2
-IM_URL=$3
+IBMID_PWD=$2
+IMURL=$3
 
 for FILE in *; do
-    if [ -d "$FILE" ]; then
-      cd "$FILE"
-      ./build $IBMID $IBM_PASSWORD "$IM_URL"
+  if [[ ! "$FILE" =~ x$ ]] && [[ -f "$FILE/Dockerfile" ]]
+  then
+    echo "---------- START Building websphere-traditional:$FILE ----------"
+    docker build -t websphere-traditional:$FILE $FILE --build-arg IBMID="$IBMID" --build-arg IBMID_PWD="$IBMID_PWD" --build-arg IMURL="$IMURL"
+    rc=$?
+    if [ $rc -ne 0 ]
+    then
+      echo "FATAL: Error building websphere-traditional:$FILE, exiting"
+      exit 2
     fi
+    echo "---------- END Building websphere-traditional:$FILE ----------"
+  fi
 done
+
+docker images

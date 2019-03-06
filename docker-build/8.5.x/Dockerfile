@@ -24,9 +24,10 @@ RUN apt-get update && apt-get install -y openssl wget unzip
 ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
+ARG BUILDLABEL=none
 ARG IFIXES=none
 
-ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5014.20180802_1018
+ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85
 ARG REPO=http://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85
 
 ARG USER=was
@@ -54,14 +55,14 @@ RUN groupadd $GROUP \
 USER $USER
 
 RUN cd /work && wget $IMURL \
-  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
   && rm -rf agent.installer.linux.gtk.x86_64*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
-    -url $REPO \
+    -url $REPO -verbose \
   && /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTID \
     -acceptLicense -accessRights nonAdmin -showProgress \
@@ -74,6 +75,8 @@ com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
   && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+
+LABEL "BuildLabel"="$BUILDLABEL"
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \
