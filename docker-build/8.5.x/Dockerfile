@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y openssl wget unzip
 ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
-ARG BUILDLABEL=cf151904.01
+ARG BUILDLABEL=none
 ARG IFIXES=none
 
 ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85
@@ -55,7 +55,7 @@ RUN groupadd $GROUP \
 USER $USER
 
 RUN cd /work && wget $IMURL \
-  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
   && rm -rf agent.installer.linux.gtk.x86_64*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \

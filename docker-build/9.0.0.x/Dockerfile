@@ -28,7 +28,7 @@ ARG PRODUCTID=com.ibm.websphere.ILAN.v90
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN mkdir /work && cd /work && wget $IMURL \
-  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
   && rm -rf agent.installer.linux.gtk.x86_64*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \

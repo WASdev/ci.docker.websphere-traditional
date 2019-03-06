@@ -54,7 +54,7 @@ RUN groupadd $GROUP \
 USER $USER
 
 RUN cd /work && wget $IMURL \
-  && unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
+  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
   && rm -rf agent.installer.linux.gtk.x86_64*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
