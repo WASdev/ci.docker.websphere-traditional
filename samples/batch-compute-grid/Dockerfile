@@ -17,8 +17,7 @@
 
 FROM ibmcom/websphere-traditional:latest
 
-LABEL maintainer="Scott Kurz <skurz@us.ibm.com>" \
-      BuildLabel="$BUILDLABEL"
+LABEL maintainer="Scott Kurz <skurz@us.ibm.com>"
 
 # Create Mailer (application) DB and populate with sample data
 COPY --chown=was:was CreateMailerTablesDerby.ddl /work/ddl/mailer.ddl
