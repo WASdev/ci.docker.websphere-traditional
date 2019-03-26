@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015, 2018                                 #
+# (C) Copyright IBM Corporation 2015, 2019                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -56,9 +56,8 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 # Final image
 FROM ubuntu:16.04
 
-MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
-
-LABEL "BuildLabel"="$BUILDLABEL"
+LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com>" \
+      BuildLabel="$BUILDLABEL"
 
 RUN apt-get update && apt-get install -y openssl wget unzip
 
