@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015, 2018                                 #
+# (C) Copyright IBM Corporation 2015, 2019                                #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -17,7 +17,8 @@
 
 FROM ubuntu:16.04
 
-MAINTAINER Arthur De Magalhaes <arthurdm@ca.ibm.com>
+LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com>" \
+      BuildLabel="$BUILDLABEL"
 
 RUN apt-get update && apt-get install -y openssl wget unzip
 
@@ -75,8 +76,6 @@ com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
   && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
-
-LABEL "BuildLabel"="$BUILDLABEL"
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \

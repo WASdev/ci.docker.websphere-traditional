@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2018                                       #
+# (C) Copyright IBM Corporation 2018, 2019                                      #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -17,7 +17,8 @@
 
 FROM ibmcom/websphere-traditional:latest
 
-MAINTAINER Scott Kurz <skurz@us.ibm.com>
+LABEL maintainer="Scott Kurz <skurz@us.ibm.com>" \
+      BuildLabel="$BUILDLABEL"
 
 # Create Mailer (application) DB and populate with sample data
 COPY --chown=was:was CreateMailerTablesDerby.ddl /work/ddl/mailer.ddl
