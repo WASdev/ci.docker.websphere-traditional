@@ -56,7 +56,7 @@ fi
 
 applyConfigs
 
-if [ ! -z "$EXTRACT_PORT_FROM_HOST_HEADER" ]; then
+if [ "$EXTRACT_PORT_FROM_HOST_HEADER" = "true" ]; then
   /work/applyConfig.sh /work/config-ibm/webContainer.props
 fi
 
