@@ -22,4 +22,3 @@ if [ ! -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME 
     -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
     -serverName $SERVER_NAME -enableAdminSecurity true -adminUserName $ADMIN_USER_NAME -adminPassword "CHANGEME" -omitAction defaultAppDeployAndConfig deployIVTApplication
 fi
-fi
