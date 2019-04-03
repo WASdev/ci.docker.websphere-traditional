@@ -47,7 +47,8 @@ RUN mkdir /work && cd /work && wget $IMURL \
 com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
-  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
+  && chmod -R g+rw /opt/IBM/
 
 RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh \
     && sed -i 's/-Xmx256m/-Xmx1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh
@@ -78,12 +79,11 @@ RUN useradd $USER -g 0 -m --uid 1001 \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
   && mkdir /work/config \
-  && chown -R 1001:0 /work /opt/IBM /etc/websphere
+  && chown -R 1001:0 /work /opt/IBM /etc/websphere \
+  && chmod -R g+rwx /work
 
 COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
-
 USER $USER
-
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     PROFILE_NAME=$PROFILE_NAME \
@@ -91,7 +91,8 @@ ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     ADMIN_USER_NAME=$ADMIN_USER_NAME \
     EXTRACT_PORT_FROM_HOST_HEADER=true
 
-RUN /work/create_profile.sh
+RUN /work/create_profile.sh \
+  && find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 chmod g+w
 
 USER root
 RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
