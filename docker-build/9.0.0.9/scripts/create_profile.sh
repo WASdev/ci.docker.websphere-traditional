@@ -20,5 +20,6 @@ if [ ! -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME 
     -profilePath /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME  \
     -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default \
     -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
-    -serverName $SERVER_NAME -enableAdminSecurity true -adminUserName $ADMIN_USER_NAME -adminPassword "CHANGEME"
+    -serverName $SERVER_NAME -enableAdminSecurity true -adminUserName $ADMIN_USER_NAME -adminPassword "CHANGEME" -omitAction defaultAppDeployAndConfig deployIVTApplication
+fi
 fi
