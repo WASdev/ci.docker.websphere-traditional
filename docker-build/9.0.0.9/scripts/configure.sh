@@ -23,3 +23,5 @@ elif [ ! -z "$(ls /work/config)" ]; then
 fi
 work/applyConfig.sh
 stop_server
+find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 -r chmod g+w
+find /opt/IBM -type d -user was ! -perm -g=x -print0 | xargs -0 -r chmod g+x

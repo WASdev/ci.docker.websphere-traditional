@@ -21,4 +21,5 @@ if [ ! -d /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME 
     -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default \
     -nodeName $NODE_NAME -cellName $CELL_NAME -hostName $HOST_NAME \
     -serverName $SERVER_NAME -enableAdminSecurity true -adminUserName $ADMIN_USER_NAME -adminPassword "CHANGEME" -omitAction defaultAppDeployAndConfig deployIVTApplication
+  /work/applyConfig.sh /work/config-ibm/jvmUserRoot.props
 fi
