@@ -92,7 +92,8 @@ ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
     EXTRACT_PORT_FROM_HOST_HEADER=true
 
 RUN /work/create_profile.sh \
-  && find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 chmod g+w
+  && find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 chmod g+w \
+  && chmod -R g+rwx /home/was/.java/
 
 USER root
 RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
