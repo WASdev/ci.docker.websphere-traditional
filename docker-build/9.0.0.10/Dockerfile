@@ -22,7 +22,6 @@ RUN apt-get update && apt-get install -y openssl wget unzip
 ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
-ARG BUILDLABEL=cf101846.03
 ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.10.20181119_1807
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
@@ -56,6 +55,7 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 # Final image
 FROM ubuntu:16.04
+ARG BUILDLABEL=cf101846.03
 
 LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com>" \
       BuildLabel="$BUILDLABEL"
