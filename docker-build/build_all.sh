@@ -18,7 +18,7 @@
 
 # Executing this script builds all released versions of the websphere-traditional Docker images.
 
-if [ $# != 3 ]; then
+if [[ $# != 3 && $# != 4 ]]; then
   echo "Usage: build_all <IBMid> <IBMid password> <IM download url>"
   echo "  see download-iim.md for information on the IM download url"
   exit 1
@@ -27,9 +27,15 @@ fi
 IBMID=$1
 IBMID_PWD=$2
 IMURL=$3
+# optional 4th arg limits the build to a single version
+if [[ ! -z "$4" ]]
+then
+  VERSION=$4
+  echo "Limiting build to the websphere-traditional:$VERSION image"
+fi
 
 for FILE in *; do
-  if [[ ! "$FILE" =~ x$ ]] && [[ -f "$FILE/Dockerfile" ]]
+  if [[ ! "$FILE" =~ x$ ]] && [[ -f "$FILE/Dockerfile" ]] && [[ -z "$VERSION" || "$VERSION" == "$FILE" ]]
   then
     echo "---------- START Building websphere-traditional:$FILE ----------"
     docker build -t websphere-traditional:$FILE $FILE --build-arg IBMID="$IBMID" --build-arg IBMID_PWD="$IBMID_PWD" --build-arg IMURL="$IMURL"
