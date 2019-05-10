@@ -20,8 +20,8 @@ FROM ibmcom/websphere-traditional:latest
 LABEL maintainer="Scott Kurz <skurz@us.ibm.com>"
 
 # Create Mailer (application) DB and populate with sample data
-COPY --chown=was:was CreateMailerTablesDerby.ddl /work/ddl/mailer.ddl
-#COPY --chown=was:was CreateSmallerMailerTablesDerby.ddl /work/ddl/mailer.ddl
+COPY --chown=was:root CreateMailerTablesDerby.ddl /work/ddl/mailer.ddl
+#COPY --chown=was:root CreateSmallerMailerTablesDerby.ddl /work/ddl/mailer.ddl
 RUN [ "/opt/IBM/WebSphere/AppServer/java/8.0/bin/java", "-Dij.database=jdbc:derby:/work/mailerdb;create=true" , \
    "-Djava.ext.dirs=/opt/IBM/WebSphere/AppServer/derby/lib", "org.apache.derby.tools.ij", \
    "/work/ddl/mailer.ddl" \
@@ -32,21 +32,21 @@ RUN [ "/opt/IBM/WebSphere/AppServer/java/8.0/bin/java", "-Dij.database=jdbc:derb
 #
 
 # 0. Copy to a different name so it doesn't get run with every invocation to configure.sh
-COPY --chown=was:was was-config.props /work/config/config.props
+COPY --chown=was:root was-config.props /work/config/config.props
 
 # 1. Configure the job scheduler
-COPY --chown=was:was scheduler.py /work/config/
+COPY --chown=was:root scheduler.py /work/config/
 RUN /work/configure.sh /work/config/scheduler.py
 
 # 2. Enable application security (using the same wsadmin id as userid)
-COPY --chown=was:was security.py /work/config/
+COPY --chown=was:root security.py /work/config/
 RUN /work/configure.sh /work/config/security.py
 
 # 3. Configure JVM args including enabling debug mode, configure startup service
 RUN work/applyConfig.sh /work/config/config.props
 
 # 4. Add HealthCenter properties
-COPY --chown=was:was jvm.hc.props /work/config/jvm.hc.props
+COPY --chown=was:root jvm.hc.props /work/config/jvm.hc.props
 # --- HealthCenter output dir
 RUN mkdir /work/hc
 RUN work/applyConfig.sh /work/config/jvm.hc.props
@@ -55,18 +55,18 @@ RUN work/applyConfig.sh /work/config/jvm.hc.props
 RUN mkdir /work/batch-output
 
 # 6. configure mailer application datasource
-COPY --chown=was:was mailerDS.py /work/config/
+COPY --chown=was:root mailerDS.py /work/config/
 RUN /work/configure.sh /work/config/mailerDS.py
 
 # 7. Copy application EAR files
-COPY --chown=was:was MailerSample.ear /work/app/
-COPY --chown=was:was SimpleCIEar.ear /work/app/
+COPY --chown=was:root MailerSample.ear /work/app/
+COPY --chown=was:root SimpleCIEar.ear /work/app/
 
 # 8. Install the two batch sample applications
-COPY --chown=was:was installApps.py /work/config/
+COPY --chown=was:root installApps.py /work/config/
 RUN /work/configure.sh /work/config/installApps.py
 
 # 9. Now copy job definitions (which may be more dynamic than the EAR artifacts)
-COPY --chown=was:was Mailer.xml /work/xjcl/
-COPY --chown=was:was SimpleCIxJCL.xml /work/xjcl/
+COPY --chown=was:root Mailer.xml /work/xjcl/
+COPY --chown=was:root SimpleCIxJCL.xml /work/xjcl/
 
