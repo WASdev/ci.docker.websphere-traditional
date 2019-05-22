@@ -18,7 +18,7 @@
 
 # Executing this script builds all released versions of the websphere-traditional Docker images.
 
-if [[ $# != 3 && $# != 4 ]]; then
+if [[ $# != 3 && $# != 4 && $# != 5 ]]; then
   echo "Usage: build_all <IBMid> <IBMid password> <IM download url>"
   echo "  see download-iim.md for information on the IM download url"
   exit 1
@@ -31,21 +31,44 @@ IMURL=$3
 if [[ ! -z "$4" ]]
 then
   VERSION=$4
-  echo "Limiting build to the websphere-traditional:$VERSION image"
+  echo "Limiting build to version $VERSION"
+fi
+# optional 5th arg limits the build to a single os
+if [[ ! -z "$5" ]]
+then
+  OS=$5
+  echo "Limiting build to OS $OS"
 fi
 
 for FILE in *; do
   if [[ ! "$FILE" =~ x$ ]] && [[ -f "$FILE/Dockerfile" ]] && [[ -z "$VERSION" || "$VERSION" == "$FILE" ]]
   then
-    echo "---------- START Building websphere-traditional:$FILE ----------"
-    docker build -t websphere-traditional:$FILE $FILE --build-arg IBMID="$IBMID" --build-arg IBMID_PWD="$IBMID_PWD" --build-arg IMURL="$IMURL"
-    rc=$?
-    if [ $rc -ne 0 ]
-    then
-      echo "FATAL: Error building websphere-traditional:$FILE, exiting"
-      exit 2
-    fi
-    echo "---------- END Building websphere-traditional:$FILE ----------"
+    for CURRENTOS in ubuntu ubi; do
+      if [[ -z "$OS" || "$CURRENTOS" == "$OS" ]]
+      then
+        IMAGE=$FILE
+        DOCKERFILE="${FILE}/Dockerfile"
+        if [[ "$CURRENTOS" == "ubi" ]]
+        then
+          if [ ! -f "${FILE}/Dockerfile.ubi" ]
+          then
+            echo "Not building ubi because ${FILE}/Dockerfile.ubi does not exist."
+            continue
+          fi
+          IMAGE="${FILE}-ubi"
+          DOCKERFILE="${FILE}/Dockerfile.ubi"
+        fi
+        echo "---------- START Building websphere-traditional:$IMAGE ----------"
+        docker build -t websphere-traditional:$IMAGE -f $DOCKERFILE $FILE --build-arg IBMID="$IBMID" --build-arg IBMID_PWD="$IBMID_PWD" --build-arg IMURL="$IMURL"
+        rc=$?
+        if [ $rc -ne 0 ]
+        then
+          echo "FATAL: Error building websphere-traditional:$FILE, exiting"
+          exit 2
+        fi
+        echo "---------- END Building websphere-traditional:$FILE ----------"
+      fi
+    done
   fi
 done
 
