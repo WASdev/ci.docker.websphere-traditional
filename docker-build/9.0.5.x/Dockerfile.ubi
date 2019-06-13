@@ -57,8 +57,13 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 FROM registry.access.redhat.com/ubi7/ubi
 ARG BUILDLABEL=none
 
-LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com>" \
-      BuildLabel="$BUILDLABEL"
+LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
+      BuildLabel="$BUILDLABEL" \
+      vendor="IBM" \
+      name="IBM WebSphere Traditional" \
+      version="9.0.5.0" \
+      summary="Image for WebSphere Traditional and UBI" \
+      description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
 RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
 
