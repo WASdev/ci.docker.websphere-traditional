@@ -23,8 +23,9 @@ start_server()
 }
 
 run_logviewer(){
-  echo "run logViewer.sh"
-  /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor -resumable -resume -format json | grep "^{" &
+  echo "Starting logViewer ................"
+  mkdir -p /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/logdata
+  /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor 1 -resumable -resume -format json | grep --line-buffered "^{" &
 }
 
 stop_server()
@@ -45,9 +46,7 @@ configure_logging(){
   /work/configure_logging.sh
 }
 
-echo "ENABLE_BASIC_LOGGING is $ENABLE_BASIC_LOGGING"
 ENABLE_BASIC_LOGGING=${ENABLE_BASIC_LOGGING:-"false"}
-
 if [ "$ENABLE_BASIC_LOGGING" = false ]; then
   configure_logging
 fi
@@ -68,37 +67,41 @@ fi
 
 trap "stop_server" TERM INT
 
-start_server || exit $?
-PID=$(ps -C java -o pid= | tr -d " ")
-
-if [ "$ENABLE_BASIC_LOGGING" = true ]; then
-  echo "Basic Logging is enabled"
-  tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log --pid $PID -n +0 &
-  tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log --pid $PID -n +0 >&2 &
-else
+if [ "$ENABLE_BASIC_LOGGING" = false ]; then
   echo "HPEL is enabled"
   rm -f /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log*
   rm -f /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log*
   run_logviewer
 fi
 
-while [ -e "/proc/$PID" ]; do
-  ps cax | grep logViewer > /dev/null
-  if [ $? -eq 0 ]; then
-    echo "logViewer is running." > /dev/null
-  else
-    if [ "$ENABLE_BASIC_LOGGING" = false ]; then
-      echo "logViewer is not running.  Restarting" > /dev/null
-      /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor -resumable -resume -format json | grep "^{" &
+start_server || exit $?
+PID=$(ps -C java -o pid=,cmd= | grep com.ibm.ws.runtime.WsServer | awk '{print $1}')
+
+if [ "$ENABLE_BASIC_LOGGING" = true ]; then
+  echo "Basic Logging is enabled"
+  tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemOut.log --pid $PID -n +0 &
+  tail -F /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/logs/$SERVER_NAME/SystemErr.log --pid $PID -n +0 >&2 &
+fi
+
+if [ "$ENABLE_BASIC_LOGGING" = true ]; then
+  while [ -e "/proc/$PID" ]; do
+    sleep 1
+  done
+else
+  while [ -e "/proc/$PID" ]; do
+    ps cax | grep logViewer > /dev/null
+    if [ $? -ne 0 ]; then
+        run_logviewer
     fi
+    sleep 1
+  done
+
+  LOGVIEWER_PID=$(ps -C logViewer.sh -o pid= | tr -d " ")
+  if [ $? -eq 0 ]; then
+    # give server time to flush logs and logViewer time to send them
+    sleep 15
+    echo "Stopping logViewer ................"
+    kill -9 $LOGVIEWER_PID
+    exit 0
   fi
-  sleep 1
-done
-
-echo "WAS server1 is not running.  Stopping logViewer"
-
-PID=`ps cax | grep logViewer`
-if [ $? -eq 0 ]; then
-  kill -3 $PID
-  exit 0
 fi
