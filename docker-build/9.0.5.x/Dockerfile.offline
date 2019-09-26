@@ -1,6 +1,6 @@
 # build image to extract the tar ball.
 FROM ubuntu:16.04 as builder
- ARG WAS_VERSION=9.0.5.1
+ ARG WAS_VERSION=9.0.5.2
  ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
 COPY im/${WAS_TAR_BALL} /
 RUN tar -xzf "$WAS_TAR_BALL"

@@ -11,7 +11,7 @@ To create an image with the latest fixpack version of IBM Websphere Application 
 
 For example:
 ```
-docker build -t websphere-traditional:9.0.5.1-ilan . \
+docker build -t websphere-traditional:9.0.5.2-ilan . \
     --build-arg IBMID={IBMid} \
     --build-arg IBMID_PWD={IBMid_password} \
     --build-arg IMURL={IBM_Installation_Manager_download_url}
@@ -21,7 +21,7 @@ To create an image with the latest fixpack version of IBM WebSphere Application 
 
 For example:
 ```
-docker build -t websphere-traditional:9.0.5.1-base . \
+docker build -t websphere-traditional:9.0.5.2-base . \
     --build-arg IBMID={IBMid} \
     --build-arg IBMID_PWD={IBMid_password} \
     --build-arg IMURL={IBM_Installation_Manager_download_url} \
@@ -33,7 +33,7 @@ To create an image with the latest fixpack version with all recommended iFixes, 
 
 For example:
 ```
-docker build -t websphere-traditional:9.0.5.1-ilan . \
+docker build -t websphere-traditional:9.0.5.2-ilan . \
     --build-arg IBMID={IBMid} \
     --build-arg IBMID_PWD={IBMid_password} \
     --build-arg IMURL={IBM_Installation_Manager_download_url} \
@@ -56,7 +56,7 @@ docker run --rm -v $(pwd):/host:Z ibm-im /host/install_was $VERSION $IBM_ID $IBM
 Or edit `versions.csv` and run the `download_was` to download several Websphere versions, keep it on local storage and use it to build WAS image:
 
 ```
-docker build -t websphere-traditional:9.0.5.1-ilan . \
+docker build -t websphere-traditional:9.0.5.2-ilan . \
 --build-arg WAS_VERSION={Previously donwloaded WAS version} \
 -f Dockerfile.offline
 ```
