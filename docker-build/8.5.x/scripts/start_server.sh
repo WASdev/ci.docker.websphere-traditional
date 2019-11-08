@@ -37,7 +37,7 @@ stop_server()
 applyConfigs(){
   if [ ! -z "$(ls /etc/websphere)" ]; then
     echo "+ Found config-files under /etc/websphere. Executing..."
-    find /etc/websphere -name "*.props" -exec /work/applyConfig.sh {} \;
+    find /etc/websphere -type f \( -name \*.props -o -name \*.conf \) -print0 | sort -z | xargs -0 -n 1 -r /work/applyConfig.sh
   fi
 }
 
@@ -53,11 +53,11 @@ fi
 
 applyConfigs
 
-if [ ! -z "$EXTRACT_PORT_FROM_HOST_HEADER" ]; then
+if [ "$EXTRACT_PORT_FROM_HOST_HEADER" = "true" ]; then
   /work/applyConfig.sh /work/config-ibm/webContainer.props
 fi
 
-if [ ! -f "/work/passwordupdated" ]; then
+if ! cmp -s "/tmp/passwordupdated" "/tmp/PASSWORD"; then
   /work/set_password.sh
 fi
 
@@ -75,7 +75,7 @@ if [ "$ENABLE_BASIC_LOGGING" = false ]; then
 fi
 
 start_server || exit $?
-PID=$(ps -C java -o pid= | tr -d " ")
+PID=$(ps -C java -o pid=,cmd= | grep com.ibm.ws.runtime.WsServer | awk '{print $1}')
 
 if [ "$ENABLE_BASIC_LOGGING" = true ]; then
   echo "Basic Logging is enabled"
