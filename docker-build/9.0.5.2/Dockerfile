@@ -16,14 +16,14 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM registry.access.redhat.com/ubi7/ubi as builder
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+FROM ubuntu:16.04 as builder
+RUN apt-get update && apt-get install -y openssl wget unzip
 
 ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5002.20191114_1730
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN mkdir /work && cd /work && wget $IMURL \
@@ -54,18 +54,13 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # Final image
-FROM registry.access.redhat.com/ubi7/ubi
-ARG BUILDLABEL=none
+FROM ubuntu:16.04
+ARG BUILDLABEL=f5021945.04
 
-LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
-      BuildLabel="$BUILDLABEL" \
-      vendor="IBM" \
-      name="IBM WebSphere Traditional" \
-      version="9.0.5.3" \
-      summary="Image for WebSphere Traditional and UBI" \
-      description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
+LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com>" \
+      BuildLabel="$BUILDLABEL"
 
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+RUN apt-get update && apt-get install -y openssl wget unzip
 
 ARG USER=was
 
