@@ -23,7 +23,7 @@ ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ND.v90_9.0.5002.20191114_1730
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5002.20191114_1730
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN mkdir /work && cd /work && wget $IMURL \
