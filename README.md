@@ -68,6 +68,28 @@ COPY --chown=was:root myApp.war /work/app
 COPY --chown=was:root myAppDeploy.py dataSourceConfig.py /work/config
 RUN /work/configure.sh
 ```
+### Installing iFixes
+
+Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer. Follow the instructions at https://www.ibm.com/support/knowledgecenter/en/SSFHJY_2.0.0/deploy/ibm_install_manager.html until you have downloaded the agent.installer.linux.gtk.x86_64*.zip file to your system. 
+
+Once you have the iFix and the agent installer on the system you are building your image on, configure the dockerfile to extract the installer and run the installer on the iFix as shown in the example dockerfile below.
+```
+FROM ibmcom/websphere-traditional:9.0.0.10
+COPY A.ear /work/config/A.ear
+COPY install_app.py /work/config/install_app.py
+RUN /work/configure.sh
+
+COPY agent.installer.linux.gtk.x86_64*.zip /work
+RUN cd /work && \
+	unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit && \
+	rm -rf agent.installer.linux.gtk.x86_64*.zip  
+
+COPY 9.0.0.10-WS-WAS-IFPH15201.zip /work/
+RUN /work/InstallationManagerKit/tools/imcl install 9.0.0.10-WS-WAS-IFPH15201 -repositories /work/9.0.0.10-WS-WAS-IFPH15201.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData && \
+	rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+```
+
+You can find more information about the imcl command at https://www.ibm.com/support/knowledgecenter/en/SSDV2W_1.8.4/com.ibm.cic.commandline.doc/topics/c_imcl_container.html
 ### Logging configuration
 	
 By default, the Docker Hub image is using High Performance Extensible Logging (HPEL) mode and is outputing logs in JSON format. This logging configuration will make the docker container a lot easier to work with ELK stacks. 
