@@ -1,4 +1,4 @@
-## Example setup for using OpenShift Pipelines to build and deploy the hello-world sample
+## Using OpenShift Pipelines to build and deploy the hello-world sample
 
 ### Create a sandbox
 mkdir demo
