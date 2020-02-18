@@ -10,34 +10,29 @@ git clone git@github.com:gmarcy/ci.docker.websphere-traditional.git
 
 cd ci.docker.websphere-traditional
 
-git checkout tekton-testing
+git checkout openshift-pipelines
 
-(You can checkout from master here after I deliver this branch:
- git clone git@github.com:WASdev/ci.docker.websphere-traditional.git)
+#### You can checkout from master here after I deliver this branch:
+git clone git@github.com:WASdev/ci.docker.websphere-traditional.git)
 
 cd samples/hello-world
 
-oc login URI --token=TOKEN (from Copy Login Command in OCP console>
+### Use OCP console to get next command from Copy Login Command
+oc login URI --token=TOKEN
 
 ### Create a new project
 oc new-project hello-world-pipeline
 
 ### If the openshift-pipelines-operator isn't installed subscribe to it
-oc apply -f pipeline/subscription.yaml
+oc apply -f openshift/subscription.yaml
 
-### Install tasks
-oc create -f pipeline/update_deployment_task.yaml
+### We need to remove a limitation in the tektoncd buildah support to allow nested projects
+oc apply -f openshift/buildah.yaml
 
-oc create -f pipeline/apply_manifest_task.yaml
+### Install tasks, pipeline and resources
+oc create -f openshift/pipeline
 
-### Install pipeline
-oc create -f pipeline/pipeline.yaml
+### Start the pipeline using OCP console or use CLI
 
-### Install pipeline resources
-oc create -f pipeline/resources.yaml
-
-### A limitation was removed in the tektoncd buildah support
-oc apply -f pipeline/buildah.yaml
-
-### Start the pipeline
+#### CLI
 tkn pipeline start build-and-deploy
