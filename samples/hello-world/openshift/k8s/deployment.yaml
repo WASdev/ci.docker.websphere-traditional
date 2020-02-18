@@ -15,7 +15,7 @@ spec:
         app: sample
     spec:
       containers:
-        - image: docker.io/gmarcy/app-sample
+        - image: docker.io/wasdev/sample-hello-world
           imagePullPolicy: Always
           name: sample
           ports:

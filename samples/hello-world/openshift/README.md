@@ -6,14 +6,11 @@ mkdir demo
 cd demo
 
 ### Clone this repo
-git clone git@github.com:gmarcy/ci.docker.websphere-traditional.git
+git clone git@github.com:WASdev/ci.docker.websphere-traditional.git
 
 cd ci.docker.websphere-traditional
 
 git checkout openshift-pipelines
-
-#### You can checkout from master here after I deliver this branch:
-git clone git@github.com:WASdev/ci.docker.websphere-traditional.git)
 
 cd samples/hello-world
 

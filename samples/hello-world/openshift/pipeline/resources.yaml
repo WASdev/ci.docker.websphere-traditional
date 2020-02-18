@@ -7,7 +7,7 @@ spec:
   type: git
   params:
     - name: url
-      value: https://github.com/gmarcy/ci.docker.websphere-traditional
+      value: https://github.com/WASdev/ci.docker.websphere-traditional
     - name: revision
       value: openshift-pipelines
 ---
