@@ -1,0 +1,56 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: build-and-deploy
+spec:
+  resources:
+    - name: sample-repo
+      type: git
+    - name: sample-image
+      type: image
+
+  tasks:
+    - name: build-sample
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      resources:
+        inputs:
+          - name: source
+            resource: sample-repo
+        outputs:
+          - name: image
+            resource: sample-image
+      params:
+        - name: DOCKERFILE
+          value: "Dockerfile.ubi"
+        - name: CONTEXT
+          value: "samples/hello-world"
+        - name: TLSVERIFY
+          value: "false"
+
+    - name: apply-sample-manifests
+      taskRef:
+        name: apply-manifests
+      resources:
+        inputs:
+          - name: source
+            resource: sample-repo
+      runAfter:
+        - build-sample
+      params:
+        - name: manifest_dir
+          value: "samples/hello-world/openshift/k8s"
+
+    - name: update-sample-image
+      taskRef:
+        name: update-deployment
+      resources:
+        inputs:
+          - name: image
+            resource: sample-image
+      params:
+        - name: deployment
+          value: "sample"
+      runAfter:
+        - apply-sample-manifests
