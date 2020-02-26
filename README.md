@@ -28,7 +28,7 @@ This will result in a Docker image that has your application and configuration p
 
 ### Adding properties during build phase 
 
-Starting with `9.0.0.9` the `profile` Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/en/SSAW57_9.0.0/com.ibm.websphere.nd.multiplatform.doc/ae/rxml_7propbasedconfig.html) found inside the `/work/config/*.props` file.  This script will be run with the server in `stopped` mode and the props will be applied in alphabetic order.
+The Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/SSEQTP_9.0.5/com.ibm.websphere.base.doc/ae/txml_property_configuration.html) found inside the `/work/config/*.props` file.  This script will be run with the server in `stopped` mode and the prop files will be applied in alphabetic order.
 
 For example, if you had the following `/work/config/001-was-config.props`:
 
@@ -48,29 +48,29 @@ You can then create a new image which has this configuration by simply building 
 
 ```
 FROM ibmcom/websphere-traditional:latest
-COPY --chown=was:root was-config.props /work/config
+COPY --chown=was:root 001-was-config.props /work/config/
 RUN /work/configure.sh
 ```
 
-You may use numeric prefix on your prop files names, so props the have dependencies can be applied in an adequate order.
+You may use numeric prefixes on your prop file names, so props that have dependencies can be applied in an adequate order.
 
 ### Adding an application and advanced configuration during build phase 
 
-Similar to the example above, you can also deploy an application and advanced configuration by placing their Jython (`.py`) scripts under
+Similar to the example above, you can also deploy an application and advanced configuration by placing your Jython (`.py`) scripts under
 the folder `/work/config`.  
 
 Putting it all together, you would have a Dockerfile such as:
 
 ```
 FROM ibmcom/websphere-traditional:latest
-COPY --chown=was:root was-config.props /work/config
-COPY --chown=was:root myApp.war /work/app
-COPY --chown=was:root myAppDeploy.py dataSourceConfig.py /work/config
+COPY --chown=was:root was-config.props /work/config/
+COPY --chown=was:root myApp.war /work/app/
+COPY --chown=was:root myAppDeploy.py dataSourceConfig.py /work/config/
 RUN /work/configure.sh
 ```
 ### Installing iFixes
 
-Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer. Follow the instructions at https://www.ibm.com/support/knowledgecenter/en/SSFHJY_2.0.0/deploy/ibm_install_manager.html until you have downloaded the agent.installer.linux.gtk.x86_64*.zip file to your system. 
+Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer. Follow the instructions at https://www.ibm.com/support/pages/node/1115169 until you have downloaded the agent.installer.linux.gtk.x86_64*.zip file to your system. 
 
 Once you have the iFix and the agent installer on the system you are building your image on, configure the dockerfile to extract the installer and run the installer on the iFix as shown in the example dockerfile below.
 ```
@@ -118,12 +118,12 @@ RUN /work/configure.sh /work/configA.py <args> \
 
 ### Runtime configuration
 
-How about properties that are dynamic and depend on the environment (eg: changing JAAS passwords or data source host at runtime)?  tWAS is not nearly as dynamic as Liberty, but we have augmented the `start_server` script to look into `/etc/websphere` for any property files that need to applied to the server.
+How about properties that are dynamic and depend on the environment (eg: changing JAAS passwords or data source host at runtime)?  Traditional WAS is not nearly as dynamic as Liberty, but we have augmented the `start_server` script to look into `/etc/websphere` for any property files that need to applied to the server.
 
 So during `docker run` you can setup a volume that mounts property files into `/etc/websphere`, such as:
 
 ```bash
-docker run -v /config:/etc/websphere  -p 9043:9043 -p 9443:9443 websphere-traditional:9.0.0.9-profile
+docker run -v /config:/etc/websphere  -p 9043:9043 -p 9443:9443 websphere-traditional:latest
 ```
 
 Similarly to build-phase props, the dynamic runtime props will also be applied in alphabetic order, so you can also use numeric prefixes to guarantee dependent props are applied in an adequate order.
@@ -133,7 +133,7 @@ Similarly to build-phase props, the dynamic runtime props will also be applied i
 
 ## How to run this image
 
-When the container is started by using the IBM WebSphere Application Server traditional for Developers profile image, it takes the following environment variables:
+When the container is started by using the IBM WebSphere Application Server traditional image, it takes the following environment variables:
 
 * `UPDATE_HOSTNAME` (optional, set to `true` if the hostname should be updated from the default of `localhost`)
 * `PROFILE_NAME` (optional, default is `AppSrv01`)
@@ -144,7 +144,7 @@ When the container is started by using the IBM WebSphere Application Server trad
   
 ```bash
    docker run --name was-server -h was-server -p 9043:9043 -p 9443:9443 -d \
-   websphere-traditional:9.0.0.9-profile
+   websphere-traditional:latest
 ```
 
 ### Running the image by passing values for the environment variables
@@ -161,12 +161,12 @@ Example:
 ```bash
 docker run --name test -h test -e UPDATE_HOSTNAME=true \
   -e PROFILE_NAME=AppSrv02 -e NODE_NAME=DefaultNode02 -e SERVER_NAME=server2 \
-  -p 9043:9043 -p 9443:9443 -d websphere-traditional:profile 
+  -p 9043:9043 -p 9443:9443 -d websphere-traditional:latest 
 ``` 
 
 ### Retrieving the password
 
-The admin console user id is default to ```wsadmin``` and the initial wsadmin user password is
+The admin console user id is defaulted to ```wsadmin``` and the initial wsadmin user password is
 in ```/tmp/PASSWORD```
 ```
    docker exec was-server cat /tmp/PASSWORD
@@ -175,7 +175,7 @@ in ```/tmp/PASSWORD```
 ### How to check the WebSphere Application Server installed level and ifixes
 
 ```
-   docker run websphere-traditional:9.0.0.9-ilan versionInfo.sh -ifixes
+   docker run websphere-traditional:9.0.5.0 versionInfo.sh -ifixes
 ```
 
 ### Checking the logs
@@ -190,7 +190,7 @@ Example:
 docker logs -f --tail=all test
 ``` 
 
-The logs from this container is also available inside `/logs`, therefore you can setup a volume mount to persist these logs into an external directory:
+The logs from this container are also available inside `/logs`, therefore you can setup a volume mount to persist these logs into an external directory:
 
 ![Logs](/graphics/persisted_logs.png)
 
