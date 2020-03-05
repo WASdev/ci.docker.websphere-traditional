@@ -43,11 +43,13 @@ fi
 for FILE in *; do
   if [[ ! "$FILE" =~ x$ ]] && [[ -f "$FILE/Dockerfile" ]] && [[ -z "$VERSION" || "$VERSION" == "$FILE" ]]
   then
-    for CURRENTOS in ubuntu ubi; do
+    for CURRENTOS in ubuntu ubi ubi8; do
       if [[ -z "$OS" || "$CURRENTOS" == "$OS" ]]
       then
         IMAGE=$FILE
         DOCKERFILE="${FILE}/Dockerfile"
+
+        # Update variables when building ubi
         if [[ "$CURRENTOS" == "ubi" ]]
         then
           if [ ! -f "${FILE}/Dockerfile.ubi" ]
@@ -58,6 +60,19 @@ for FILE in *; do
           IMAGE="${FILE}-ubi"
           DOCKERFILE="${FILE}/Dockerfile.ubi"
         fi
+
+        # Update variables when building ubi8
+        if [[ "$CURRENTOS" == "ubi8" ]]
+        then
+          if [ ! -f "${FILE}/Dockerfile.ubi8" ]
+          then
+            echo "Not building ubi8 because ${FILE}/Dockerfile.ubi8 does not exist."
+            continue
+          fi
+          IMAGE="${FILE}-ubi8"
+          DOCKERFILE="${FILE}/Dockerfile.ubi8"
+        fi
+
         echo "---------- START Building websphere-traditional:$IMAGE ----------"
         docker build -t websphere-traditional:$IMAGE -f $DOCKERFILE $FILE --build-arg IBMID="$IBMID" --build-arg IBMID_PWD="$IBMID_PWD" --build-arg IMURL="$IMURL"
         rc=$?
