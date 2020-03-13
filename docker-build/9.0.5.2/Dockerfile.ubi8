@@ -17,7 +17,7 @@
 
 # Build step - download and install tWAS
 FROM registry.access.redhat.com/ubi8/ubi as builder
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
 ARG IMURL
 ARG IBMID
@@ -81,7 +81,7 @@ LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
 ARG USER=was
 
