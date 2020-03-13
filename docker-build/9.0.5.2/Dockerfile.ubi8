@@ -17,7 +17,7 @@
 
 # Build step - download and install tWAS
 FROM registry.access.redhat.com/ubi8/ubi as builder
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
 ARG IMURL
 ARG IBMID
@@ -27,8 +27,24 @@ ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5002.20191114_1730
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN mkdir /work && cd /work && wget $IMURL \
-  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
-  && rm -rf agent.installer.linux.gtk.x86_64*.zip \
+  && ARCH="$(uname -m)"; \
+     case "${ARCH}" in \
+     ppc64el|ppc64le) \
+       ARCH=ppc64le; \
+       ;; \
+     s390x) \
+       ARCH=s390x; \
+       ;; \
+     amd64|x86_64) \
+       ARCH=x86_64; \
+       ;; \
+     *) \
+       echo "Unsupported arch: ${ARCH}"; \
+       exit 1; \
+       ;; \
+     esac \
+  && unzip -q agent.installer.linux.gtk.${ARCH}*.zip -d /work/InstallationManagerKit \
+  && rm -rf agent.installer.linux.gtk.${ARCH}*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
@@ -65,7 +81,7 @@ LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
 ARG USER=was
 
