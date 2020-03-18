@@ -1,5 +1,5 @@
 ############################################################################
-# (C) Copyright IBM Corporation 2015, 2019                                 #
+# (C) Copyright IBM Corporation 2015, 2020                                 #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -26,9 +26,25 @@ ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5002.20191114_1730
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
-RUN mkdir /work && cd /work && wget $IMURL \
-  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
-  && rm -rf agent.installer.linux.gtk.x86_64*.zip \
+RUN mkdir /work && cd /work && wget --no-verbose $IMURL \
+  && ARCH="$(uname -m)"; \
+     case "${ARCH}" in \
+     ppc64el|ppc64le) \
+       ARCH=ppc64le; \
+       ;; \
+     s390x) \
+       ARCH=s390x; \
+       ;; \
+     amd64|x86_64) \
+       ARCH=x86_64; \
+       ;; \
+     *) \
+       echo "Unsupported arch: ${ARCH}"; \
+       exit 1; \
+       ;; \
+     esac \
+  && unzip -q agent.installer.linux.gtk.${ARCH}*.zip -d /work/InstallationManagerKit \
+  && rm -rf agent.installer.linux.gtk.${ARCH}*.zip \
   && echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
@@ -49,16 +65,22 @@ com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
   && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
   && chmod -R g+rw /opt/IBM/
 
+# patch wsadmin.sh to avoid error when deploying apps
 RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh \
     && sed -i 's/-Xmx256m/-Xmx1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh
 
 
-# Final image
+# final image that will copy /opt/IBM from builder
 FROM ubuntu:16.04
 ARG BUILDLABEL=f5021945.04
 
-LABEL maintainer="Arthur De Magalhaes <arthurdm@ca.ibm.com>" \
-      BuildLabel="$BUILDLABEL"
+LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
+      BuildLabel="$BUILDLABEL" \
+      vendor="IBM" \
+      name="IBM WebSphere Traditional" \
+      version="9.0.5.1" \
+      summary="Image for WebSphere Traditional" \
+      description="This image contains the WebSphere Traditional runtime with Ubuntu Linux as the base OS."
 
 RUN apt-get update && apt-get install -y openssl wget unzip
 
@@ -83,6 +105,7 @@ RUN useradd $USER -g 0 -m --uid 1001 \
   && chmod -R g+rwx /work
 
 COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
+
 USER $USER
 
 ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
