@@ -16,36 +16,16 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM registry.access.redhat.com/ubi8/ubi:8.1 as builder
+FROM agent-installer:ubi8 as builder
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
-ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5017.20200205_1450
 ARG REPO=https://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85
 
-RUN set -eux; mkdir /work && cd /work && wget --no-verbose $IMURL \
-  && ARCH="$(uname -m)"; \
-     case "${ARCH}" in \
-     ppc64el|ppc64le) \
-       ARCH=ppc64le; \
-       ;; \
-     s390x) \
-       ARCH=s390x; \
-       ;; \
-     amd64|x86_64) \
-       ARCH=x86_64; \
-       ;; \
-     *) \
-       echo "Unsupported arch: ${ARCH}"; \
-       exit 1; \
-       ;; \
-     esac \
-  && unzip -q agent.installer.linux.gtk.${ARCH}*.zip -d /work/InstallationManagerKit \
-  && rm -rf agent.installer.linux.gtk.${ARCH}*.zip \
-  && echo "your_secureStore_password" > /tmp/secureStorePwd \
+RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \

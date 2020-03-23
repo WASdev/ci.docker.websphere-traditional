@@ -43,7 +43,7 @@ ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
 COPY scripts/ /work/
-COPY licenses /licenses/
+COPY licenses/ /licenses/
 
 RUN useradd $USER -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \

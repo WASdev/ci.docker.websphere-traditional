@@ -16,20 +16,16 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM ubuntu:16.04 as builder
+FROM agent-installer:ubuntu as builder
 RUN apt-get update && apt-get install -y openssl wget unzip
 
-ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5000.20190610_1342
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5001.20190828_0616
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
-RUN mkdir /work && cd /work && wget --no-verbose $IMURL \
-  && unzip -q agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit \
-  && rm -rf agent.installer.linux.gtk.x86_64*.zip \
-  && echo "your_secureStore_password" > /tmp/secureStorePwd \
+RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
@@ -56,13 +52,13 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 # final image that will copy /opt/IBM from builder
 FROM ubuntu:16.04
-ARG BUILDLABEL=f5001923.01
+ARG BUILDLABEL=f5011934.01
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       BuildLabel="$BUILDLABEL" \
       vendor="IBM" \
       name="IBM WebSphere Traditional" \
-      version="9.0.5.0" \
+      version="9.0.5.1" \
       summary="Image for WebSphere Traditional" \
       description="This image contains the WebSphere Traditional runtime with Ubuntu Linux as the base OS."
 
@@ -78,7 +74,7 @@ ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
 COPY scripts/ /work/
-COPY licenses /licenses/
+COPY licenses/ /licenses/
 
 RUN useradd $USER -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \
