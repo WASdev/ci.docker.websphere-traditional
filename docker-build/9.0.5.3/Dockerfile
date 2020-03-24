@@ -15,12 +15,54 @@
 #                                                                          #
 ############################################################################
 
-# build image to extract the tar ball.
+# Build step - download and install tWAS
 FROM ubuntu:16.04 as builder
-ARG WAS_VERSION=9.0.5.0
-ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
-COPY im/${WAS_TAR_BALL} /
-RUN tar -xzf "$WAS_TAR_BALL"
+RUN apt-get update && apt-get install -y openssl wget unzip
+
+ARG IMURL
+ARG IBMID
+ARG IBMID_PWD
+ARG IFIXES=none
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5003.20200226_0941
+ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
+
+RUN mkdir /work && cd /work && wget --no-verbose $IMURL \
+  && ARCH="$(uname -m)"; \
+     case "${ARCH}" in \
+     ppc64el|ppc64le) \
+       ARCH=ppc64le; \
+       ;; \
+     s390x) \
+       ARCH=s390x; \
+       ;; \
+     amd64|x86_64) \
+       ARCH=x86_64; \
+       ;; \
+     *) \
+       echo "Unsupported arch: ${ARCH}"; \
+       exit 1; \
+       ;; \
+     esac \
+  && unzip -q agent.installer.linux.gtk.${ARCH}*.zip -d /work/InstallationManagerKit \
+  && rm -rf agent.installer.linux.gtk.${ARCH}*.zip \
+  && echo "your_secureStore_password" > /tmp/secureStorePwd \
+  && /work/InstallationManagerKit/tools/imutilsc saveCredential \
+    -userName $IBMID -userPassword $IBMID_PWD \
+    -secureStorageFile /tmp/secureStore \
+    -masterPasswordFile /tmp/secureStorePwd \
+    -url $REPO -verbose \
+  && /work/InstallationManagerKit/tools/imcl install \
+    $PRODUCTID com.ibm.java.jdk.v8 \
+    -acceptLicense -accessRights nonAdmin -showProgress \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
+    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
+    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
+    -preferences offering.service.repositories.areUsed=false,\
+com.ibm.cic.common.core.preferences.searchForUpdates=true,\
+com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
+com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
+  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps
@@ -30,8 +72,12 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 # final image that will copy /opt/IBM from builder
 FROM ubuntu:16.04
+ARG BUILDLABEL=f5032008.04
 
-RUN apt-get update && apt-get install -y openssl
+LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
+      BuildLabel="$BUILDLABEL"
+
+RUN apt-get update && apt-get install -y openssl wget unzip
 
 ARG USER=was
 
