@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ###########################################################################
-# (C) Copyright IBM Corporation 2016, 2019.                               #
+# (C) Copyright IBM Corporation 2016, 2020.                               #
 #                                                                         #
 # Licensed under the Apache License, Version 2.0 (the "License");         #
 # you may not use this file except in compliance with the License.        #
@@ -16,72 +16,105 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-# Executing this script builds all released versions of the websphere-traditional Docker images.
+# Executing this script builds all versions of the websphere-traditional Docker images.
 
-if [[ $# != 3 && $# != 4 && $# != 5 ]]; then
-  echo "Usage: build_all <IBMid> <IBMid password> <IM download url>"
-  echo "  see download-iim.md for information on the IM download url"
+pushd `dirname $0` > /dev/null && SCRIPTPATH=`pwd` && popd > /dev/null
+
+cd $SCRIPTPATH || exit
+
+usage="Usage: build_all.sh --username=<username> --password=<password> [--repo=<repo> --productid=<productid> --buildlabel=<buildlabel> --dir=<dir> --tag=<tag> --os=<os> --arch=<arch>]"
+
+# parse in the arguments
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --username=*)
+      username="${1#*=}"
+      ;;
+    --password=*)
+      password="${1#*=}"
+      ;;
+    --repo=*)
+      repo="${1#*=}"
+      ;;
+    --productid=*)
+      productid="${1#*=}"
+      ;;
+    --buildlabel=*)
+      buildlabel="${1#*=}"
+      ;;
+    --dir=*)
+      dir="${1#*=}"
+      ;;
+    --tag=*)
+      tag="${1#*=}"
+      ;;
+    --os=*)
+      os="${1#*=}"
+      ;;
+    --arch=*)
+      arch="${1#*=}"
+      ;;
+    *)
+      echo "Error: Invalid argument - $1"
+      echo "$usage"
+      exit 1
+  esac
+  shift
+done
+
+if [ -z "$username" ] || [ -z "$password" ]
+then
+  echo "Error: must provide --username and --password arguments"
+  echo "$usage"
   exit 1
 fi
-
-IBMID=$1
-IBMID_PWD=$2
-IMURL=$3
-# optional 4th arg limits the build to a single version
-if [[ ! -z "$4" ]]
+if [ -z "$tag" ]
 then
-  VERSION=$4
-  echo "Limiting build to version $VERSION"
-fi
-# optional 5th arg limits the build to a single os
-if [[ ! -z "$5" ]]
-then
-  OS=$5
-  echo "Limiting build to OS $OS"
+  tag=$dir
 fi
 
-for FILE in *; do
-  if [[ ! "$FILE" =~ x$ ]] && [[ -f "$FILE/Dockerfile" ]] && [[ -z "$VERSION" || "$VERSION" == "$FILE" ]]
+for current_dir in *; do
+  if test -f "$current_dir/Dockerfile" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
   then
-    for CURRENTOS in ubuntu ubi ubi8; do
-      if [[ -z "$OS" || "$CURRENTOS" == "$OS" ]]
+    for current_os in ubuntu ubi ubi8; do
+      if [[ -z "$os" || "$current_os" == "$os" ]]
       then
-        IMAGE=$FILE
-        DOCKERFILE="${FILE}/Dockerfile"
-
-        # Update variables when building ubi
-        if [[ "$CURRENTOS" == "ubi" ]]
+        DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
+        if [ ! -f "$DOCKERFILE" ]
         then
-          if [ ! -f "${FILE}/Dockerfile.ubi" ]
-          then
-            echo "Not building ubi because ${FILE}/Dockerfile.ubi does not exist."
-            continue
-          fi
-          IMAGE="${FILE}-ubi"
-          DOCKERFILE="${FILE}/Dockerfile.ubi"
+          echo "Not building ${current_os} because $DOCKERFILE does not exist."
+          continue
         fi
-
-        # Update variables when building ubi8
-        if [[ "$CURRENTOS" == "ubi8" ]]
+        if [[ ! -z "$tag" ]]
         then
-          if [ ! -f "${FILE}/Dockerfile.ubi8" ]
-          then
-            echo "Not building ubi8 because ${FILE}/Dockerfile.ubi8 does not exist."
-            continue
-          fi
-          IMAGE="${FILE}-ubi8"
-          DOCKERFILE="${FILE}/Dockerfile.ubi8"
+          IMAGE="${tag}"
+        else
+          IMAGE="${current_dir}-${current_os}"
         fi
-
         echo "---------- START Building websphere-traditional:$IMAGE ----------"
-        docker build -t websphere-traditional:$IMAGE -f $DOCKERFILE $FILE --build-arg IBMID="$IBMID" --build-arg IBMID_PWD="$IBMID_PWD" --build-arg IMURL="$IMURL"
+        buildCommand="docker build -t websphere-traditional:${IMAGE} ${current_dir} --build-arg IBMID=\"$username\" --build-arg IBMID_PWD=\"$password\""
+        if [ ! -z "$repo" ]
+        then 
+          buildCommand="$buildCommand --build-arg REPO=\"$repo\""
+        fi
+        if [ ! -z "$productid" ]
+        then 
+          buildCommand="$buildCommand --build-arg PRODUCTID=\"$productid\""
+        fi
+        if [ ! -z "$buildlabel" ]
+        then 
+          buildCommand="$buildCommand --build-arg BUILDLABEL=\"$buildlabel\""
+        fi
+        scrubbedBuildCommand="${buildCommand//$password/xxxxxxxx}"
+        echo "BUILD COMMAND: $scrubbedBuildCommand"
+        eval $buildCommand
         rc=$?
         if [ $rc -ne 0 ]
         then
-          echo "FATAL: Error building websphere-traditional:$FILE, exiting"
+          echo "FATAL: Error building websphere-traditional:$IMAGE, exiting"
           exit 2
         fi
-        echo "---------- END Building websphere-traditional:$FILE ----------"
+        echo "---------- END Building websphere-traditional:$IMAGE ----------"
       fi
     done
   fi
