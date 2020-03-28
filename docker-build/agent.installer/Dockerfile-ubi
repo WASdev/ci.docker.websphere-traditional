@@ -17,7 +17,7 @@
 
 # Build step - download and install tWAS
 FROM registry.access.redhat.com/ubi7/ubi
-RUN yum makecache fast && yum update -y && yum install -y openssl wget unzip
+RUN yum --disableplugin=subscription-manager install -y unzip
 
 ARG IMZIP
 

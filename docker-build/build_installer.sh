@@ -42,6 +42,9 @@ while [ $# -gt 0 ]; do
     --arch=*)
       arch="${1#*=}"
       ;;
+    --download=*)
+      download="${1#*=}"
+      ;;
     *)
       echo "Error: Invalid argument - $1"
       echo "$usage"
@@ -98,10 +101,10 @@ fi
 for current_arch in x86_64 ppc64le s390x; do
   if [[ -z "$arch" || "$current_arch" == "$arch" ]]
   then
-    if [[ ! -f "agent.installer/agent.installer.${current_arch}.zip" ]]
+    if [[ -z "$download" ]] || [[ "$download" != "false" ]]
     then
       IMURL=${im_url//%ARCH%/${current_arch}}
-      wget -O "agent.installer/agent.installer.${current_arch}.zip" --no-verbose --progress=bar:force:noscroll --user "$username" --password "$password" $IMURL
+      wget -O "agent.installer/agent.installer.${current_arch}.zip" --no-verbose --show-progress --progress=dot:giga --user "$username" --password "$password" $IMURL
       rc=$?
       if [ $rc -ne 0 ]
       then

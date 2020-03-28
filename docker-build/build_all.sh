@@ -68,10 +68,6 @@ then
   echo "$usage"
   exit 1
 fi
-if [ -z "$tag" ]
-then
-  tag=$dir
-fi
 
 for current_dir in *; do
   if test -f "$current_dir/Dockerfile" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
@@ -92,7 +88,7 @@ for current_dir in *; do
           IMAGE="${current_dir}-${current_os}"
         fi
         echo "---------- START Building websphere-traditional:$IMAGE ----------"
-        buildCommand="docker build -t websphere-traditional:${IMAGE} ${current_dir} --build-arg IBMID=\"$username\" --build-arg IBMID_PWD=\"$password\""
+        buildCommand="docker build -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"$username\" --build-arg IBMID_PWD=\"$password\""
         if [ ! -z "$repo" ]
         then 
           buildCommand="$buildCommand --build-arg REPO=\"$repo\""
