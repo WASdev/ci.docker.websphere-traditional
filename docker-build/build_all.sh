@@ -144,19 +144,19 @@ for current_dir in *; do
           exit 2
         fi
         echo "---------- END Building websphere-traditional:$IMAGE ----------"
-        echo "---------- START Building sample-app:$IMAGE ----------"
+        echo "---------- START Building websphere-traditional/sample-app:$IMAGE ----------"
         docker tag websphere-traditional:$IMAGE ibmcom/websphere-traditional:latest
-        docker build -t sample-app:${IMAGE} ../samples/hello-world
+        docker build -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
         rc=$?
         docker rmi ibmcom/websphere-traditional:latest
         if [ $rc -ne 0 ]
         then
-          echo "FATAL: Error building sample-app:$IMAGE, exiting"
+          echo "FATAL: Error building websphere-traditional/sample-app:$IMAGE, exiting"
           exit 2
         fi
-        echo "---------- END Building sample-app:$IMAGE ----------"
-        echo "---------- START Running sample-app:$IMAGE ----------"
-        containerID="$(docker run --detach --rm -p 9080:9080 sample-app:$IMAGE)"
+        echo "---------- END Building websphere-traditional/sample-app:$IMAGE ----------"
+        echo "---------- START Running websphere-traditional/sample-app:$IMAGE ----------"
+        containerID="$(docker run --detach --rm -p 9080:9080 websphere-traditional/sample-app:$IMAGE)"
         sleep 10
         while [[ ! -z "$(docker container stats --no-stream ${containerID})" ]]
         do
@@ -175,8 +175,9 @@ for current_dir in *; do
           echo "Passed: ${response}"
         else
           echo "Failed: ${response}"
+          exit 3
         fi
-        echo "---------- END Running sample-app:$IMAGE ----------"
+        echo "---------- END Running websphere-traditional/sample-app:$IMAGE ----------"
       fi
     done
   fi
