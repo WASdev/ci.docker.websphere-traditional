@@ -116,7 +116,7 @@ for current_dir in *; do
         fi
         if [[ ! -z "$tag" ]]
         then
-          IMAGE="${tag}"
+          IMAGE="${tag}-${current_os}"
         else
           IMAGE="${current_dir}-${current_os}"
         fi
