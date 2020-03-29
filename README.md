@@ -2,11 +2,13 @@
 
 The files in this directory are used to build the `ibmcom/websphere-traditional` images on [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). These images contain the ILAN licensed IBM WebSphere Application Server traditional. If you wish to build these yourself just follow [these instructions](docker-build/9.0.5.x/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!  Once you're ready to deploy this into Kubernetes, please see our [helm chart](https://github.com/IBM/charts/tree/master/stable/ibm-websphere-traditional).
 
+**Note:** The 9.0.5.3 release images will be the last version where `latest` and `9.0.5.3` tagged images will be based upon Ubuntu v16.04 as the base operating system.  Starting with the 9.0.5.4 release, the images will be based upon Red Hat Universal Base Image (UBI) 8 OS images.  The `9.0.5.3-ubi` tagged images are also now based upon UBI 8.  As always, you are welcome to build your own images using any base OS image that supports IBM WebSphere Application traditional.
+
 **Note:** Have you considered trying out WebSphere Liberty?  It's based on the Open Source project `Open Liberty`, fully supports Java EE8 and MicroProfile 2.0, and it's much lighter, faster and easier to configure than WAS traditional. You can try it today for free from [Docker Hub](https://hub.docker.com/_/websphere-liberty/). If you have entitlement for WAS traditional you already have entitlement for Liberty included.  Find out more about how to use WebSphere Liberty in Kubernetes [here](https://www.ibm.com/blogs/bluemix/2018/10/certified-kubernetes-deployments-for-websphere-liberty/).
 
 ## Building an application image 
 
-The Docker Hub image contains a traditional WebSphere Application Server v9 instance with no applications or configuration applied to it.
+The Docker Hub image contains a traditional WebSphere Application Server v9 or v855 instance with no applications or configuration applied to it.
 
 ### Best practices
 
@@ -70,7 +72,7 @@ RUN /work/configure.sh
 ```
 ### Installing iFixes
 
-Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer. Follow the instructions at https://www.ibm.com/support/pages/node/1115169 until you have downloaded the agent.installer.linux.gtk.x86_64*.zip file to your system. 
+Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer. Follow the instructions at https://www.ibm.com/support/pages/node/1115169 until you have downloaded the agent.installer.linux.gtk*.zip file to your system. 
 
 Once you have the iFix and the agent installer on the system you are building your image on, configure the dockerfile to extract the installer and run the installer on the iFix as shown in the example dockerfile below.
 ```
@@ -79,10 +81,10 @@ COPY A.ear /work/config/A.ear
 COPY install_app.py /work/config/install_app.py
 RUN /work/configure.sh
 
-COPY agent.installer.linux.gtk.x86_64*.zip /work
+COPY agent.installer.linux.gtk*.zip /work
 RUN cd /work && \
-	unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit && \
-	rm -rf agent.installer.linux.gtk.x86_64*.zip  
+	unzip agent.installer.linux.gtk*.zip -d /work/InstallationManagerKit && \
+	rm -rf agent.installer.linux.gtk*.zip  
 
 COPY 9.0.0.10-WS-WAS-IFPH15201.zip /work/
 RUN /work/InstallationManagerKit/tools/imcl install 9.0.0.10-WS-WAS-IFPH15201 -repositories /work/9.0.0.10-WS-WAS-IFPH15201.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData && \
