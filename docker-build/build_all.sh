@@ -69,13 +69,46 @@ then
   exit 1
 fi
 
+this_arch="$(uname -m)"
+case "${this_arch}" in
+  ppc64el|ppc64le)
+    this_arch=ppc64le;
+    ;;
+  s390x)
+    this_arch=s390x;
+    ;;
+  amd64|x86_64)
+    this_arch=x86_64;
+    ;;
+  *)
+    echo "Unsupported arch: ${this_arch}";
+    exit 1;
+    ;;
+esac
+
+if [[ -z "${arch}" ]]
+then
+  arch=${this_arch}
+  echo "Setting arch to ${arch}"
+elif [[ "${arch}" == "all" ]]
+then
+  arch=""
+  echo "Building for all architectures"
+fi
+
 for current_dir in *; do
   if test -f "$current_dir/Dockerfile" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
   then
     for current_os in ubuntu ubi ubi8; do
       if [[ -z "$os" || "$current_os" == "$os" ]]
       then
-        DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
+
+        if [[ ! -z "$arch" ]] && [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
+        then
+          DOCKERFILE="${current_dir}/Dockerfile-${current_os}-${arch}"
+        else
+          DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
+        fi
         if [ ! -f "$DOCKERFILE" ]
         then
           echo "Not building ${current_os} because $DOCKERFILE does not exist."

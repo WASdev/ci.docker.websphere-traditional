@@ -16,6 +16,24 @@
 # limitations under the License.                                          #
 ###########################################################################
 
+
+this_arch="$(uname -m)"
+case "${this_arch}" in
+  ppc64el|ppc64le)
+    this_arch=ppc64le;
+    ;;
+  s390x)
+    this_arch=s390x;
+    ;;
+  amd64|x86_64)
+    this_arch=x86_64;
+    ;;
+  *)
+    echo "Unsupported arch: ${this_arch}";
+    exit 1;
+    ;;
+esac
+
 docker image rm websphere-traditional:8.5.5.17-ubi8 \
                 websphere-traditional:9.0.5.1-ubuntu \
                 websphere-traditional:9.0.5.1-ubi \
@@ -24,9 +42,9 @@ docker image rm websphere-traditional:8.5.5.17-ubi8 \
                 websphere-traditional:9.0.5.2-ubi8 \
                 websphere-traditional:9.0.5.3-ubuntu \
                 websphere-traditional:9.0.5.3-ubi8 \
-                agent-installer:x86_64-ubuntu \
-                agent-installer:x86_64-ubi \
-                agent-installer:x86_64-ubi8 \
+                agent-installer:${this_arch}-ubuntu \
+                agent-installer:${this_arch}-ubi \
+                agent-installer:${this_arch}-ubi8 \
                 agent-installer:ubuntu \
                 agent-installer:ubi \
                 agent-installer:ubi8
