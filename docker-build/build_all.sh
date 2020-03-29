@@ -144,9 +144,40 @@ for current_dir in *; do
           exit 2
         fi
         echo "---------- END Building websphere-traditional:$IMAGE ----------"
+        echo "---------- START Building sample-app:$IMAGE ----------"
+        docker tag websphere-traditional:$IMAGE ibmcom/websphere-traditional:latest
+        docker build -t sample-app:${IMAGE} ../samples/hello-world
+        rc=$?
+        docker rmi ibmcom/websphere-traditional:latest
+        if [ $rc -ne 0 ]
+        then
+          echo "FATAL: Error building sample-app:$IMAGE, exiting"
+          exit 2
+        fi
+        echo "---------- END Building sample-app:$IMAGE ----------"
+        echo "---------- START Running sample-app:$IMAGE ----------"
+        containerID="$(docker run --detach --rm -p 9080:9080 sample-app:$IMAGE)"
+        sleep 10
+        while [[ ! -z "$(docker container stats --no-stream ${containerID})" ]]
+        do
+          docker logs ${containerID} | grep -s "WSVR0001I" > /dev/null
+          if [[ $? -eq 0 ]]
+          then
+            echo "Server is open for e-business"
+            break
+          fi
+          sleep 2
+        done
+        response=$(curl http://localhost:9080/HelloWorld/hello)
+        docker stop -t 20 ${containerID}
+        if [[ "${response}" == "Hello World!" ]]
+        then
+          echo "Passed: ${response}"
+        else
+          echo "Failed: ${response}"
+        fi
+        echo "---------- END Running sample-app:$IMAGE ----------"
       fi
     done
   fi
 done
-
-docker images

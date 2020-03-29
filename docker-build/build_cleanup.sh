@@ -17,34 +17,32 @@
 ###########################################################################
 
 
-this_arch="$(uname -m)"
-case "${this_arch}" in
+MYARCH="$(uname -m)"
+case "${MYARCH}" in
   ppc64el|ppc64le)
-    this_arch=ppc64le;
+    MYARCH=ppc64le;
     ;;
   s390x)
-    this_arch=s390x;
+    MYARCH=s390x;
     ;;
   amd64|x86_64)
-    this_arch=x86_64;
+    MYARCH=x86_64;
     ;;
   *)
-    echo "Unsupported arch: ${this_arch}";
+    echo "Unsupported arch: ${MYARCH}";
     exit 1;
     ;;
 esac
 
-docker image rm websphere-traditional:8.5.5.17-ubi8 \
-                websphere-traditional:9.0.5.1-ubuntu \
-                websphere-traditional:9.0.5.1-ubi \
-                websphere-traditional:9.0.5.2-ubuntu \
-                websphere-traditional:9.0.5.2-ubi \
-                websphere-traditional:9.0.5.2-ubi8 \
-                websphere-traditional:9.0.5.3-ubuntu \
-                websphere-traditional:9.0.5.3-ubi8 \
-                agent-installer:${this_arch}-ubuntu \
-                agent-installer:${this_arch}-ubi \
-                agent-installer:${this_arch}-ubi8 \
-                agent-installer:ubuntu \
-                agent-installer:ubi \
-                agent-installer:ubi8
+PLATFORMS="ubuntu ubi ubi8"
+TAGBASES="websphere-traditional sample-app"
+VERSIONS="8.5.5.17 8.5.5.18 9.0.5.1 9.0.5.2 9.0.5.3 9.0.5.4"
+
+for PLATFORM in $PLATFORMS; do
+  docker rmi agent-installer:$PLATFORM agent-installer:$MYARCH-$PLATFORM
+  for TAGBASE in $TAGBASES; do
+    for VERSION in $VERSIONS; do
+      docker rmi $TAGBASE:$VERSION-$PLATFORM
+    done
+  done
+done
