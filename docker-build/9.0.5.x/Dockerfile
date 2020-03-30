@@ -16,8 +16,8 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM ubuntu:16.04 as builder
-RUN apt-get update && apt-get install -y openssl wget unzip
+FROM registry.access.redhat.com/ubi8/ubi:8.1 as builder
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
 ARG IMURL
 ARG IBMID
@@ -71,13 +71,18 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM ubuntu:16.04
+FROM registry.access.redhat.com/ubi8/ubi:8.1
 ARG BUILDLABEL=none
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
-      BuildLabel="$BUILDLABEL"
+      BuildLabel="$BUILDLABEL" \
+      vendor="IBM" \
+      name="IBM WebSphere Traditional" \
+      version="9.0.5.4" \
+      summary="Image for WebSphere Traditional and UBI" \
+      description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
-RUN apt-get update && apt-get install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
 ARG USER=was
 

@@ -82,7 +82,7 @@ LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
-RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
 ARG USER=was
 
