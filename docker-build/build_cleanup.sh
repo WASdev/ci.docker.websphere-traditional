@@ -35,14 +35,14 @@ case "${MYARCH}" in
 esac
 
 PLATFORMS="ubuntu ubi ubi8"
-TAGBASES="websphere-traditional sample-app"
+TAGBASES="websphere-traditional websphere-traditional/sample-app"
 VERSIONS="8.5.5.17 8.5.5.18 9.0.5.1 9.0.5.2 9.0.5.3 9.0.5.4"
 
 for PLATFORM in $PLATFORMS; do
   docker rmi agent-installer:$PLATFORM agent-installer:$MYARCH-$PLATFORM
   for TAGBASE in $TAGBASES; do
     for VERSION in $VERSIONS; do
-      docker rmi $TAGBASE:$VERSION-$PLATFORM
+      docker rmi $TAGBASE:$VERSION $TAGBASE:$VERSION-$PLATFORM
     done
   done
 done
