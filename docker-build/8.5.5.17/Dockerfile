@@ -16,36 +16,16 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM registry.access.redhat.com/ubi8/ubi:8.1 as builder
+FROM agent-installer:ubi8 as builder
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
-ARG IMURL
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5017.20200205_1450
 ARG REPO=https://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85
 
-RUN set -eux; mkdir /work && cd /work && wget --no-verbose $IMURL \
-  && ARCH="$(uname -m)"; \
-     case "${ARCH}" in \
-     ppc64el|ppc64le) \
-       ARCH=ppc64le; \
-       ;; \
-     s390x) \
-       ARCH=s390x; \
-       ;; \
-     amd64|x86_64) \
-       ARCH=x86_64; \
-       ;; \
-     *) \
-       echo "Unsupported arch: ${ARCH}"; \
-       exit 1; \
-       ;; \
-     esac \
-  && unzip -q agent.installer.linux.gtk.${ARCH}*.zip -d /work/InstallationManagerKit \
-  && rm -rf agent.installer.linux.gtk.${ARCH}*.zip \
-  && echo "your_secureStore_password" > /tmp/secureStorePwd \
+RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
@@ -120,8 +100,11 @@ RUN /work/create_profile.sh \
   && find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 chmod g+w \
   && chmod -R g+rwx /home/was/.java/
 
+# patch server.xml to add -Xnoloa option until JDK is fixed
+RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/servers/$SERVER_NAME/server.xml
+
 USER root
 RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
 USER $USER
 
-CMD ["/work/start_server.sh"]
+CMD ["env", "JVM_EXTRA_CMD_ARGS=-Xnoloa", "/work/start_server.sh"]

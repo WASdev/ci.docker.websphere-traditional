@@ -25,6 +25,7 @@ start_server()
 run_logviewer(){
   echo "Starting logViewer ................"
   mkdir -p /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/logdata
+  touch /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/logViewer.pos
   /opt/IBM/WebSphere/AppServer/bin/logViewer.sh -monitor 1 -resumable -resume -format json | grep --line-buffered "^{" &
 }
 

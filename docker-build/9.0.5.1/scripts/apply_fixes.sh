@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################################################################
-# (C) Copyright IBM Corporation 2018                                       #
+# (C) Copyright IBM Corporation 2019                                       #
 #                                                                          #
 # Licensed under the Apache License, Version 2.0 (the "License");          #
 # you may not use this file except in compliance with the License.         #
@@ -32,8 +32,8 @@ IBMID_PWD=$5
 
 cd /work 
 wget $IMURL
-unzip agent.installer.linux.gtk.x86_64*.zip -d /work/InstallationManagerKit 
-rm -rf agent.installer.linux.gtk.x86_64*.zip 
+unzip agent.installer.linux.gtk*.zip -d /work/InstallationManagerKit 
+rm -rf agent.installer.linux.gtk*.zip 
 
 if [ $IBMID != "" ] ; then
     echo "your_secureStore_password" > /tmp/secureStorePwd

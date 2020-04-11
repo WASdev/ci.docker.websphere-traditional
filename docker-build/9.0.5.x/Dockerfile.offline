@@ -16,8 +16,8 @@
 ############################################################################
 
 # build image to extract the tar ball.
-FROM ubuntu:16.04 as builder
-ARG WAS_VERSION=9.0.5.3
+FROM registry.access.redhat.com/ubi8/ubi:8.1 as builder
+ARG WAS_VERSION=9.0.5.4
 ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
 COPY im/${WAS_TAR_BALL} /
 RUN tar -xzf "$WAS_TAR_BALL"
@@ -29,13 +29,9 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM ubuntu:16.04
-ARG BUILDLABEL=none
+FROM registry.access.redhat.com/ubi8/ubi:8.1
 
-LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
-      BuildLabel="$BUILDLABEL"
-
-RUN apt-get update && apt-get install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
 ARG USER=was
 
@@ -47,7 +43,7 @@ ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
 COPY scripts/ /work/
-COPY licenses /licenses/
+COPY licenses/ /licenses/
 
 RUN useradd $USER -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \
@@ -71,8 +67,11 @@ RUN /work/create_profile.sh \
   && find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 chmod g+w \
   && chmod -R g+rwx /home/was/.java/
 
+# patch server.xml to add -Xnoloa option until JDK is fixed
+RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/servers/$SERVER_NAME/server.xml
+
 USER root
 RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
 USER $USER
 
-CMD ["/work/start_server.sh"]
+CMD ["env", "JVM_EXTRA_CMD_ARGS=-Xnoloa", "/work/start_server.sh"]
