@@ -80,4 +80,6 @@ parms += " -node " + node + " -server " + server
 parms += " -nouseMetaDataFromBinary"
 app = AdminApp.install("/work/config/app.ear", [parms])
 
+AdminTask.setGenericJVMArguments('[-nodeName ' + node + ' -serverName ' + server + ' -genericJvmArguments "-Xnoloa"]')
+
 AdminConfig.save()
