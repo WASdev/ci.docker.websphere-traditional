@@ -6,7 +6,7 @@
 2. Select the Fix Central download option for Linux.
 ![figure 1](images/fig2.jpg)
 
-3. Select Installation Manager Install kit for x86_64 linux version and click Continue. You will be prompted to provide your IBMID and password. If you don't have one, you can [sign up for an IBMid](http://www.ibm.com/account/us-en/signup/register.html).
+3. Select Installation Manager Install kit for your linux hardware version, x86_64 used in this example, and click Continue. You will be prompted to provide your IBMID and password. If you don't have one, you can [sign up for an IBMid](http://www.ibm.com/account/us-en/signup/register.html).
 ![figure 1](images/fig3.jpg)
 
 4. Right click the download link and copy the link location. This link location url is good for 24 hours.  
