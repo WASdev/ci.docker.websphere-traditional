@@ -9,7 +9,7 @@ spec:
     - name: url
       value: https://github.com/WASdev/ci.docker.websphere-traditional
     - name: revision
-      value: openshift-pipelines
+      value: master
 ---
 apiVersion: tekton.dev/v1alpha1
 kind: PipelineResource
