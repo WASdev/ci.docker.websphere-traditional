@@ -10,8 +10,6 @@ git clone git@github.com:WASdev/ci.docker.websphere-traditional.git
 
 cd ci.docker.websphere-traditional
 
-git checkout openshift-pipelines
-
 cd samples/hello-world
 
 ### Use OCP console to get next command from Copy Login Command
