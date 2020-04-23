@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: sample
+  name: sample
+spec:
+  path:
+    /HelloWorld/hello
+  port:
+    targetPort: http
+  to:
+    kind: Service
+    name: sample
+    weight: 100
