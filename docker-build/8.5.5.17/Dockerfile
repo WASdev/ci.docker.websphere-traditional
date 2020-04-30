@@ -53,7 +53,7 @@ COPY lafiles/ /opt/IBM/WebSphere/AppServer/lafiles/
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi:8.1
+FROM registry.access.redhat.com/ubi8/ubi:8.2
 ARG BUILDLABEL=none
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
