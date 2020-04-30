@@ -16,7 +16,7 @@
 ############################################################################
 
 # Build step - download and install InstallationManagerKit
-FROM registry.access.redhat.com/ubi8/ubi:8.1
+FROM registry.access.redhat.com/ubi8/ubi:8.2
 RUN dnf --disableplugin=subscription-manager install -y unzip
 
 ARG IMZIP
