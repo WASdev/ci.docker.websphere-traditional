@@ -58,7 +58,7 @@ LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       BuildLabel="$BUILDLABEL" \
       vendor="IBM" \
       name="IBM WebSphere Traditional" \
-      version="9.0.5.4" \
+      version="9.0.5.5" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
