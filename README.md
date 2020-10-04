@@ -133,9 +133,9 @@ Similarly to build-phase props, the dynamic runtime props will also be applied i
 ![Dynamic](/graphics/twas_container_local.png)
 
 
-## How to run this image
+## How to run this Diagram
 
-When the container is started by using the IBM WebSphere Application Server traditional image, it takes the following environment variables:
+When the container is started by using the International Business Machines(IBM) WebSphere Application Server traditional image, it takes the following environment variables:
 
 * `UPDATE_HOSTNAME` (optional, set to `true` if the hostname should be updated from the default of `localhost`)
 * `PROFILE_NAME` (optional, default is `AppSrv01`)
