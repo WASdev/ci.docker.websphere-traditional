@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: using-build-and-deploy-
+  namespace: hello-world-pipeline
+spec:
+  pipelineRef:
+    name: build-and-deploy
+  workspaces:
+  - name: build-workspace
+    persistentVolumeClaim:
+      claimName: shared-task-storage
+  params:
+  - name: repo-url
+    value: https://github.com/gmarcy/ci.docker.websphere-traditional
+  - name: branch-name
+    value: ocp46-sample-update
+  - name: repo-context
+    value: samples/hello-world
+  - name: repo-dockerfile
+    value: Dockerfile.ubi
+  - name: image-url
+    value: image-registry.openshift-image-registry.svc:5000/hello-world-pipeline/sample:latest
