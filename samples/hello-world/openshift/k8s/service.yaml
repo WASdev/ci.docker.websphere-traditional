@@ -13,17 +13,3 @@ spec:
       targetPort: 9080
   selector:
     app: sample
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: sample
-  name: console
-spec:
-  ports:
-  - name: https
-    port: 9043
-    targetPort: 9043
-  selector:
-    app: sample
