@@ -15,8 +15,39 @@ spec:
         app: sample
     spec:
       containers:
-        - image: docker.io/wasdev/sample-hello-world
-          imagePullPolicy: Always
-          name: sample
-          ports:
-            - containerPort: 9080
+      - image: image-registry.openshift-image-registry.svc:5000/hello-world-pipeline/sample:latest
+        imagePullPolicy: Always
+        name: sample
+        ports:
+        - containerPort: 9080
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /HelloWorld/hello
+            port: 9080
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 120
+          successThreshold: 1
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /HelloWorld/hello
+            port: 9080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        startupProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /HelloWorld/hello
+            port: 9080
+            scheme: HTTP
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
