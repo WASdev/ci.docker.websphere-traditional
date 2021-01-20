@@ -1,3 +1,4 @@
+---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -12,4 +13,3 @@ spec:
   to:
     kind: Service
     name: sample
-    weight: 100

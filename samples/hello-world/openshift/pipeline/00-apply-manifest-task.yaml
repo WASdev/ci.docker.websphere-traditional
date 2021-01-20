@@ -1,0 +1,21 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: apply-manifests
+spec:
+  params:
+  - name: manifest_dir
+    description: The directory in source that contains yaml manifests
+    type: string
+  workspaces:
+  - name: source
+  steps:
+  - name: apply
+    image: quay.io/openshift/origin-cli:latest
+    workingDir: $(workspaces.source.path)
+    command: ["/bin/bash", "-c"]
+    args:
+    - |-
+      echo Applying manifests in $(params.manifest_dir) directory
+      oc apply -f $(params.manifest_dir)
+      echo -----------------------------------

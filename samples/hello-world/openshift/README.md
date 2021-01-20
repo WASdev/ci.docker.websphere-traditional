@@ -21,13 +21,5 @@ oc new-project hello-world-pipeline
 ### If the openshift-pipelines-operator isn't installed subscribe to it
 oc apply -f openshift/subscription.yaml
 
-### We need to remove a limitation in the tektoncd buildah support to allow nested projects
-oc apply -f openshift/buildah.yaml
-
-### Install tasks, pipeline and resources
+### Install tasks, pipeline, storage and run
 oc create -f openshift/pipeline
-
-### Start the pipeline using OCP console or use CLI
-
-#### CLI
-tkn pipeline start build-and-deploy

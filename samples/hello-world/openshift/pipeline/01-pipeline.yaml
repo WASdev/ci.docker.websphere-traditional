@@ -1,0 +1,80 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-and-deploy
+spec:
+  params:
+  - name: repo-url
+    type: string
+    description: The git repository URL to clone from.
+  - name: branch-name
+    type: string
+    description: The git branch to clone.
+    default: master
+  - name: repo-context
+    type: string
+    description: The subfolder of the repo containing the dockerfile.
+    default: .
+  - name: repo-dockerfile
+    type: string
+    description: The name of the dockerfile to use.
+    default: Dockerfile
+  - name: image-url
+    type: string
+    description: The image to push to the registry.
+  workspaces:
+  - name: build-workspace
+  tasks:
+  - name: clone-sample-repo
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    params:
+    - name: url
+      value: $(params.repo-url)
+    - name: revision
+      value: $(params.branch-name)
+    - name: deleteExisting
+      value: "true"
+    workspaces:
+    - name: output
+      workspace: build-workspace
+  - name: build-sample
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    runAfter:
+    - clone-sample-repo
+    params:
+    - name: IMAGE
+      value: $(params.image-url)
+    - name: DOCKERFILE
+      value: $(params.repo-dockerfile)
+    - name: CONTEXT
+      value: $(params.repo-context)
+    - name: TLSVERIFY
+      value: "false"
+    workspaces:
+    - name: source
+      workspace: build-workspace
+  - name: apply-sample-manifests
+    taskRef:
+      name: apply-manifests
+    runAfter:
+      - build-sample
+    params:
+    - name: manifest_dir
+      value: "samples/hello-world/openshift/k8s"
+    workspaces:
+    - name: source
+      workspace: build-workspace
+  - name: update-sample-image
+    taskRef:
+      name: update-deployment
+    params:
+    - name: deployment
+      value: "sample"
+    - name: image-url
+      value: $(params.image-url)
+    runAfter:
+    - apply-sample-manifests
