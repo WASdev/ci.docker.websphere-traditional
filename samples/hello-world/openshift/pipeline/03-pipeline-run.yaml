@@ -12,9 +12,9 @@ spec:
       claimName: shared-task-storage
   params:
   - name: repo-url
-    value: https://github.com/gmarcy/ci.docker.websphere-traditional
+    value: https://github.com/WASdev/ci.docker.websphere-traditional
   - name: branch-name
-    value: ocp46-sample-update
+    value: master
   - name: repo-context
     value: samples/hello-world
   - name: repo-dockerfile
