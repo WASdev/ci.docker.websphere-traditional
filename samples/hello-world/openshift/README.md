@@ -6,7 +6,7 @@ mkdir demo
 cd demo
 
 ### Clone this repo
-git clone git@github.com:WASdev/ci.docker.websphere-traditional.git
+git clone https://github.com/WASdev/ci.docker.websphere-traditional.git
 
 cd ci.docker.websphere-traditional
 
