@@ -15,12 +15,34 @@
 #                                                                          #
 ############################################################################
 
-# build image to extract the tar ball.
-FROM registry.access.redhat.com/ubi8/ubi:8.3 as builder
-ARG WAS_VERSION=8.5.5.20
-ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
-COPY im/${WAS_TAR_BALL} /
-RUN tar -xzf "$WAS_TAR_BALL"
+# Build step - download and install tWAS
+FROM agent-installer:ubi8 as builder
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
+
+ARG IBMID
+ARG IBMID_PWD
+ARG IFIXES=none
+ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5019.20210118_0346
+ARG REPO=https://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85
+
+RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
+  && /work/InstallationManagerKit/tools/imutilsc saveCredential \
+    -userName $IBMID -userPassword $IBMID_PWD \
+    -secureStorageFile /tmp/secureStore \
+    -masterPasswordFile /tmp/secureStorePwd \
+    -url $REPO -verbose \
+  && /work/InstallationManagerKit/tools/imcl install \
+    $PRODUCTID \
+    -acceptLicense -accessRights nonAdmin -showProgress \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
+    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
+    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
+    -preferences offering.service.repositories.areUsed=false,\
+com.ibm.cic.common.core.preferences.searchForUpdates=true,\
+com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
+com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
+  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps
@@ -30,6 +52,15 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 # final image that will copy /opt/IBM from builder
 FROM registry.access.redhat.com/ubi8/ubi:8.3
+ARG BUILDLABEL=cf192103.03
+
+LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
+      BuildLabel="$BUILDLABEL" \
+      vendor="IBM" \
+      name="IBM WebSphere Traditional" \
+      version="8.5.5.19" \
+      summary="Image for WebSphere Traditional and UBI" \
+      description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
