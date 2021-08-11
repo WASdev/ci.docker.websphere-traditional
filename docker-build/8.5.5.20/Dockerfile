@@ -22,7 +22,7 @@ RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5017.20200205_1450
+ARG PRODUCTID=com.ibm.websphere.DEVELOPERSILAN.v85_8.5.5020.20210708_1826
 ARG REPO=https://www.ibm.com/software/repositorymanager/com.ibm.websphere.DEVELOPERSILAN.v85
 
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
@@ -49,18 +49,16 @@ com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
 RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh \
     && sed -i 's/-Xmx256m/-Xmx1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh
 
-COPY lafiles/ /opt/IBM/WebSphere/AppServer/lafiles/
-
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi:8.2
-ARG BUILDLABEL=none
+FROM registry.access.redhat.com/ubi8/ubi:8.4
+ARG BUILDLABEL=cf202127.02
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       BuildLabel="$BUILDLABEL" \
       vendor="IBM" \
       name="IBM WebSphere Traditional" \
-      version="8.5.5.17" \
+      version="8.5.5.20" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
