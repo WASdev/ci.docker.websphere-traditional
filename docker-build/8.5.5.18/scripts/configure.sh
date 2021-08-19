@@ -21,7 +21,7 @@ elif [ ! -z "$(ls /work/config)" ]; then
     echo "+ Found config-files under /work/config. Executing..."
     find /work/config -name "*.py"  -print0 | sort -z | xargs -0 -n 1 -r /work/run_py_script.sh
 fi
-work/applyConfig.sh
+/work/applyConfig.sh
 stop_server
 find /opt/IBM -user was ! -perm -g=w -print0 | xargs -0 -r chmod g+w
 find /opt/IBM -type d -user was ! -perm -g=x -print0 | xargs -0 -r chmod g+x
