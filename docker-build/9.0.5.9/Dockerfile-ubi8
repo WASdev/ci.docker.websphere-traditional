@@ -22,7 +22,7 @@ RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5006.20201109_1605
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5009.20210823_0038
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
@@ -51,14 +51,14 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi:8.3
-ARG BUILDLABEL=f5062045.01
+FROM registry.access.redhat.com/ubi8/ubi:8.4
+ARG BUILDLABEL=f5092134.01
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       BuildLabel="$BUILDLABEL" \
       vendor="IBM" \
       name="IBM WebSphere Traditional" \
-      version="9.0.5.6" \
+      version="9.0.5.9" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
