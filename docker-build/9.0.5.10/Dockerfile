@@ -51,7 +51,7 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi:8.4
+FROM registry.access.redhat.com/ubi8/ubi:8.5
 ARG BUILDLABEL=f5102145.01
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
