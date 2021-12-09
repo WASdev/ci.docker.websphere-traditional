@@ -1,0 +1,2 @@
+FROM ibmcom/websphere-traditional:9.0.5.9
+RUN /work/configure.sh
