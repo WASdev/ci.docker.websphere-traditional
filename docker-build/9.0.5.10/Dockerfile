@@ -22,7 +22,7 @@ RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 ARG IBMID
 ARG IBMID_PWD
 ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90
+ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5010.20211108_1200
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
@@ -51,8 +51,8 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi:8.4
-ARG BUILDLABEL=none
+FROM registry.access.redhat.com/ubi8/ubi:8.5
+ARG BUILDLABEL=f5102145.01
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       BuildLabel="$BUILDLABEL" \
