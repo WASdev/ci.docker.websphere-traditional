@@ -44,10 +44,10 @@ com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
 com.ibm.cic.common.core.preferences.keepFetchedFiles=false 
  
 COPY 9.0.5.3-ws-wasprod-ifph42728.zip /work/
-RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.3-ws-wasprod-ifph42728 -repositories /work/9.0.5.3-ws-wasprod-ifph42728.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData 
+RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.3-WS-WASProd-IFPH42728_9.0.5003.20211212_1049 -repositories /work/9.0.5.3-ws-wasprod-ifph42728.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData -accessRights nonAdmin
 
 COPY 9.0.5.8-WS-WASILAN-IFPH41806.zip /work/
-RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.8-WS-WASILAN-IFPH41806 -repositories /work/9.0.5.8-WS-WASILAN-IFPH41806.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData 
+RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.8-WS-WASILAN-IFPH41806_9.0.5008.20211105_1224 -repositories /work/9.0.5.8-WS-WASILAN-IFPH41806.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData -accessRights nonAdmin
 
 RUN rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
   && chmod -R g+rw /opt/IBM/
