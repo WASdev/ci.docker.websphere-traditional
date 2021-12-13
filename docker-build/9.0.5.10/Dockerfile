@@ -41,8 +41,12 @@ RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
     -preferences offering.service.repositories.areUsed=false,\
 com.ibm.cic.common.core.preferences.searchForUpdates=true,\
 com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
-com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
-  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
+com.ibm.cic.common.core.preferences.keepFetchedFiles=false 
+ 
+COPY 9.0.5.3-ws-wasprod-ifph42728.zip /work/
+RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.3-ws-wasprod-ifph42728 -repositories /work/9.0.5.3-ws-wasprod-ifph42728.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData 
+
+RUN rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps

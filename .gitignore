@@ -1,5 +1,5 @@
 *.log
 *.tar
-*.zip
+docker-build/agent\.installer/*.zip
 *.tar.gz
 .DS_STORE
