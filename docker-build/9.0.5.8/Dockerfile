@@ -49,7 +49,7 @@ RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.3-WS-WASProd-IFPH42762
 COPY 9.0.5.8-WS-WASILAN-IFPH41806.zip /work/
 RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.8-WS-WASILAN-IFPH41806_9.0.5008.20211105_1224 -repositories /work/9.0.5.8-WS-WASILAN-IFPH41806.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData -accessRights nonAdmin
 
-RUN rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
+RUN rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit /opt/IBM/WebSphere/AppServer/properties/patches/backup \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps

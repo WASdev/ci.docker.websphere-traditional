@@ -46,7 +46,7 @@ com.ibm.cic.common.core.preferences.keepFetchedFiles=false
 COPY 9.0.5.3-ws-wasprod-ifph42762.zip /work/
 RUN /work/InstallationManagerKit/tools/imcl install 9.0.5.3-WS-WASProd-IFPH42762_9.0.5003.20211215_0936 -repositories /work/9.0.5.3-ws-wasprod-ifph42762.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData -accessRights nonAdmin
 
-RUN rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
+RUN rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit /opt/IBM/WebSphere/AppServer/properties/patches/backup \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps
