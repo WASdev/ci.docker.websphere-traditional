@@ -97,14 +97,21 @@ failures=0
 for current_dir in *; do
   if test -f "$current_dir/Dockerfile" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
   then
-    for current_os in ubuntu ubi7 ubi8; do
+    for current_os in ubi8; do
       if [[ -z "$os" || "$current_os" == "$os" ]]
       then
-        if [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
+				#Removing reference to current OS as we are currently only building ubi8. Leaving commented out to reuse when ubi9 is released
+#        if [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
+#        then
+#          DOCKERFILE="${current_dir}/Dockerfile-${current_os}-${arch}"
+#        else
+#          DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
+#        fi
+        if [[ -f "${current_dir}/Dockerfile-${arch}" ]]
         then
-          DOCKERFILE="${current_dir}/Dockerfile-${current_os}-${arch}"
+          DOCKERFILE="${current_dir}/Dockerfile-${arch}"
         else
-          DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
+          DOCKERFILE="${current_dir}/Dockerfile"
         fi
         if [ ! -f "$DOCKERFILE" ]
         then
