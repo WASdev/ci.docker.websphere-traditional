@@ -95,7 +95,7 @@ esac
 failures=0
 
 for current_dir in *; do
-  if test -f "$current_dir/Dockerfile" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
+  if test -f "$current_dir/Dockerfile-ubi8" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
   then
     for current_os in ubi8; do
       if [[ -z "$os" || "$current_os" == "$os" ]]
