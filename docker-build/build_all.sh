@@ -100,18 +100,11 @@ for current_dir in *; do
     for current_os in ubi8; do
       if [[ -z "$os" || "$current_os" == "$os" ]]
       then
-				#Removing reference to current OS as we are currently only building ubi8. Leaving commented out to reuse when ubi9 is released
-#        if [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
-#        then
-#          DOCKERFILE="${current_dir}/Dockerfile-${current_os}-${arch}"
-#        else
-#          DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
-#        fi
-        if [[ -f "${current_dir}/Dockerfile-${arch}" ]]
+	      if [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
         then
-          DOCKERFILE="${current_dir}/Dockerfile-${arch}"
+          DOCKERFILE="${current_dir}/Dockerfile-${current_os}-${arch}"
         else
-          DOCKERFILE="${current_dir}/Dockerfile"
+          DOCKERFILE="${current_dir}/Dockerfile-${current_os}"
         fi
         if [ ! -f "$DOCKERFILE" ]
         then
