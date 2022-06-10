@@ -1,0 +1,7 @@
+
+ResourceType=JavaVirtualMachine
+ImplementingResourceType=Server
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:JavaProcessDef=:JavaVirtualMachine=
+AttributeInfo=systemProperties(name,value)
+#Properties
+java.util.prefs.userRoot=/home/was/
