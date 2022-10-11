@@ -72,7 +72,9 @@ RUN /work/configure.sh
 ```
 ### Installing iFixes
 
-Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer. Follow the instructions at https://www.ibm.com/support/pages/node/1115169 until you have downloaded the agent.installer.linux.gtk*.zip file to your system. 
+Normally it is best to use fixpacks instead of installing individual iFixes but some circumstances may require the ability to install a test fix. In order to install iFixes on the image, you must first get access to the agent installer and the Fix Central for the required download:
+* 1. Follow the instructions at https://www.ibm.com/support/pages/node/1115169 until you have downloaded the agent.installer.linux.gtk*.zip file to your system. For example, the installer zip for a linux x86_64 will be similar to `agent.installer.linux.gtk.x86_64_1.9.2003.20220917_1018.zip`.
+* 2. Follow the Fix Central https://www.ibm.com/support/fixcentral/ to select the ifix matched to your product version and platform.  For example, an ifix `PH47531` for the platform of linux x86_64 will be similar to `9.0.0.0-ws-wasprod-ifph47531.zip` 
 
 Once you have the iFix and the agent installer on the system you are building your image on, configure the dockerfile to extract the installer and run the installer on the iFix as shown in the example dockerfile below.
 ```
@@ -86,9 +88,17 @@ RUN cd /work && \
 	unzip agent.installer.linux.gtk*.zip -d /work/InstallationManagerKit && \
 	rm -rf agent.installer.linux.gtk*.zip  
 
-COPY 9.0.0.10-WS-WAS-IFPH15201.zip /work/
-RUN /work/InstallationManagerKit/tools/imcl install 9.0.0.10-WS-WAS-IFPH15201 -repositories /work/9.0.0.10-WS-WAS-IFPH15201.zip -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData && \
+COPY **YOUR_DOWNLADED_IFIX.zip** /work/
+	RUN /work/InstallationManagerKit/tools/imcl install **THE_IFIX_FIX_NAME** -repositories /work/**YOUR_DOWNLADED_IFIX.zip** -installationDirectory /opt/IBM/WebSphere/AppServer -dataLocation /opt/IBM/WebSphere/AppServerIMData && \
 	rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit
+```
+
+NOTE:
+* Replace the value YOUR_DOWNLADED_IFIX.zip with your downloaded ifix
+* Replace the value THE_IFIX_FIX_NAME with the selected ifix name.  If you're not sure about the ifix fix name, you may unzip the ifix zip and retrieve the fix name from the file `fix_name.txt`. Please be aware there may be case sensitivity between fix name and the zip file name. See the example from linux ifix on the replaced values:
+```
+COPY 9.0.0.0-ws-wasprod-ifph47531.zip /work
+RUN /work/InstallationManagerKit/tools/imcl install 9.0.0.0-WS-WASProd-IFPH47531 -repositories /work/9.0.0.0-ws-wasprod-ifph47531.zip …
 ```
 
 You can find more information about the imcl command at https://www.ibm.com/support/knowledgecenter/en/SSDV2W_1.8.4/com.ibm.cic.commandline.doc/topics/c_imcl_container.html
