@@ -13,6 +13,10 @@ stop_server()
 echo "Setting Password"
 /work/set_password.sh
 start_server
+
+echo "Retrieving Signers"
+/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/retrieveSigners.sh CellDefaultTrustStore ClientDefaultTrustStore -autoAcceptBootstrapSigner 
+
 PID=$(ps -C java -o pid= | tr -d " ")
 echo "Applying configuration"
 if [ ! -z "$1" ]; then
