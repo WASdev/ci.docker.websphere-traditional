@@ -16,7 +16,7 @@
 ############################################################################
 
 # build image to extract the tar ball.
-FROM registry.access.redhat.com/ubi8/ubi:8.5 as builder
+FROM registry.access.redhat.com/ubi8/ubi as builder
 ARG WAS_VERSION=8.5.5.23
 ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
 COPY im/${WAS_TAR_BALL} /
@@ -29,7 +29,7 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi:8
+FROM registry.access.redhat.com/ubi8/ubi
 
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
