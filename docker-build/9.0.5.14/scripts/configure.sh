@@ -16,6 +16,7 @@ start_server
 
 echo "Retrieving Signers"
 /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/retrieveSigners.sh CellDefaultTrustStore ClientDefaultTrustStore -autoAcceptBootstrapSigner 
+/work/set_keystore_password.sh
 
 PID=$(ps -C java -o pid= | tr -d " ")
 echo "Applying configuration"
