@@ -111,6 +111,7 @@ USER $USER
 
 RUN rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/trust.p12 \
  && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/key.p12 \
+ && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/root-key.p12 \
  && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/etc/trust.p12 \
  && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/etc/key.p12
 

@@ -15,7 +15,10 @@ echo "Setting Password"
 start_server
 
 echo "Retrieving Signers"
-/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/retrieveSigners.sh CellDefaultTrustStore ClientDefaultTrustStore -autoAcceptBootstrapSigner 
+/opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/bin/retrieveSigners.sh NodeDefaultTrustStore ClientDefaultTrustStore -autoAcceptBootstrapSigner
+
+echo "Setting Keystore Password"
+/work/set_keystore_password.sh
 
 PID=$(ps -C java -o pid= | tr -d " ")
 echo "Applying configuration"
