@@ -16,7 +16,7 @@ if [ -f /tmp/KEYSTORE_PASSWORD ]
 then
   oldPassword=$(cat /tmp/KEYSTORE_PASSWORD)
 else
-  oldPassword="\"\""
+  oldPassword="WebAS"
 fi
 
 echo $NEW_PASSWORD > /tmp/KEYSTORE_PASSWORD
