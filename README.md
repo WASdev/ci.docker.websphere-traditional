@@ -218,3 +218,38 @@ Example:
 ```bash
 docker stop --time=60 test
 ```
+### Checking the Image Version
+
+Using podman (or docker) you can check the date the image was created using the following command.
+
+```bash
+podman images websphere-traditional
+```
+You can then check the output for the creation date
+```bash
+REPOSITORY                              TAG         IMAGE ID      CREATED     SIZE
+docker.io/ibmcom/websphere-traditional  latest      f5dd9da02c85  7 days ago  1.91 GB
+```
+
+If you would like to check the version of websphere running inside of your image, you can run the following command against the image. Replace "websphere-traditional" with your image name if you want to check an image you built.
+```bash
+podman run --entrypoint="./opt/IBM/WebSphere/AppServer/bin/versionInfo.sh" websphere-traditional
+```
+
+### Updating to the Latest Version
+
+1. Find the currently running containers using the websphere-traditional image. Take note of their container ID
+```bash
+podman ps -a
+```
+2. Stop and remove the running websphere-traditional containers. Both of these commands will output the container ID when completed
+```bash
+podman stop <container_id_from_step_1>
+podman rm <container_id_from_step_1>
+```
+3. Pull the updated image. The tag should be for the version you are using
+```bash
+podman pull ibmcom/websphere-traditional:latest
+```
+4. Rebuild images that use the websphere-traditional image. Make sure they are using the same "FROM" that you pulled in step 3
+5. Run the newly pulled and built container images
