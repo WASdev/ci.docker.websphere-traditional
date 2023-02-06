@@ -1,0 +1,116 @@
+version: "1"
+
+setup:
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    GHE_TOKEN=$(get_env git-token)
+    ARCHIVE_DESTINATION_REPO=$(get_env archive-destination-repo)
+    REPO=$(get_env repository)
+    ARCHIVE_PARAMETERS=$(get_env archive-parameters)
+    ARCHIVE_CMD="git push --prune https://${GHE_TOKEN}@${ARCHIVE_DESTINATION_REPO} ${ARCHIVE_PARAMETERS}"
+    echo "Archive command:"
+    echo $ARCHIVE_CMD
+    git push --prune https://$GHE_TOKEN@$ARCHIVE_DESTINATION_REPO $ARCHIVE_PARAMETERS
+    RETCODE=$?
+    if [ $RETCODE != 0 ]; then
+      echo "${REPO} was not archived successfuly.  A return code of ${RETCODE} was found after the archive operation was executed."
+      slack_users=$(get_env slack_users)
+      echo "slack_users=$slack_users"
+      eval "arr=($slack_users)"
+      for user in "${arr[@]}"; do 
+        echo "user=$user"
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"<'$user'>  Archive operation failure see below "}' $(get_env slack_web_hook_url)
+        echo " "
+      done
+      pipeline_url="https://cloud.ibm.com/devops/pipelines/tekton/${PIPELINE_ID}/runs/${PIPELINE_RUN_ID}"
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"The archive operation for '$REPO' has failed."}' $(get_env slack_web_hook_url) </dev/null
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"Failing pipeline: '$pipeline_url'"}' $(get_env slack_web_hook_url) </dev/null
+      curl -X POST -H 'Content-type: application/json' --data '{"text":"Destination repository: '$ARCHIVE_DESTINATION_REPO'"}' $(get_env slack_web_hook_url) </dev/null
+    else
+      echo "${REPO} has been archived successfully to ${ARCHIVE_DESTINATION_REPO}"
+    fi
+    
+test:
+  dind: true
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping test"
+    exit 0
+
+static-scan:
+  dind: true
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping static-scan"
+    exit 0
+
+compliance-checks:
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.3@sha256:5b8f7e1964c0a82995689d636b60a1761dd08ce422b9195aadc0249e5da90dae
+  abort_on_failure: false
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping compliance-checks"
+    exit 0
+
+containerize:
+  dind: true
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping containerize"
+    exit 0
+
+sign-artifact:
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/image-signing:1.0.0@sha256:e9d8e354668ba3d40be2aaee08298d2aa7f0e1c8a1829cca4094ec93830e3e6a
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping sign-artifact"
+    exit 0
+
+deploy:
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping deploy"
+    exit 0
+
+dynamic-scan:
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping dynamic-scan"
+    exit 0
+  
+acceptance-test:
+  dind: true
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping acceptance-test"
+    exit 0
+
+scan-artifact:
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping scan-artifact"
+    exit 0
+
+release:
+  abort_on_failure: false
+  image: icr.io/continuous-delivery/pipeline/pipeline-base-ubi:3.12
+  script: |
+    #!/usr/bin/env bash
+    echo "Skipping release"
+    exit 0
