@@ -1,0 +1,11 @@
+ResourceType=WebContainer
+ImplementingResourceType=WebContainer
+ResourceId=Cell=!{cellName}:Node=!{nodeName}:Server=!{serverName}:ApplicationServer=:WebContainer=
+AttributeInfo=properties(name,value)
+#
+
+#
+#Properties
+#
+trusthostheaderport=true
+com.ibm.ws.webcontainer.extractHostHeaderPort=true
