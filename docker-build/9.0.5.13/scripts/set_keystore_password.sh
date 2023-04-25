@@ -23,11 +23,11 @@ echo $NEW_PASSWORD > /tmp/KEYSTORE_PASSWORD
 
 if [ -z "$KEYSTORE" ]
 then 
-  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateKeyStorePassword.py NodeDefaultKeyStore $oldPassword $NEW_PASSWORD > /dev/null 2>&1
-  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateKeyStorePassword.py NodeDefaultTrustStore $oldPassword $NEW_PASSWORD > /dev/null 2>&1
-  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateKeyStorePassword.py NodeDefaultRootStore $oldPassword $NEW_PASSWORD > /dev/null 2>&1
+  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -user wsadmin -password $(cat /tmp/passwordupdated) -f /work/updateKeyStorePassword.py NodeDefaultKeyStore $oldPassword $NEW_PASSWORD > /dev/null 2>&1
+  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -user wsadmin -password $(cat /tmp/passwordupdated) -f /work/updateKeyStorePassword.py NodeDefaultTrustStore $oldPassword $NEW_PASSWORD > /dev/null 2>&1
+  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -user wsadmin -password $(cat /tmp/passwordupdated) -f /work/updateKeyStorePassword.py NodeDefaultRootStore $oldPassword $NEW_PASSWORD > /dev/null 2>&1
 else
-  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -lang jython -conntype NONE -f /work/updateKeyStorePassword.py $KEYSTORE $oldPassword $NEW_PASSWORD > /dev/null 2>&1
+  /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh -user wsadmin -password $(cat /tmp/passwordupdated) -f /work/updateKeyStorePassword.py $KEYSTORE $oldPassword $NEW_PASSWORD > /dev/null 2>&1
 fi
 
 echo $NEW_PASSWORD > /tmp/keystorepasswordupdated
