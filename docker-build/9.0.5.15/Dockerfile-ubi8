@@ -17,7 +17,7 @@
 
 # Build step - download and install tWAS
 FROM agent-installer:ubi8 as builder
-RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip iputils
 
 ARG IBMID
 ARG IBMID_PWD
@@ -27,8 +27,13 @@ ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN ping -c 4 www-147.ibm.com
 
-echo "Java Version:"
-java --version
+RUN echo "Java Version:"
+RUN java --version
+
+RUN dnf java-11-openjdk.x86_64
+
+RUN echo "Java Version:"
+RUN java --version
 
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
