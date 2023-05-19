@@ -18,10 +18,10 @@
 # Build step - download and install tWAS
 FROM agent-installer:ubi8 as builder
 
-RUN dnf --disableplugin=subscription-manager search openssl
-RUN dnf --disableplugin=subscription-manager search wget
+RUN dnf --disableplugin=subscription-manager --showduplicates list openssl
+RUN dnf --disableplugin=subscription-manager --showduplicates list wget
 
-RUN dnf --disableplugin=subscription-manager install -y openssl-1:1.1.1k-8.el8.x86_64 wget unzip iputils
+RUN dnf --disableplugin=subscription-manager install -y openssl-1:1.1.1k-8 wget unzip iputils
 
 ARG IBMID
 ARG IBMID_PWD
