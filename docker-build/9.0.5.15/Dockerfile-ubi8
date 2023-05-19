@@ -27,6 +27,9 @@ ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN ping -c 4 www-147.ibm.com
 
+echo "Java Version:"
+java --version
+
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
