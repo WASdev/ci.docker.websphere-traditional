@@ -25,12 +25,15 @@ ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5015.20230321_2220
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
+RUN ping -c 4 www-147.ibm.com
+
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
     -url $REPO -verbose \
+    -Djavax.net.debug=ALL \
   && /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTID com.ibm.java.jdk.v8 \
     -acceptLicense -accessRights nonAdmin -showProgress \
