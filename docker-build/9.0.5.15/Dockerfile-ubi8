@@ -44,7 +44,7 @@ RUN java --version
 
 RUN mkdir -p ./eclipse/tools/
 RUN touch ./eclipse/tools/imutilsc.ini
-RUN "-Djavax.net.debug=ALL" >> ./eclipse/tools/imutilsc.ini
+RUN echo "-Djavax.net.debug=ALL" >> ./eclipse/tools/imutilsc.ini
 RUN cat ./eclipse/tools/imutilsc.ini
 RUN cat /work/InstallationManagerKit/tools/imutilsc
 
