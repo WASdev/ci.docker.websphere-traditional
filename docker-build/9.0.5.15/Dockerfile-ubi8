@@ -42,13 +42,17 @@ RUN dnf --disableplugin=subscription-manager install -y java-11-openjdk.x86_64
 RUN echo "Java Version:"
 RUN java --version
 
+RUN touch ./eclipse/tools/imutilsc.ini
+RUN -Djavax.net.debug=ALL >> ./eclipse/tools/imutilsc.ini
+RUN cat ./eclipse/tools/imutilsc.ini
+RUN cat /work/InstallationManagerKit/tools/imutilsc
+
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
     -userName $IBMID -userPassword $IBMID_PWD \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
     -url $REPO -verbose \
-    -Djavax.net.debug=ALL \
   && /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTID com.ibm.java.jdk.v8 \
     -acceptLicense -accessRights nonAdmin -showProgress \
