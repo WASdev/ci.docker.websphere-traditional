@@ -22,6 +22,7 @@ RUN dnf --disableplugin=subscription-manager makecache --refresh
 RUN dnf --disableplugin=subscription-manager repolist --all
 RUN dnf --disableplugin=subscription-manager config-manager --dump
 RUN dnf --disableplugin=subscription-manager --showduplicates list openssl
+RUN dnf --disableplugin=subscription-manager --showduplicates list java
 RUN dnf --disableplugin=subscription-manager --showduplicates list wget
 
 RUN yum makecache --refresh
@@ -35,7 +36,9 @@ ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5015.20230321_2220
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
-RUN dnf java-11-openjdk.x86_64
+RUN dnf search openjdk
+RUN dnf search java
+RUN dnf install java-11-openjdk.x86_64
 
 RUN echo "Java Version:"
 RUN java --version
