@@ -22,7 +22,6 @@ RUN dnf --disableplugin=subscription-manager makecache --refresh
 RUN dnf --disableplugin=subscription-manager repolist --all
 RUN dnf --disableplugin=subscription-manager config-manager --dump
 RUN dnf --disableplugin=subscription-manager --showduplicates list openssl
-RUN dnf --disableplugin=subscription-manager --showduplicates list openjdk
 RUN dnf --disableplugin=subscription-manager --showduplicates list wget
 
 RUN yum makecache --refresh
