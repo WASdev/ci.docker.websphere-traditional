@@ -35,9 +35,9 @@ ARG IFIXES=none
 ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5015.20230321_2220
 ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
-RUN dnf search openjdk
-RUN dnf search java
-RUN dnf install java-11-openjdk.x86_64
+RUN dnf --disableplugin=subscription-manager search openjdk
+RUN dnf --disableplugin=subscription-manager search java
+RUN dnf --disableplugin=subscription-manager install -y java-11-openjdk.x86_64
 
 RUN echo "Java Version:"
 RUN java --version
