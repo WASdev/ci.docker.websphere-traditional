@@ -183,6 +183,12 @@ in ```/tmp/PASSWORD```
 ```
    docker exec was-server cat /tmp/PASSWORD
 ```
+### Retrieving the keystore password
+
+The initial keystore, truststore, and rootstore password is in ```/tmp/KEYSTORE_PASSWORD```
+```
+   docker exec was-server cat /tmp/KEYSTORE_PASSWORD
+```
 
 ### How to check the WebSphere Application Server installed level and ifixes
 
