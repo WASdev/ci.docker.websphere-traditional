@@ -15,34 +15,12 @@
 #                                                                          #
 ############################################################################
 
-# Build step - download and install tWAS
-FROM agent-installer:ubi8 as builder
-RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
-
-ARG IBMID
-ARG IBMID_PWD
-ARG IFIXES=none
-ARG PRODUCTID=com.ibm.websphere.ILAN.v90_9.0.5014.20221031_0911
-ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
-
-RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
-  && /work/InstallationManagerKit/tools/imutilsc saveCredential \
-    -userName $IBMID -userPassword $IBMID_PWD \
-    -secureStorageFile /tmp/secureStore \
-    -masterPasswordFile /tmp/secureStorePwd \
-    -url $REPO -verbose \
-  && /work/InstallationManagerKit/tools/imcl install \
-    $PRODUCTID com.ibm.java.jdk.v8 \
-    -acceptLicense -accessRights nonAdmin -showProgress \
-    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
-    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
-    -dataLocation /opt/IBM/WebSphere/AppServerIMData \
-    -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
-    -preferences offering.service.repositories.areUsed=false,\
-com.ibm.cic.common.core.preferences.searchForUpdates=true,\
-com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false,\
-com.ibm.cic.common.core.preferences.keepFetchedFiles=false \
-  && rm -Rf /tmp/secureStorePwd /tmp/secureStore /work/InstallationManagerKit \
+# build image to extract the tar ball.
+FROM registry.access.redhat.com/ubi8/ubi as builder
+ARG WAS_VERSION=9.0.5.17
+ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
+COPY im/${WAS_TAR_BALL} /
+RUN tar -xzf "$WAS_TAR_BALL" \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps
@@ -52,15 +30,6 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 # final image that will copy /opt/IBM from builder
 FROM registry.access.redhat.com/ubi8/ubi
-ARG BUILDLABEL=f5142244.01
-
-LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
-      BuildLabel="$BUILDLABEL" \
-      vendor="IBM" \
-      name="IBM WebSphere Traditional" \
-      version="9.0.5.14" \
-      summary="Image for WebSphere Traditional and UBI" \
-      description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
@@ -74,7 +43,7 @@ ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
 COPY scripts/ /work/
-COPY licenses-ipla/ /licenses/
+COPY licenses/ /licenses/
 
 RUN useradd $USER -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \
@@ -85,6 +54,7 @@ RUN useradd $USER -g 0 -m --uid 1001 \
   && chmod -R g+rwx /work
 
 COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
+COPY --chown=1001:0 --from=builder /home/was /home/was
 
 USER $USER
 
@@ -104,11 +74,5 @@ RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/We
 USER root
 RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
 USER $USER
-
-RUN rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/trust.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/key.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/root-key.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/etc/trust.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/etc/key.p12
 
 CMD ["env", "JVM_EXTRA_CMD_ARGS=-Xnoloa", "/work/start_server.sh"]
