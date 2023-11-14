@@ -57,6 +57,17 @@ then
   exit 1
 fi
 
+if [ -x "$(command -v docker)" ]
+then
+  CONTAINER_CMD=docker
+elif [ -x "$(command -v podman)" ]
+then
+  CONTAINER_CMD=podman
+else
+  echo "Error: must have either docker or podman installed"
+  exit 1
+fi
+
 arch="$(uname -m)"
 case "${arch}" in
   ppc64el|ppc64le)
@@ -96,7 +107,7 @@ then
     exit 2
   fi
 fi
-for current_os in ubuntu ubi7 ubi8; do
+for current_os in ubuntu ubi7 ubi8 ubi9; do
   if [[ -z "$os" || "$current_os" == "$os" ]]
   then
     if [[ -f "agent.installer/Dockerfile-${current_os}-${docker_arch}" ]]
@@ -110,6 +121,6 @@ for current_os in ubuntu ubi7 ubi8; do
       echo "Not building ${current_os} because $DOCKERFILE does not exist."
       continue
     fi
-    docker build -t agent-installer:${current_os} -f ${DOCKERFILE} agent.installer --build-arg IMZIP=agent.installer.${arch}.zip
+    $CONTAINER_CMD build -t agent-installer:${current_os} -f ${DOCKERFILE} agent.installer --build-arg IMZIP=agent.installer.${arch}.zip
   fi
 done
