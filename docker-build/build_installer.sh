@@ -107,7 +107,7 @@ then
     exit 2
   fi
 fi
-for current_os in ubuntu ubi7 ubi8 ubi9; do
+for current_os in ubi8 ubi9; do
   if [[ -z "$os" || "$current_os" == "$os" ]]
   then
     if [[ -f "agent.installer/Dockerfile-${current_os}-${docker_arch}" ]]

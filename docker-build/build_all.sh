@@ -92,12 +92,23 @@ case "${arch}" in
     ;;
 esac
 
+if [ -x "$(command -v docker)" ]
+then
+  CONTAINER_CMD=docker
+elif [ -x "$(command -v podman)" ]
+then
+  CONTAINER_CMD=podman
+else
+  echo "Error: must have either docker or podman installed"
+  exit 1
+fi
+
 failures=0
 
 for current_dir in *; do
-  if test -f "$current_dir/Dockerfile-ubi8" && ( ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir" )
+  if ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir"
   then
-    for current_os in ubi8; do
+    for current_os in ubi8  ubi9; do
       if [[ -z "$os" || "$current_os" == "$os" ]]
       then
 	      if [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
@@ -118,7 +129,7 @@ for current_dir in *; do
           IMAGE="${current_dir}-${current_os}"
         fi
         echo "---------- START Building websphere-traditional:$IMAGE ----------"
-        buildCommand="docker build -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"$username\" --build-arg IBMID_PWD=\"$password\""
+        buildCommand="${CONTAINER_CMD} build -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"$username\" --build-arg IBMID_PWD=\"$password\""
         if [ ! -z "$repo" ]
         then 
           buildCommand="$buildCommand --build-arg REPO=\"$repo\""
@@ -145,10 +156,10 @@ for current_dir in *; do
         if [[ -z "$skiptests" || "$skiptests" == "false" ]]
         then
           echo "---------- START Building websphere-traditional/sample-app:$IMAGE ----------"
-          docker tag websphere-traditional:$IMAGE ibmcom/websphere-traditional:latest
-          docker build -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
+          $CONTAINER_CMD tag websphere-traditional:$IMAGE ibmcom/websphere-traditional:latest
+          $CONTAINER_CMD build -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
           rc=$?
-          docker rmi ibmcom/websphere-traditional:latest
+          $CONTAINER_CMD rmi ibmcom/websphere-traditional:latest
           if [ $rc -ne 0 ]
           then
             echo "FATAL: Error building websphere-traditional/sample-app:$IMAGE, exiting"
@@ -157,11 +168,11 @@ for current_dir in *; do
           fi
           echo "---------- END Building websphere-traditional/sample-app:$IMAGE ----------"
           echo "---------- START Running websphere-traditional/sample-app:$IMAGE ----------"
-          containerID="$(docker run --detach --rm -p 9080:9080 websphere-traditional/sample-app:$IMAGE)"
+          containerID="$($CONTAINER_CMD run --detach --rm -p 9080:9080 websphere-traditional/sample-app:$IMAGE)"
           sleep 10
-          while [[ ! -z "$(docker container stats --no-stream ${containerID})" ]]
+          while [[ ! -z "$($CONTAINER_CMD container stats --no-stream ${containerID})" ]]
           do
-            docker logs ${containerID} | grep -s "WSVR0001I" > /dev/null
+            $CONTAINER_CMD logs ${containerID} | grep -s "WSVR0001I" > /dev/null
             if [[ $? -eq 0 ]]
             then
               echo "Server is open for e-business"
@@ -170,7 +181,7 @@ for current_dir in *; do
             sleep 2
           done
           response=$(curl http://localhost:9080/HelloWorld/hello)
-          docker stop -t 20 ${containerID}
+          $CONTAINER_CMD stop -t 20 ${containerID}
           if [[ "${response}" == "Hello World!" ]]
           then
             echo "Passed: ${response}"
