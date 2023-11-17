@@ -16,8 +16,8 @@
 ############################################################################
 
 # Build step - download and install InstallationManagerKit
-FROM ubuntu:16.04
-RUN apt-get update && apt-get install -y unzip
+FROM registry.access.redhat.com/ubi9/ubi
+RUN dnf --disableplugin=subscription-manager install -y unzip
 
 ARG IMZIP
 
