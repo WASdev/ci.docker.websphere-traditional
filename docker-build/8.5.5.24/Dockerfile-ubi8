@@ -73,6 +73,9 @@ ARG HOST_NAME=localhost
 ARG SERVER_NAME=server1
 ARG ADMIN_USER_NAME=wsadmin
 
+COPY . /debugbuild
+RUN ls -lart /debugbuild && cat /debugbuild/scripts/run_py_script.sh
+
 COPY scripts/ /work/
 COPY licenses/ /licenses/
 
