@@ -16,7 +16,7 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM agent-installer:ubi9 as builder
+FROM agent-installer:ubi8 as builder
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip
 
 ARG IBMID
@@ -51,7 +51,7 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi9/ubi
+FROM registry.access.redhat.com/ubi8/ubi
 ARG BUILDLABEL=none
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
@@ -62,7 +62,7 @@ LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
       summary="Image for WebSphere Traditional and UBI" \
       description="This image contains the WebSphere Traditional runtime with Red Hat UBI as the base OS."
 
-RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps libxcrypt-compat
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
 
 ARG USER=was
 
