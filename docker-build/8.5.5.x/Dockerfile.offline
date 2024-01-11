@@ -31,7 +31,8 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 # final image that will copy /opt/IBM from builder
 FROM registry.access.redhat.com/ubi8/ubi
 
-RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps
+RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps \
+  && dnf --disableplugin=subscription-manager update -y
 
 ARG USER=was
 
