@@ -108,7 +108,7 @@ failures=0
 for current_dir in *; do
   if ( test -z "$dir" && [[ ! "$current_dir" =~ x$ ]] ) || test "$dir" == "$current_dir"
   then
-    for current_os in ubi8; do
+    for current_os in ubi8 ubi9; do
       if [[ -z "$os" || "$current_os" == "$os" ]]
       then
 	      if [[ -f "${current_dir}/Dockerfile-${current_os}-${arch}" ]]
