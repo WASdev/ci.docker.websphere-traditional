@@ -16,7 +16,7 @@
 ############################################################################
 
 # Build step - download and install tWAS
-FROM agent-installer:ubi8 as builder
+FROM agent-installer:ubi8 AS builder
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip \
   && dnf --disableplugin=subscription-manager update -y
 
@@ -28,15 +28,15 @@ ARG REPO=https://www.ibm.com/software/repositorymanager/V9WASILAN
 
 RUN echo "your_secureStore_password" > /tmp/secureStorePwd \
   && /work/InstallationManagerKit/tools/imutilsc saveCredential \
-    -userName $IBMID -userPassword $IBMID_PWD \
+    -userName "$IBMID" -userPassword "$IBMID_PWD" \
     -secureStorageFile /tmp/secureStore \
     -masterPasswordFile /tmp/secureStorePwd \
-    -url $REPO -verbose \
+    -url "$REPO" -verbose \
   && /work/InstallationManagerKit/tools/imcl install \
-    $PRODUCTID com.ibm.java.jdk.v8 \
+    "$PRODUCTID" com.ibm.java.jdk.v8 \
     -acceptLicense -accessRights nonAdmin -showProgress \
-    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
-    -installFixes $IFIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories "$REPO" \
+    -installFixes "$IFIXES" -sRD /opt/IBM/WebSphere/AppServerIMShared \
     -dataLocation /opt/IBM/WebSphere/AppServerIMData \
     -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
     -preferences offering.service.repositories.areUsed=false,\
@@ -52,7 +52,7 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi
+FROM registry.access.redhat.com/ubi8/ubi:latest
 ARG BUILDLABEL=none
 
 LABEL maintainer="Glenn Marcy <gmarcy@us.ibm.com>" \
@@ -78,7 +78,7 @@ ARG ADMIN_USER_NAME=wsadmin
 COPY scripts/ /work/
 COPY licenses-ipla/ /licenses/
 
-RUN useradd $USER -g 0 -m --uid 1001 \
+RUN useradd "$USER" -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
@@ -86,11 +86,11 @@ RUN useradd $USER -g 0 -m --uid 1001 \
   && chown -R 1001:0 /work /opt/IBM /etc/websphere \
   && chmod -R g+rwx /work
 
-COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
+COPY --chown=1001:0 --chmod=744 --from=builder /opt/IBM /opt/IBM
 
-USER $USER
+USER "$USER"
 
-ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
+ENV PATH=/opt/IBM/WebSphere/AppServer/bin:"$PATH" \
     PROFILE_NAME=$PROFILE_NAME \
     SERVER_NAME=$SERVER_NAME \
     ADMIN_USER_NAME=$ADMIN_USER_NAME \
@@ -101,16 +101,16 @@ RUN /work/create_profile.sh \
   && chmod -R g+rwx /home/was/.java/
 
 # patch server.xml to add -Xnoloa option until JDK is fixed
-RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/servers/$SERVER_NAME/server.xml
+RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/config/cells/"$CELL_NAME"/nodes/"$NODE_NAME"/servers/"$SERVER_NAME"/server.xml
 
 USER root
-RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
-USER $USER
+RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/logs /logs && chown 1001:0 /logs
+USER "$USER"
 
-RUN rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/trust.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/key.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/root-key.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/etc/trust.p12 \
- && rm /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/etc/key.p12
+RUN rm /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/config/cells/"$CELL_NAME"/nodes/"$NODE_NAME"/trust.p12 \
+ && rm /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/config/cells/"$CELL_NAME"/nodes/"$NODE_NAME"/key.p12 \
+ && rm /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/config/cells/"$CELL_NAME"/nodes/"$NODE_NAME"/root-key.p12 \
+ && rm /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/etc/trust.p12 \
+ && rm /opt/IBM/WebSphere/AppServer/profiles/"$PROFILE_NAME"/etc/key.p12
 
 CMD ["env", "JVM_EXTRA_CMD_ARGS=-Xnoloa", "/work/start_server.sh"]

@@ -35,10 +35,10 @@ wget $IMURL
 unzip agent.installer.linux.gtk*.zip -d /work/InstallationManagerKit 
 rm -rf agent.installer.linux.gtk*.zip 
 
-if [ $IBMID != "" ] ; then
+if [ "$IBMID" != "" ] ; then
     echo "your_secureStore_password" > /tmp/secureStorePwd
     /work/InstallationManagerKit/tools/imutilsc saveCredential \
-      -userName $IBMID -userPassword $IBMID_PWD \
+      -userName "$IBMID" -userPassword "$IBMID_PWD" \
       -secureStorageFile /tmp/secureStore \
       -masterPasswordFile /tmp/secureStorePwd \
       -url $REPO
@@ -62,7 +62,7 @@ fi
 /work/InstallationManagerKit/tools/imcl install \
     $PRODUCTIDS \
     -acceptLicense -accessRights nonAdmin -showProgress \
-    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories "$REPO" \
     $INSTALL_FIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
     -dataLocation /opt/IBM/WebSphere/AppServerIMData \
     -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
