@@ -86,7 +86,7 @@ RUN useradd "$USER" -g 0 -m --uid 1001 \
   && chown -R 1001:0 /work /opt/IBM /etc/websphere \
   && chmod -R g+rwx /work
 
-COPY --chown=1001:0 --chmod=744 --from=builder /opt/IBM /opt/IBM
+COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
 
 USER "$USER"
 
