@@ -20,7 +20,7 @@
 
 pushd `dirname $0` > /dev/null && SCRIPTPATH=`pwd` && popd > /dev/null
 
-cd $SCRIPTPATH || exit
+cd ${SCRIPTPATH} || exit
 
 usage="Usage: build_installer.sh --username=<username> --password=<password> --im_url=<im url> [ --os=<os> --download=(true|false) ]"
 
@@ -44,16 +44,16 @@ while [ $# -gt 0 ]; do
       ;;
     *)
       echo "Error: Invalid argument - $1"
-      echo "$usage"
+      echo ${usage}
       exit 1
   esac
   shift
 done
 
-if [ -z "$username" ] || [ -z "$password" ] || [ -z "$im_url" ]
+if [ -z ${username} ] || [ -z ${password} ] || [ -z ${im_url} ]
 then
   echo "Error: must provide --username, --password, and --im_url arguments"
-  echo "$usage"
+  echo ${usage}
   exit 1
 fi
 
@@ -88,18 +88,18 @@ case "${arch}" in
     ;;
 esac
 
-if [[ "$im_url" =~ %ARCH% ]]
+if [[ ${im_url} =~ %ARCH% ]]
 then
   im_url=${im_url//%ARCH%/${arch}}
-elif [[ ! "$im_url" =~ ${arch} ]]
+elif [[ ! ${im_url} =~ ${arch} ]]
 then
   echo "Error: the --im_url parameter should either be an installer for ${arch} or be a template containing %ARCH% that can be substituted"
   exit 1
 fi
 
-if [[ -z "$download" || "$download" != "false" || ! -f "agent.installer/agent.installer.${arch}.zip" ]]
+if [[ -z ${download} || ${download} != "false" || ! -f "agent.installer/agent.installer.${arch}.zip" ]]
 then
-  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user "$username" --password "$password" $im_url
+  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
   rc=$?
   if [ $rc -ne 0 ]
   then
@@ -108,7 +108,7 @@ then
   fi
 fi
 for current_os in ubi8; do
-  if [[ -z "$os" || "$current_os" == "$os" ]]
+  if [[ -z ${os} || ${current_os} == ${os} ]]
   then
     if [[ -f "agent.installer/Dockerfile-${current_os}-${docker_arch}" ]]
     then
@@ -116,11 +116,11 @@ for current_os in ubi8; do
     else
       DOCKERFILE="agent.installer/Dockerfile-${current_os}"
     fi
-    if [ ! -f "$DOCKERFILE" ]
+    if [ ! -f ${DOCKERFILE} ]
     then
-      echo "Not building ${current_os} because $DOCKERFILE does not exist."
+      echo "Not building ${current_os} because ${DOCKERFILE} does not exist."
       continue
     fi
-    $CONTAINER_CMD build -t agent-installer:${current_os} -f ${DOCKERFILE} agent.installer --build-arg IMZIP=agent.installer.${arch}.zip
+    ${CONTAINER_CMD} build -t agent-installer:${current_os} -f ${DOCKERFILE} agent.installer --build-arg IMZIP=agent.installer.${arch}.zip
   fi
 done
