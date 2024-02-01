@@ -31,17 +31,17 @@ IBMID=$4
 IBMID_PWD=$5
 
 cd /work 
-wget $IMURL
+wget ${IMURL}
 unzip agent.installer.linux.gtk*.zip -d /work/InstallationManagerKit 
 rm -rf agent.installer.linux.gtk*.zip 
 
-if [ $IBMID != "" ] ; then
+if [ ${IBMID} != "" ] ; then
     echo "your_secureStore_password" > /tmp/secureStorePwd
     /work/InstallationManagerKit/tools/imutilsc saveCredential \
-      -userName $IBMID -userPassword $IBMID_PWD \
+      -userName ${IBMID} -userPassword ${IBMID_PWD} \
       -secureStorageFile /tmp/secureStore \
       -masterPasswordFile /tmp/secureStorePwd \
-      -url $REPO
+      -url ${REPO}
 else 
     cp /work/secureStore /tmp/secureStore
     cp /work/secureStorePwd /tmp/secureStorePwd
@@ -52,18 +52,18 @@ PRODUCTIDS=`/work/InstallationManagerKit/tools/imcl listInstalledPackages \
     -dataLocation /opt/IBM/WebSphere/AppServerIMData -accessRights nonAdmin \
     | xargs echo` 
 
-if [ "$IFIXES" == "none" ] || [ "$IFIXES" == "recommended" ] || [ "$IFIXES" == "all" ] ; then
-    INSTALL_FIXES="-installFixes $IFIXES"
+if [ ${IFIXES} == "none" ] || [ ${IFIXES} == "recommended" ] || [ ${IFIXES} == "all" ] ; then
+    INSTALL_FIXES="-installFixes ${IFIXES}"
 else 
-    PRODUCTIDS="$PRODUCTIDS $IFIXES"
+    PRODUCTIDS="${PRODUCTIDS} ${IFIXES}"
     INSTALL_FIXES=""
 fi
 
 /work/InstallationManagerKit/tools/imcl install \
-    $PRODUCTIDS \
+    ${PRODUCTIDS} \
     -acceptLicense -accessRights nonAdmin -showProgress \
-    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories $REPO \
-    $INSTALL_FIXES -sRD /opt/IBM/WebSphere/AppServerIMShared \
+    -installationDirectory /opt/IBM/WebSphere/AppServer -repositories ${REPO} \
+    ${INSTALL_FIXES} -sRD /opt/IBM/WebSphere/AppServerIMShared \
     -dataLocation /opt/IBM/WebSphere/AppServerIMData \
     -secureStorageFile /tmp/secureStore -masterPasswordFile /tmp/secureStorePwd \
     -preferences offering.service.repositories.areUsed=false,\

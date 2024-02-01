@@ -16,11 +16,11 @@
 ############################################################################
 
 # build image to extract the tar ball.
-FROM registry.access.redhat.com/ubi8/ubi as builder
+FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
 ARG WAS_VERSION=9.0.5.19
 ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
 COPY im/${WAS_TAR_BALL} /
-RUN tar -xzf "$WAS_TAR_BALL" \
+RUN tar -xzf ${WAS_TAR_BALL} \
   && chmod -R g+rw /opt/IBM/
 
 # patch wsadmin.sh to avoid error when deploying apps
@@ -29,7 +29,7 @@ RUN sed -i 's/-Xms256m/-Xms1024m/g' /opt/IBM/WebSphere/AppServer/bin/wsadmin.sh 
 
 
 # final image that will copy /opt/IBM from builder
-FROM registry.access.redhat.com/ubi8/ubi
+FROM registry.access.redhat.com/ubi8/ubi:latest
 
 RUN dnf --disableplugin=subscription-manager install -y openssl wget unzip diffutils procps \
   && dnf --disableplugin=subscription-manager update -y
@@ -46,7 +46,7 @@ ARG ADMIN_USER_NAME=wsadmin
 COPY scripts/ /work/
 COPY licenses/ /licenses/
 
-RUN useradd $USER -g 0 -m --uid 1001 \
+RUN useradd ${USER} -g 0 -m --uid 1001 \
   && mkdir /opt/IBM \
   && chmod -R +x /work/* \
   && mkdir /etc/websphere \
@@ -57,9 +57,9 @@ RUN useradd $USER -g 0 -m --uid 1001 \
 COPY --chown=1001:0 --from=builder /opt/IBM /opt/IBM
 COPY --chown=1001:0 --from=builder /home/was /home/was
 
-USER $USER
+USER ${USER}
 
-ENV PATH=/opt/IBM/WebSphere/AppServer/bin:$PATH \
+ENV PATH=/opt/IBM/WebSphere/AppServer/bin:${PATH} \
     PROFILE_NAME=$PROFILE_NAME \
     SERVER_NAME=$SERVER_NAME \
     ADMIN_USER_NAME=$ADMIN_USER_NAME \
@@ -70,10 +70,10 @@ RUN /work/create_profile.sh \
   && chmod -R g+rwx /home/was/.java/
 
 # patch server.xml to add -Xnoloa option until JDK is fixed
-RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/WebSphere/AppServer/profiles/$PROFILE_NAME/config/cells/$CELL_NAME/nodes/$NODE_NAME/servers/$SERVER_NAME/server.xml
+RUN sed -i 's/genericJvmArguments=""/genericJvmArguments="-Xnoloa"/' /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/config/cells/${CELL_NAME}/nodes/${NODE_NAME}/servers/${SERVER_NAME}/server.xml
 
 USER root
 RUN ln -s /opt/IBM/WebSphere/AppServer/profiles/${PROFILE_NAME}/logs /logs && chown 1001:0 /logs
-USER $USER
+USER ${USER}
 
 CMD ["env", "JVM_EXTRA_CMD_ARGS=-Xnoloa", "/work/start_server.sh"]
