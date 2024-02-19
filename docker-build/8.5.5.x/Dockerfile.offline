@@ -17,7 +17,7 @@
 
 # build image to extract the tar ball.
 FROM registry.access.redhat.com/ubi8/ubi:latest AS builder
-ARG WAS_VERSION=8.5.5.25
+ARG WAS_VERSION=8.5.5.26
 ARG WAS_TAR_BALL=was-${WAS_VERSION}.tar.gz
 COPY im/${WAS_TAR_BALL} /
 RUN tar -xzf ${WAS_TAR_BALL} \
