@@ -4,17 +4,7 @@ The files in this directory are used to build the `websphere-traditional` images
 
 **Registry Options**
 
-You can pull the images built using this directory from both [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/) and IBM Container Regsitry (icr.io). 
-
-When pulling from Docker Hub use the following format
-```
-FROM ibmcom/websphere-traditional:latest
-```
-
-Unlike with Docker Hub, images can be pulled from ICR without rate limits and without authentication. When pulling from ICR use the format
-```
-FROM icr.io/appcafe/websphere-traditional:latest
-```
+You can pull the images built using this directory from both IBM Container Regsitry (icr.io) and [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). Unlike with Docker Hub, images can be pulled from IBM Container Regsitry without rate limits and without authentication.
 
 **Note:** Have you considered trying out WebSphere Liberty?  It's based on the Open Source project `Open Liberty`, fully supports Java EE8 and MicroProfile 2.0, and it's much lighter, faster and easier to configure than WAS traditional. You can try it today for free from [Docker Hub](https://hub.docker.com/_/websphere-liberty/). If you have entitlement for WAS traditional you already have entitlement for Liberty included.  Find out more about how to use WebSphere Liberty in Kubernetes [here](https://www.ibm.com/blogs/bluemix/2018/10/certified-kubernetes-deployments-for-websphere-liberty/).
 
