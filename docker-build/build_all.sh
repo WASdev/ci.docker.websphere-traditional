@@ -156,10 +156,10 @@ for current_dir in *; do
         if [[ -z ${skiptests} || ${skiptests} == "false" ]]
         then
           echo "---------- START Building websphere-traditional/sample-app:${IMAGE} ----------"
-          ${CONTAINER_CMD} tag websphere-traditional:${IMAGE} ibmcom/websphere-traditional:latest
+          ${CONTAINER_CMD} tag websphere-traditional:${IMAGE} icr.io/appcafe/websphere-traditional:latest
           ${CONTAINER_CMD} build -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
           rc=$?
-          ${CONTAINER_CMD} rmi ibmcom/websphere-traditional:latest
+          ${CONTAINER_CMD} rmi icr.io/appcafe/websphere-traditional:latest
           if [ $rc -ne 0 ]
           then
             echo "FATAL: Error building websphere-traditional/sample-app:${IMAGE}, exiting"
