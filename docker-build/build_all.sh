@@ -16,7 +16,7 @@
 # limitations under the License.                                          #
 ###########################################################################
 
-# Executing this script builds all versions of the websphere-traditional Docker images.
+# Executing this script builds all versions of the websphere-traditional container images.
 
 pushd `dirname $0` > /dev/null && SCRIPTPATH=`pwd` && popd > /dev/null
 

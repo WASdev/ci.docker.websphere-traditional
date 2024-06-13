@@ -1,20 +1,18 @@
 # Image Overview
 
-The files in this directory are used to build the `websphere-traditional` images. You can see a list of images provided [here](/docs/images.md). These images contain the ILAN licensed IBM WebSphere Application Server traditional. For production use or if you wish to build these yourself just follow [these instructions](docker-build/9.0.5.x/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
+The official container images for WebSphere Application Server Base are available from IBM Container Registry (icr.io). Images can be pulled from icr.io without rate limits and authentication. You can see a list of images provided [here](/docs/images.md).
 
-**Registry Options**
-
-You can pull the images built using this directory from both IBM Container Regsitry (icr.io) and [Docker Hub](https://hub.docker.com/r/ibmcom/websphere-traditional/). Unlike with Docker Hub, images can be pulled from IBM Container Regsitry without rate limits and without authentication.
+These images contain the ILAN licensed IBM WebSphere Application Server traditional. For production use or if you wish to build these yourself just follow [these instructions](docker-build/9.0.5.x/README.md), otherwise please see below on how to extend our pre-built image with your application and configuration!
 
 **Note:** Have you considered trying out WebSphere Liberty?  It's based on the Open Source project `Open Liberty`, fully supports Java EE8 and MicroProfile 2.0, and it's much lighter, faster and easier to configure than WAS traditional. You can try it today for free from [Docker Hub](https://hub.docker.com/_/websphere-liberty/). If you have entitlement for WAS traditional you already have entitlement for Liberty included.  Find out more about how to use WebSphere Liberty in Kubernetes [here](https://www.ibm.com/blogs/bluemix/2018/10/certified-kubernetes-deployments-for-websphere-liberty/).
 
 ## Building an application image 
 
-The Docker Hub image contains a traditional WebSphere Application Server v9 or v855 instance with no applications or configuration applied to it.
+The container image contains a traditional WebSphere Application Server v9 or v855 instance with no applications or configuration applied to it.
 
 ### Best practices
 
-According to Docker's best practices you should create a new image (`FROM icr.io/appcafe/websphere-traditional`) which adds a single application and the corresponding configuration.   You should avoid configuring the image manually (after it started) via Admin Console or wsadmin (unless it is for debugging purposes) because such changes won't be present if you spawn a new container from the image.  
+According to best practices for container images you should create a new image (`FROM icr.io/appcafe/websphere-traditional`) which adds a single application and the corresponding configuration.   You should avoid configuring the image manually (after it started) via Admin Console or wsadmin (unless it is for debugging purposes) because such changes won't be present if you spawn a new container from the image.  
 
 Even if you `docker save` the manually configured container, the steps to reproduce the image from `icr.io/appcafe/websphere-traditional` will be lost and you will hinder your ability to update that image.
 
@@ -26,13 +24,13 @@ FROM icr.io/appcafe/websphere-traditional:<version>
 RUN /work/configure.sh
 ```
 
-This will result in a Docker image that has your application and configuration pre-loaded, which means you can spawn new fully-configured containers at any time.
+This will result in a container image that has your application and configuration pre-loaded, which means you can spawn new fully-configured containers at any time.
 
 ![App Image](/graphics/twas_app_image.png)
 
 ### Adding properties during build phase 
 
-The Docker Hub images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/SSEQTP_9.0.5/com.ibm.websphere.base.doc/ae/txml_property_configuration.html) found inside the `/work/config/*.props` file.  This script will be run with the server in `stopped` mode and the prop files will be applied in alphabetic order.
+The container images contain a script, `/work/applyConfig.sh`, which will apply the [config properties](https://www.ibm.com/support/knowledgecenter/SSEQTP_9.0.5/com.ibm.websphere.base.doc/ae/txml_property_configuration.html) found inside the `/work/config/*.props` file.  This script will be run with the server in `stopped` mode and the prop files will be applied in alphabetic order.
 
 For example, if you had the following `/work/config/001-was-config.props`:
 
@@ -80,7 +78,7 @@ Normally it is best to use fixpacks instead of installing individual iFixes but 
 
 Once you have the iFix and the agent installer on the system you are building your image on, configure the dockerfile to extract the installer and run the installer on the iFix as shown in the example dockerfile below.
 ```
-FROM icr.io/appcafe/websphere-traditional:9.0.0.10
+FROM icr.io/appcafe/websphere-traditional:latest
 COPY A.ear /work/config/A.ear
 COPY install_app.py /work/config/install_app.py
 RUN /work/configure.sh
@@ -106,7 +104,7 @@ RUN /work/InstallationManagerKit/tools/imcl install 9.0.0.0-WS-WASProd-IFPH47531
 You can find more information about the imcl command at https://www.ibm.com/support/knowledgecenter/en/SSDV2W_1.8.4/com.ibm.cic.commandline.doc/topics/c_imcl_container.html
 ### Logging configuration
 	
-By default, the Docker Hub image is using High Performance Extensible Logging (HPEL) mode and is outputing logs in JSON format. This logging configuration will make the docker container a lot easier to work with ELK stacks. 
+By default, the container image is using High Performance Extensible Logging (HPEL) mode and is outputing logs in JSON format. This logging configuration will make the container image a lot easier to work with ELK stacks. 
 
 Alternatively, user can use basic logging mode is plain text format. You can switch the logging mode to basic via the following Dockerfile:
 
@@ -195,7 +193,7 @@ The initial keystore, truststore, and rootstore password is in ```/tmp/KEYSTORE_
 ### How to check the WebSphere Application Server installed level and ifixes
 
 ```
-   docker run websphere-traditional:9.0.5.0 versionInfo.sh -ifixes
+   docker run websphere-traditional:latest versionInfo.sh -ifixes
 ```
 
 ### Checking the logs
@@ -236,7 +234,7 @@ podman images websphere-traditional
 You can then check the output for the creation date
 ```bash
 REPOSITORY                              TAG         IMAGE ID      CREATED     SIZE
-icr.io/appcafe/websphere-traditional/websphere-traditional  latest      f5dd9da02c85  7 days ago  1.91 GB
+icr.io/appcafe/websphere-traditional  latest      f5dd9da02c85  7 days ago  1.91 GB
 ```
 
 If you would like to check the version of websphere running inside of your image, you can run the following command against the image. Replace "websphere-traditional" with your image name if you want to check an image you built.
