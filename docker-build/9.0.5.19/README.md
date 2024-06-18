@@ -1,7 +1,5 @@
 # How to build this image
 
-The files in this directory are used to build the ibmcom/websphere-traditional images on Docker Hub. These images contain the ILAN licensed IBM WebSphere Application Server traditional. If you wish to build these yourself just follow these instructions, otherwise please see below on how to extend our pre-built image with your application and configuration! 
-
 ## Clone repo
 `git clone git@github.com:WASdev/ci.docker.websphere-traditional.git`
 

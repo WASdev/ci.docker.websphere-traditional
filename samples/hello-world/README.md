@@ -86,7 +86,7 @@ The official helm chart for IBM WebSphere Application Server traditional Base ed
       configMapName: my-config-properties
     ```
 
-    - `image` parameter specifies the Docker image to deploy. Use the image we earlier pushed into the private image registry. Replace `<cluster_CA_domain>` with the the right CA domain for your cluster.
+    - `image` parameter specifies the container image to deploy. Use the image we earlier pushed into the private image registry. Replace `<cluster_CA_domain>` with the the right CA domain for your cluster.
     - `ingress` parameter enables the [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
     - `configProperties` parameter refers to the ConfigMap from Step 3.
 

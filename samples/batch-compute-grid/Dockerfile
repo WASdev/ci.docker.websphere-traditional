@@ -15,7 +15,7 @@
 #                                                                          #
 ############################################################################
 
-FROM ibmcom/websphere-traditional:latest
+FROM icr.io/appcafe/websphere-traditional:latest
 
 LABEL maintainer="Scott Kurz <skurz@us.ibm.com>"
 
