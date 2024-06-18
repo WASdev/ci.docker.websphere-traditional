@@ -1,6 +1,6 @@
 
 # IBM Container Registry (ICR)
-WebSphere Application Server traditional [images](https://www.ibm.com/docs/en/was/9.0.5?topic=container-websphere-application-server-images) are available from the IBM Container Registry (ICR) at `icr.io/appcafe/websphere-traditional`. Our recommendation is to use ICR instead of Docker Hub since ICR doesn't impose rate limits on image pulls. Images can be pulled from ICR without authentication.
+WebSphere Application Server traditional [images](https://www.ibm.com/docs/en/was/9.0.5?topic=container-websphere-application-server-images) are available from the IBM Container Registry (ICR) at `icr.io/appcafe/websphere-traditional`. Our recommendation is to use ICR as it doesn't impose rate limits on image pulls. Images can be pulled from ICR without authentication.
 
 The images for the latest 3 Websphere releases for 8.5.5.x and 9.0.5.x are available and are refreshed regularly (every 1-2 weeks) to include fixes for the operating system (OS). 8.5.5.x images are not available on the s390x platform. Images are based on UBI 8 standard and include IBM Java 8.
 
