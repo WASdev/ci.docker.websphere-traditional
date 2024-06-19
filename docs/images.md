@@ -19,23 +19,23 @@ ibmcloud cr region-set global
 ibmcloud cr images --restrict appcafe/websphere-traditional
 ```
 
-## Latest version (9.0.5.19)
+## Latest version (9.0.5.20)
+
+```
+9.0.5.20
+latest
+```
+
+## 9.0.5.19
 
 ```
 9.0.5.19
-latest
 ```
 
 ## 9.0.5.18
 
 ```
 9.0.5.18
-```
-
-## 9.0.5.17
-
-```
-9.0.5.17
 ```
 
 ## 8.5.5.25
