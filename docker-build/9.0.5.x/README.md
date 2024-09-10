@@ -13,7 +13,7 @@ To create an image with the latest fixpack version of IBM Websphere Application 
 
 For example:
 ```
-docker build -t websphere-traditional:9.0.5.21-ilan . \
+docker build -t websphere-traditional:9.0.5.22-ilan . \
     --build-arg IBMID={IBMid} \
     --build-arg IBMID_PWD={IBMid_password} \
     --build-arg IMURL={IBM_Installation_Manager_download_url}
@@ -25,7 +25,7 @@ To create an image with a specific fixpack version of IBM WebSphere Application 
 
 For example:
 ```
-docker build -t websphere-traditional:9.0.5.21-base . \
+docker build -t websphere-traditional:9.0.5.22-base . \
     --build-arg IBMID={IBMid} \
     --build-arg IBMID_PWD={IBMid_password} \
     --build-arg IMURL={IBM_Installation_Manager_download_url} \
@@ -39,7 +39,7 @@ To create an image with the latest fixpack version with all recommended iFixes, 
 
 For example:
 ```
-docker build -t websphere-traditional:9.0.5.21-ilan . \
+docker build -t websphere-traditional:9.0.5.22-ilan . \
     --build-arg IBMID={IBMid} \
     --build-arg IBMID_PWD={IBMid_password} \
     --build-arg IMURL={IBM_Installation_Manager_download_url} \

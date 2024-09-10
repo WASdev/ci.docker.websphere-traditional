@@ -6,11 +6,11 @@ The images for the latest 3 Websphere releases for 8.5.5.x and 9.0.5.x are avail
 
 Available image tags are listed below.
 
-The `latest` tag simplifies pulling the full latest Websphere 9.0.5 release. It is an alias for the `9.0.5.19` tag. If you do not specify a tag value, `latest` is used by default.
+The `latest` tag simplifies pulling the full latest Websphere 9.0.5 release. It is an alias for the `9.0.5.20` tag. If you do not specify a tag value, `latest` is used by default.
 
 Append a tag to `icr.io/appcafe/websphere-traditional` to pull a specific image. For example: 
 ```
-icr.io/appcafe/websphere-traditional:9.0.5.18
+icr.io/appcafe/websphere-traditional:9.0.5.19
 ```
 
 Available images can be listed using [IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-getting-started). Log in with your IBMid prior to running the following commands. Note that authentication is only required to list the images. **Images can be pulled from ICR without authentication**: 
@@ -19,11 +19,17 @@ ibmcloud cr region-set global
 ibmcloud cr images --restrict appcafe/websphere-traditional
 ```
 
-## Latest version (9.0.5.20)
+## Latest version (9.0.5.21)
+
+```
+9.0.5.21
+latest
+```
+
+## 9.0.5.20
 
 ```
 9.0.5.20
-latest
 ```
 
 ## 9.0.5.19
@@ -32,10 +38,10 @@ latest
 9.0.5.19
 ```
 
-## 9.0.5.18
+## 8.5.5.26
 
 ```
-9.0.5.18
+8.5.5.26
 ```
 
 ## 8.5.5.25
@@ -48,10 +54,4 @@ latest
 
 ```
 8.5.5.24
-```
-
-## 8.5.5.23
-
-```
-8.5.5.23
 ```
