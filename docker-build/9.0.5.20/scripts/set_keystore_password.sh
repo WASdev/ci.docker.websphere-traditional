@@ -10,13 +10,13 @@
 #                                                                                   #
 #####################################################################################
 
-NEW_PASSWORD=${NEW_PASSWORD:-$(openssl rand -base64 6)}
+NEW_PASSWORD=${NEW_PASSWORD:-$(openssl rand -base64 6)} # pragma: allowlist secret
 
 if [ -f /tmp/KEYSTORE_PASSWORD ]
 then
   oldPassword=$(cat /tmp/KEYSTORE_PASSWORD)
 else
-  oldPassword="WebAS"
+  oldPassword="WebAS" # pragma: allowlist secret
 fi
 
 echo $NEW_PASSWORD > /tmp/KEYSTORE_PASSWORD
