@@ -259,3 +259,7 @@ podman pull icr.io/appcafe/websphere-traditional:latest
 ```
 4. Rebuild images that use the websphere-traditional image. Make sure they are using the same "FROM" that you pulled in step 3
 5. Run the newly pulled and built container images
+
+## Contributions
+
+For issues relating specifically to the WebSphere Traditional container images, Dockerfiles and scripts, please use the [GitHub issues tracker](https://github.com/WASdev/ci.docker.websphere-traditional/issues). For general issues relating to WebSphere Application Server runtime, you can get help through the WASdev community or, if you have production licenses for WebSphere Application Server, via the usual [support channels](https://www.ibm.com/docs/en/was/latest?topic=getting-help). See our guidelines for contributions [here](https://github.com/WASdev/ci.docker.websphere-traditional/blob/main/CONTRIBUTING.md).
