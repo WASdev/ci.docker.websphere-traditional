@@ -128,6 +128,7 @@ for current_dir in *; do
         else
           IMAGE="${current_dir}-${current_os}"
         fi
+        echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -prebuild ${IMAGE}"
         echo "---------- START Building websphere-traditional:${IMAGE} ----------"
         buildCommand="${CONTAINER_CMD} build -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"${username}\" --build-arg IBMID_PWD=\"${password}\""
         if [ ! -z "${repo}" ]
@@ -153,8 +154,10 @@ for current_dir in *; do
           continue
         fi
         echo "---------- END Building websphere-traditional:${IMAGE} ----------"
+        echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -postbuild ${IMAGE}"
         if [[ -z ${skiptests} || ${skiptests} == "false" ]]
         then
+          echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -prebuildsample ${IMAGE}"
           echo "---------- START Building websphere-traditional/sample-app:${IMAGE} ----------"
           ${CONTAINER_CMD} tag websphere-traditional:${IMAGE} icr.io/appcafe/websphere-traditional:latest
           ${CONTAINER_CMD} build -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
@@ -167,6 +170,7 @@ for current_dir in *; do
             continue
           fi
           echo "---------- END Building websphere-traditional/sample-app:${IMAGE} ----------"
+          echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -postbuildsample ${IMAGE}"
           echo "---------- START Running websphere-traditional/sample-app:${IMAGE} ----------"
           containerID="$(${CONTAINER_CMD} run --detach --rm -p 9080:9080 websphere-traditional/sample-app:${IMAGE})"
           sleep 10
