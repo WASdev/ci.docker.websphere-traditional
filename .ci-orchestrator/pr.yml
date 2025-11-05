@@ -5,4 +5,4 @@ triggers:
 - type: github
   keyword: "!twas-pr"
   triggerName: "TWASSPSViaPR"
-  groups: ["tWASContainers"]
+  groups: ["tWASContainersPersonal"]
