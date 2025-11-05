@@ -1,0 +1,8 @@
+type: pipeline_definition
+name: Websphere Traditional (tWAS) Containers SPS - PR
+description: "Runs a set of compliance status checks for the WASDev/ci.docker.websphere-traditional app repo."
+triggers:
+- type: github
+  keyword: "!twas-pr"
+  triggerName: "TWASSPSViaPR"
+  groups: ["tWASContainers"]
