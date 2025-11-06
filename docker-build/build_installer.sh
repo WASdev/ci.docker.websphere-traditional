@@ -99,7 +99,8 @@ fi
 
 if [[ -z ${download} || ${download} != "false" || ! -f "agent.installer/agent.installer.${arch}.zip" ]]
 then
-  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
+  echo "wget -O \"agent.installer/agent.installer.${arch}.zip\" --no-check-certificate --no-verbose --show-progress --progress=dot:giga --user ${username} --password **** ${im_url}"
+  wget -O "agent.installer/agent.installer.${arch}.zip" --no-check-certificate --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
   rc=$?
   if [ $rc -ne 0 ]
   then
