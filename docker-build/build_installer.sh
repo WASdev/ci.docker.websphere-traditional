@@ -99,31 +99,8 @@ fi
 
 if [[ -z ${download} || ${download} != "false" || ! -f "agent.installer/agent.installer.${arch}.zip" ]]
 then
-#shachem: start
-  set -x
-  echo "shachem: JAVA_HOME=${JAVA_HOME}..."
-  # Get required IBM root cert for GSA access.
-  if [ "${JAVA_HOME}" == "" ]; then
-    JAVA_HOME=`which java | sed 's:/bin/java::'`
-  fi
-  if [ "${JAVA_HOME}" != "" ]; then
-    curl -k -o IBMIntermediateCA-PROD.cert https://certhub.digitalcerts.identity-services.intranet.ibm.com/intermediate.cer
-    curl -k -o IBMRootCA-PROD.cert https://certhub.digitalcerts.identity-services.intranet.ibm.com/root.cer
-
-    echo "${JAVA_HOME}/bin/keytool -importcert -noprompt -alias IBMIntermediateCA-PROD -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -file ./IBMIntermediateCA-PROD.cert"
-    ${JAVA_HOME}/bin/keytool -importcert -noprompt -alias IBMIntermediateCA-PROD -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -file ./IBMIntermediateCA-PROD.cert
-
-    echo "${JAVA_HOME}/bin/keytool -importcert -noprompt -alias IBMRootCA-PROD -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -file ./IBMRootCA-PROD.cert"
-    ${JAVA_HOME}/bin/keytool -importcert -noprompt -alias IBMRootCA-PROD -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -file ./IBMRootCA-PROD.cert
-
-    rm -f IBMIntermediateCA-PROD.cert IBMRootCA-PROD.cert
-  fi
-pwd
-ping -c1 rtpgsa.ibm.com
-#shachem: end
-
-#x  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
-  wget -O "agent.installer/agent.installer.${arch}.zip" --no-check-certificate --user ${username} --password ${password} ${im_url}
+  echo "wget -O \"agent.installer/agent.installer.${arch}.zip\" --no-check-certificate --no-verbose --show-progress --progress=dot:giga --user ${username} --password **** ${im_url}"
+  wget -O "agent.installer/agent.installer.${arch}.zip" --no-check-certificate --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
   rc=$?
   if [ $rc -ne 0 ]
   then
