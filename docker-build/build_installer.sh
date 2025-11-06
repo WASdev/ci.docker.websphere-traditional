@@ -109,6 +109,7 @@ then
   if [ "${JAVA_HOME}" != "" ]; then
     curl -k -o IBMIntermediateCA-PROD.cert https://certhub.digitalcerts.identity-services.intranet.ibm.com/intermediate.cer
     curl -k -o IBMRootCA-PROD.cert https://certhub.digitalcerts.identity-services.intranet.ibm.com/root.cer
+
     echo "${JAVA_HOME}/bin/keytool -importcert -noprompt -alias IBMIntermediateCA-PROD -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -file ./IBMIntermediateCA-PROD.cert"
     ${JAVA_HOME}/bin/keytool -importcert -noprompt -alias IBMIntermediateCA-PROD -keystore ${JAVA_HOME}/lib/security/cacerts -storepass changeit -file ./IBMIntermediateCA-PROD.cert
 
@@ -118,9 +119,11 @@ then
     rm -f IBMIntermediateCA-PROD.cert IBMRootCA-PROD.cert
   fi
 pwd
+ping rtpgsa.ibm.com
 #shachem: end
 
-  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
+#x  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
+  wget -O "agent.installer/agent.installer.${arch}.zip" --no-check-certificate --user ${username} --password ${password} ${im_url}
   rc=$?
   if [ $rc -ne 0 ]
   then
