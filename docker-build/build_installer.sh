@@ -119,7 +119,7 @@ then
     rm -f IBMIntermediateCA-PROD.cert IBMRootCA-PROD.cert
   fi
 pwd
-ping rtpgsa.ibm.com
+ping -c1 rtpgsa.ibm.com
 #shachem: end
 
 #x  wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
