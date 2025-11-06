@@ -100,6 +100,7 @@ fi
 if [[ -z ${download} || ${download} != "false" || ! -f "agent.installer/agent.installer.${arch}.zip" ]]
 then
 #shachem: start
+  set -x
   echo "shachem: JAVA_HOME=${JAVA_HOME}..."
   # Get required IBM root cert for GSA access.
   if [ "${JAVA_HOME}" == "" ]; then
@@ -116,6 +117,7 @@ then
 
     rm -f IBMIntermediateCA-PROD.cert IBMRootCA-PROD.cert
   fi
+pwd
 #shachem: end
 
   wget -O "agent.installer/agent.installer.${arch}.zip" --no-verbose --show-progress --progress=dot:giga --user ${username} --password ${password} ${im_url}
