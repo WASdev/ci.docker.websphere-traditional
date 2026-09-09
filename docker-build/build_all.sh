@@ -130,7 +130,7 @@ for current_dir in *; do
         fi
         echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -prebuild ${IMAGE}"
         echo "---------- START Building websphere-traditional:${IMAGE} ----------"
-        buildCommand="${CONTAINER_CMD} build -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"${username}\" --build-arg IBMID_PWD=\"${password}\""
+        buildCommand="${CONTAINER_CMD} build --format oci -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"${username}\" --build-arg IBMID_PWD=\"${password}\""
         if [ ! -z "${repo}" ]
         then 
           buildCommand="${buildCommand} --build-arg REPO=\"${repo}\""
@@ -160,7 +160,7 @@ for current_dir in *; do
           echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -prebuildsample ${IMAGE}"
           echo "---------- START Building websphere-traditional/sample-app:${IMAGE} ----------"
           ${CONTAINER_CMD} tag websphere-traditional:${IMAGE} icr.io/appcafe/websphere-traditional:latest
-          ${CONTAINER_CMD} build -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
+          ${CONTAINER_CMD} build --format oci -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
           rc=$?
           ${CONTAINER_CMD} rmi icr.io/appcafe/websphere-traditional:latest
           if [ $rc -ne 0 ]
