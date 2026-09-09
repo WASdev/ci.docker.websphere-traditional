@@ -130,7 +130,12 @@ for current_dir in *; do
         fi
         echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -prebuild ${IMAGE}"
         echo "---------- START Building websphere-traditional:${IMAGE} ----------"
-        buildCommand="${CONTAINER_CMD} build --format oci -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"${username}\" --build-arg IBMID_PWD=\"${password}\""
+        if [ "${CONTAINER_CMD}" = "docker" ]; then
+          BUILD_CMD="docker buildx build --output=type=image,oci-mediatypes=true"
+        else
+          BUILD_CMD="${CONTAINER_CMD} build --format oci"
+        fi
+        buildCommand="${BUILD_CMD} -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"${username}\" --build-arg IBMID_PWD=\"${password}\""
         if [ ! -z "${repo}" ]
         then 
           buildCommand="${buildCommand} --build-arg REPO=\"${repo}\""
@@ -160,7 +165,12 @@ for current_dir in *; do
           echo "Disk Space (Used  Total)=$(df -h --output=used,size . | tail -n 1) -prebuildsample ${IMAGE}"
           echo "---------- START Building websphere-traditional/sample-app:${IMAGE} ----------"
           ${CONTAINER_CMD} tag websphere-traditional:${IMAGE} icr.io/appcafe/websphere-traditional:latest
-          ${CONTAINER_CMD} build --format oci -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
+          if [ "${CONTAINER_CMD}" = "docker" ]; then
+            SAMPLE_BUILD_CMD="docker buildx build --output=type=image,oci-mediatypes=true"
+          else
+            SAMPLE_BUILD_CMD="${CONTAINER_CMD} build --format oci"
+          fi
+          ${SAMPLE_BUILD_CMD} -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
           rc=$?
           ${CONTAINER_CMD} rmi icr.io/appcafe/websphere-traditional:latest
           if [ $rc -ne 0 ]
