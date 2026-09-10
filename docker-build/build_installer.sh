@@ -125,7 +125,7 @@ for current_os in ubi8; do
     if [ "${CONTAINER_CMD}" = "docker" ]; then
       INSTALLER_BUILD_CMD="docker buildx build --output=type=image,oci-mediatypes=true"
     else
-      INSTALLER_BUILD_CMD="${CONTAINER_CMD} build --format oci"
+      INSTALLER_BUILD_CMD="podman build --format oci"
     fi
     ${INSTALLER_BUILD_CMD} -t agent-installer:${current_os} -f ${DOCKERFILE} agent.installer --build-arg IMZIP=agent.installer.${arch}.zip
   fi

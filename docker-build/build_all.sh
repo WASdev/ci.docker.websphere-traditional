@@ -133,7 +133,7 @@ for current_dir in *; do
         if [ "${CONTAINER_CMD}" = "docker" ]; then
           BUILD_CMD="docker buildx build --output=type=image,oci-mediatypes=true"
         else
-          BUILD_CMD="${CONTAINER_CMD} build --format oci"
+          BUILD_CMD="podman build --format oci"
         fi
         buildCommand="${BUILD_CMD} -t websphere-traditional:${IMAGE} -f ${DOCKERFILE} ${current_dir} --build-arg IBMID=\"${username}\" --build-arg IBMID_PWD=\"${password}\""
         if [ ! -z "${repo}" ]
@@ -168,7 +168,7 @@ for current_dir in *; do
           if [ "${CONTAINER_CMD}" = "docker" ]; then
             SAMPLE_BUILD_CMD="docker buildx build --output=type=image,oci-mediatypes=true"
           else
-            SAMPLE_BUILD_CMD="${CONTAINER_CMD} build --format oci"
+            SAMPLE_BUILD_CMD="podman build --format oci"
           fi
           ${SAMPLE_BUILD_CMD} -t websphere-traditional/sample-app:${IMAGE} ../samples/hello-world
           rc=$?
